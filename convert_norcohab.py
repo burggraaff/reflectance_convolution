@@ -46,6 +46,36 @@ m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
 
 m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60)
 
-plt.savefig("NORCOHAB.pdf")
+plt.savefig("NORCOHAB_map.pdf")
 plt.show()
 
+# Plot all Ed, Lu, Ls, R_rs spectra
+fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
+
+for row in combined_table:
+    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
+    spec_Lu = [row[f"Lu_{wvl}"] for wvl in wavelengths]
+    spec_Ls = [row[f"Ls_{wvl}"] for wvl in wavelengths]
+    spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
+
+    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lu, spec_Ls, spec_R_rs]):
+        ax.plot(wavelengths, spec, c="k", alpha=0.15, zorder=1)
+
+for ax, label in zip(axs.ravel(), ["$E_d$ [W m$^{-2}$ nm$^{-1}$]", "$L_u$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$L_s$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+    ax.set_ylabel(label)
+    ax.grid(ls="--", zorder=0)
+
+axs[0,0].tick_params(bottom=False, labelbottom=False)
+axs[0,1].tick_params(bottom=False, labelbottom=False)
+axs[0,1].tick_params(left=False, labelleft=False, right=True, labelright=True)
+axs[1,1].tick_params(left=False, labelleft=False, right=True, labelright=True)
+axs[0,1].yaxis.set_label_position("right")
+axs[1,1].yaxis.set_label_position("right")
+axs[1,0].set_xlabel("Wavelength [nm]")
+axs[1,1].set_xlabel("Wavelength [nm]")
+axs[0,0].set_xlim(320, 950)
+
+fig.suptitle("NORCOHAB spectra")
+plt.savefig("NORCOHAB_spectra.pdf")
+plt.show()
+plt.close()
