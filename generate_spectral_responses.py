@@ -17,3 +17,13 @@ def generate_boxcar(x, center, fwhm):
 def generate_gaussian(x, center, fwhm):
     response = np.exp(-(x-center)**2 / (2 * fwhm**2))
     return response
+
+# Loop over central wavelengths
+    # Loop over bandwidths
+    # Skip if (significantly) out-of-range compared to data
+    # Generate boxcar, gaussian
+    # Store in big array
+
+# Separate script: import responses
+# Load spectra
+# Convolve, calculate difference
