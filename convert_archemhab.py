@@ -79,3 +79,6 @@ fig.suptitle("ARCHEMHAB spectra")
 plt.savefig("ARCHEMHAB_spectra.pdf")
 plt.show()
 plt.close()
+
+combined_table.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
+combined_table.write("data/archemhab_processed.tab", format="ascii.fast_tab", overwrite=True)
