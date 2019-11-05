@@ -40,7 +40,17 @@ def generate_gaussian(x, center, fwhm):
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")
 
-data_all = table.vstack([data_norcohab, data_archemhab])
+#data_all = table.vstack([data_norcohab, data_archemhab])
+data_all = data_norcohab
+
+def split_spectrum(data_table, label):
+    keys_relevant = [key for key in data_table.keys() if label in key]
+    wavelengths = np.array([float(key.split("_")[-1]) for key in keys_relevant])
+    try:
+        spectra = np.array([data_table[key]._data for key in keys_relevant]).T
+    except AttributeError:
+        spectra = np.array([data_table[key].data for key in keys_relevant]).T
+    return wavelengths, spectra
 
 def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response):
     response_interpolated = np.interp(band_wavelengths, data_wavelengths, data_response, left=0, right=0)
@@ -50,6 +60,10 @@ def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response
     weight_sum = wavelength_step * band_response.sum()
     response_average = response_sum / weight_sum
     return response_average
+
+wavelengths, Ed = split_spectrum(data_all, "Ed")
+wavelengths, Lw = split_spectrum(data_all, "Lw")
+wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
 for i,center in enumerate(central_wavelengths):
     for j,fwhm in enumerate(FWHMs):
