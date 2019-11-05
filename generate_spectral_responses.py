@@ -7,12 +7,12 @@ from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
 
-data_wavelengths = np.arange(300, 800, 0.1)
+wavelengths_band = np.arange(300, 800, 0.1)
 
-central_wavelengths = np.arange(350, 780, 3)
+wavelengths_central = np.arange(350, 780, 3)
 FWHMs = np.arange(1, 100, 1)
 
-boxcar_result = np.tile(np.nan, [len(FWHMs), len(central_wavelengths)])
+boxcar_result = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 gauss_result = boxcar_result.copy()
 
 wavelengths_interp = np.arange(380, 800.5, 0.5)
@@ -65,29 +65,29 @@ wavelengths, Ed = split_spectrum(data_all, "Ed")
 wavelengths, Lw = split_spectrum(data_all, "Lw")
 wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
-for i,center in enumerate(central_wavelengths):
+for i,center in enumerate(wavelengths_central):
     for j,fwhm in enumerate(FWHMs):
 
         # Boxcar
-        if center-fwhm/2 < data_wavelengths[0] or center+fwhm/2 > data_wavelengths[-1]:
+        if center-fwhm/2 < wavelengths_band[0] or center+fwhm/2 > wavelengths_band[-1]:
             # Skip combination if the boxcar response does not fall entirely
             # within the data wavelength range
             continue
-        boxcar_response = generate_boxcar(data_wavelengths, center, fwhm)
+        boxcar_response = generate_boxcar(wavelengths_band, center, fwhm)
         boxcar_result[j,i] = 1
 
-        if center-1.5*fwhm < data_wavelengths[0] or center+1.5*fwhm > data_wavelengths[-1]:
+        if center-1.5*fwhm < wavelengths_band[0] or center+1.5*fwhm > wavelengths_band[-1]:
             # Skip combination if the gaussian response does not fall
             # within the data wavelength range up to 3 stds out
             continue
-        gaussian_response = generate_gaussian(data_wavelengths, center, fwhm)
+        gaussian_response = generate_gaussian(wavelengths_band, center, fwhm)
         gauss_result[j,i] = 1
 
 
-plt.imshow(boxcar_result, origin="lower", extent=[central_wavelengths[0], central_wavelengths[-1], FWHMs[0], FWHMs[-1]])
+plt.imshow(boxcar_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]])
 plt.show()
 
-plt.imshow(gauss_result, origin="lower", extent=[central_wavelengths[0], central_wavelengths[-1], FWHMs[0], FWHMs[-1]])
+plt.imshow(gauss_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]])
 plt.show()
 
 # Loop over central wavelengths
