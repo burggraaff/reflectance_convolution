@@ -42,6 +42,15 @@ data_archemhab = read("data/archemhab_processed.tab")
 
 data_all = table.vstack([data_norcohab, data_archemhab])
 
+def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response):
+    response_interpolated = np.interp(band_wavelengths, data_wavelengths, data_response, left=0, right=0)
+    response_multiplied = response_interpolated * band_response
+    wavelength_step = band_wavelengths[1] - band_wavelengths[0]
+    response_sum = wavelength_step * response_multiplied.sum()
+    weight_sum = wavelength_step * band_response.sum()
+    response_average = response_sum / weight_sum
+    return response_average
+
 for i,center in enumerate(central_wavelengths):
     for j,fwhm in enumerate(FWHMs):
 
