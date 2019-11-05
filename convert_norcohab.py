@@ -81,5 +81,17 @@ plt.show()
 plt.close()
 
 combined_table.remove_columns(["Date/Time_1", "Latitude_1", "Longitude_1", "Altitude [m]_1", "Date/Time_2", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-combined_table.write("data/norcohab_processed.tab", format="ascii.fast_tab")
+combined_table.write("data/norcohab_processed.tab", format="ascii.fast_tab", overwrite=True)
 
+wavelengths_interp = np.arange(380, 800.5, 0.5)
+
+def interpolate_row(row, spectrum):
+    spectrum_data = np.array([row[f"{spectrum}_{wvl}"] for wvl in wavelengths])
+    spectrum_interpolated = np.interp(wavelengths_interp, wavelengths, spectrum_data, left=0, right=0)
+    return spectrum_interpolated
+
+def interpolate_table(data_table, spectrum):
+    interpolated_data = np.array([interpolate_row(row, spectrum) for row in data_table])
+    table_names = [f"{spectrum}_{wvl}" for wvl in wavelengths_interp]
+    interpolated_table = table.Table(data=interpolated_data, names=table_names)
+    return interpolated_table
