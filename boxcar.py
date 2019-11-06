@@ -15,17 +15,12 @@ wavelengths_central = np.arange(350, 780, 3)
 FWHMs = np.arange(1, 75, 1)
 
 boxcar_result = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
-gauss_result = boxcar_result.copy()
 
 wavelengths_interp = np.arange(380, 800.5, 0.5)
 
 def generate_boxcar(x, center, fwhm):
     response = np.zeros_like(x)
     response[np.abs(x - center) <= fwhm/2] = 1.
-    return response
-
-def generate_gaussian(x, center, fwhm):
-    response = np.exp(-(x-center)**2 / (2 * fwhm**2))
     return response
 
 data_norcohab = read("data/norcohab_processed.tab")
@@ -50,33 +45,22 @@ for i,center in enumerate(wavelengths_central):
         boxcar_radiance_space = bandaverage_multi(wavelengths_band, boxcar_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, boxcar_response, wavelengths, Ed)
         boxcar_result[j,i] = np.median((boxcar_radiance_space - boxcar_reflectance_space) / boxcar_radiance_space)
 
-        if center-1.5*fwhm < wavelengths_band[0] or center+1.5*fwhm > wavelengths_band[-1]:
-            # Skip combination if the gaussian response does not fall
-            # within the data wavelength range up to 3 stds out
-            continue
-        gaussian_response = generate_gaussian(wavelengths_band, center, fwhm)
-        gauss_reflectance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, R_rs)
-        gauss_radiance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Ed)
-        gauss_result[j,i] = np.median((gauss_radiance_space - gauss_reflectance_space) / gauss_radiance_space)
-
 # imshow plots
-for result in [boxcar_result, gauss_result]:
-    im = plt.imshow(100*result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
-    plt.xlabel("Central wavelength [nm]")
-    plt.ylabel("FWHM [nm]")
-    divider = make_axes_locatable(plt.gca())
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
-    plt.show()
+im = plt.imshow(100*boxcar_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
+plt.xlabel("Central wavelength [nm]")
+plt.ylabel("FWHM [nm]")
+divider = make_axes_locatable(plt.gca())
+cax = divider.append_axes("right", size="5%", pad=0.05)
+plt.colorbar(im, cax=cax)
+cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
+plt.show()
 
 # contourf plots
-for result in [boxcar_result, gauss_result]:
-    im = plt.contourf(100*result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
-    plt.xlabel("Central wavelength [nm]")
-    plt.ylabel("FWHM [nm]")
-    divider = make_axes_locatable(plt.gca())
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
-    plt.show()
+im = plt.contourf(100*boxcar_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
+plt.xlabel("Central wavelength [nm]")
+plt.ylabel("FWHM [nm]")
+divider = make_axes_locatable(plt.gca())
+cax = divider.append_axes("right", size="5%", pad=0.05)
+plt.colorbar(im, cax=cax)
+cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
+plt.show()
