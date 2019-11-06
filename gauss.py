@@ -40,7 +40,7 @@ for i,center in enumerate(wavelengths_central):
         gaussian_response = generate_gaussian(wavelengths_band, center, fwhm)
         gauss_reflectance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, R_rs)
         gauss_radiance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Ed)
-        gauss_result[j,i] = np.median((gauss_radiance_space - gauss_reflectance_space) / gauss_radiance_space)
+        gauss_result[j,i] = np.median((gauss_reflectance_space - gauss_radiance_space) / gauss_radiance_space)
 
 gauss_result *= 100  # convert to %
 

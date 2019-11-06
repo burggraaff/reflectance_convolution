@@ -44,7 +44,7 @@ for i,center in enumerate(wavelengths_central):
         boxcar_response = generate_boxcar(wavelengths_band, center, fwhm)
         boxcar_reflectance_space = bandaverage_multi(wavelengths_band, boxcar_response, wavelengths, R_rs)
         boxcar_radiance_space = bandaverage_multi(wavelengths_band, boxcar_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, boxcar_response, wavelengths, Ed)
-        boxcar_result[j,i] = np.median((boxcar_radiance_space - boxcar_reflectance_space) / boxcar_radiance_space)
+        boxcar_result[j,i] = np.median((boxcar_reflectance_space - boxcar_radiance_space) / boxcar_radiance_space)
 
 boxcar_result *= 100  # convert to %
 
