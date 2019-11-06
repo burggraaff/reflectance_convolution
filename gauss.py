@@ -11,8 +11,8 @@ from bandaveraging import split_spectrum, bandaverage_multi
 
 wavelengths_band = np.arange(320, 800, 0.1)
 
-wavelengths_central = np.arange(350, 780, 3)
-FWHMs = np.arange(1, 75, 1)
+wavelengths_central = np.arange(360, 780, 5)
+FWHMs = np.arange(1, 75, 2)
 
 gauss_result = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 
