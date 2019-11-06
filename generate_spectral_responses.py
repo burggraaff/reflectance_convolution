@@ -59,8 +59,20 @@ for i,center in enumerate(wavelengths_central):
         gauss_radiance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Ed)
         gauss_result[j,i] = np.median((gauss_radiance_space - gauss_reflectance_space) / gauss_radiance_space)
 
+# imshow plots
 for result in [boxcar_result, gauss_result]:
     im = plt.imshow(100*result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
+    plt.xlabel("Central wavelength [nm]")
+    plt.ylabel("FWHM [nm]")
+    divider = make_axes_locatable(plt.gca())
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
+    plt.show()
+
+# contourf plots
+for result in [boxcar_result, gauss_result]:
+    im = plt.contourf(100*result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     divider = make_axes_locatable(plt.gca())
