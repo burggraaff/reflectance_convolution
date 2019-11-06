@@ -9,7 +9,18 @@ from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from bandaveraging import split_spectrum, bandaverage_multi
 
-responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in (1,2,3,4,8)]
+bands = [1,2,3,4,8]
+responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
+colours = ["b", "g", "r", "xkcd:dark red", "k"]
+
+for response, band, colour in zip(responses, bands, colours):
+    plt.plot(response[0], response[1], label=f"ETM+ band {band}", c=colour)
+plt.xlim(400, 920)
+plt.ylim(0, 1.01)
+plt.xlabel("Wavelength [nm]")
+plt.ylabel("Relative response")
+plt.legend(loc="best")
+plt.show()
 
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")
@@ -24,8 +35,8 @@ reflectance_space = np.array([bandaverage_multi(response[0], response[1], wavele
 radiance_space = np.array([bandaverage_multi(response[0], response[1], wavelengths, Lw) for response in responses]) / np.array([bandaverage_multi(response[0], response[1], wavelengths, Ed) for response in responses])
 difference = 100*(reflectance_space - radiance_space) / radiance_space
 
-for diff, band in zip(difference, [1,2,3,4,8]):
-    plt.hist(diff, bins=np.linspace(-5, 5, 100))
+for diff, band, colour in zip(difference, bands, colours):
+    plt.hist(diff, bins=np.linspace(-5, 5, 100), color=colour)
     plt.xlim(-5, 5)
     plt.xlabel("Difference (%)")
     plt.ylabel("Frequency")
