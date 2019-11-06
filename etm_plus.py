@@ -33,12 +33,21 @@ wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
 reflectance_space = np.array([bandaverage_multi(response[0], response[1], wavelengths, R_rs) for response in responses])
 radiance_space = np.array([bandaverage_multi(response[0], response[1], wavelengths, Lw) for response in responses]) / np.array([bandaverage_multi(response[0], response[1], wavelengths, Ed) for response in responses])
-difference = 100*(reflectance_space - radiance_space) / radiance_space
+difference_absolute = reflectance_space - radiance_space
+difference_relative = 100*difference_absolute / radiance_space
 
-for diff, band, colour in zip(difference, bands, colours):
+for diff, band, colour in zip(difference_absolute, bands, colours):
+    plt.hist(diff, bins=np.linspace(-0.0025, 0.0025, 100), color=colour)
+    plt.xlim(-0.0025, 0.0025)
+    plt.xlabel("Difference [sr$^{-1}$]")
+    plt.ylabel("Frequency")
+    plt.title(f"ETM+ band {band}")
+    plt.show()
+
+for diff, band, colour in zip(difference_relative, bands, colours):
     plt.hist(diff, bins=np.linspace(-5, 5, 100), color=colour)
     plt.xlim(-5, 5)
-    plt.xlabel("Difference (%)")
+    plt.xlabel("Difference [%]")
     plt.ylabel("Frequency")
     plt.title(f"ETM+ band {band}")
     plt.show()
