@@ -42,22 +42,32 @@ for i,center in enumerate(wavelengths_central):
         gauss_radiance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Ed)
         gauss_result[j,i] = np.median((gauss_radiance_space - gauss_reflectance_space) / gauss_radiance_space)
 
+gauss_result *= 100  # convert to %
+
+low, high = np.nanmin(gauss_result), np.nanmax(gauss_result)
+vmin = np.min([low, -high])
+vmax = np.max([-low, high])
+
 # imshow plots
-im = plt.imshow(100*gauss_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
+im = plt.imshow(gauss_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto", cmap=plt.cm.seismic)
 plt.xlabel("Central wavelength [nm]")
 plt.ylabel("FWHM [nm]")
+plt.title("Difference for Gaussian responses")
 divider = make_axes_locatable(plt.gca())
 cax = divider.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im, cax=cax)
 cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
+plt.savefig("gauss_map.pdf")
 plt.show()
 
 # contourf plots
-im = plt.contourf(100*gauss_result, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto")
+im = plt.contourf(gauss_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
 plt.xlabel("Central wavelength [nm]")
 plt.ylabel("FWHM [nm]")
+plt.title("Difference for Gaussian responses")
 divider = make_axes_locatable(plt.gca())
 cax = divider.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im, cax=cax)
 cax.set_ylabel("Difference (Rad. space - Refl. space, %)")
+plt.savefig("gauss_contours.pdf")
 plt.show()
