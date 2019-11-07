@@ -38,7 +38,9 @@ difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
 for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
-    plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95])
+    bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True)
+    for patch, colour in zip(bplot["boxes"], colours):
+        patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
     plt.yticks(np.arange(1,6), band_labels)
     plt.title("Landsat 7 ETM+")
