@@ -9,8 +9,8 @@ from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from bandaveraging import split_spectrum, bandaverage_multi
 
-wavelengths_central = np.arange(360, 780, 5)
-FWHMs = np.arange(1, 75, 3)
+wavelengths_central = np.arange(330, 800, 5)
+FWHMs = np.arange(1, 75, 2)
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
