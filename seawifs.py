@@ -9,7 +9,6 @@ from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from bandaveraging import split_spectrum, bandaverage_multi
 
-bands = [1,2,3,4,8]
 band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765]]
 wavelengths_seawifs, *responses_raw = np.loadtxt("spectral_response/SeaWiFS_RSRs.txt", skiprows=9, unpack=True, usecols=np.arange(8))
 responses_raw = np.array(responses_raw)
