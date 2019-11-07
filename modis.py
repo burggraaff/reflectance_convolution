@@ -48,6 +48,7 @@ for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt
             patch.set_facecolor(colour)
         plt.xlabel(f"Difference [{unit}]")
         plt.title(satellite_label)
+        plt.grid(ls="--", color="0.5")
         plt.show()
 
 #    for diff, band, colour in zip(difference_set, bands, colours):

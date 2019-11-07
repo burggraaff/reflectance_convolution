@@ -43,6 +43,7 @@ for difference_set, unit in zip([difference_absolute, difference_relative], ["sr
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
     plt.title("Landsat 7 ETM+")
+    plt.grid(ls="--", color="0.5")
     plt.show()
 
 #    for diff, band, colour in zip(difference_set, bands, colours):
