@@ -20,7 +20,7 @@ wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt", "spectral_response/HMODIST_RSRs.txt"]):
     satellite_label = f"MODIS {sat}"
     band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748]]
-    wavelengths_modis, *responses = np.loadtxt(filename, skiprows=8, unpack=True, usecols=np.arange(11))
+    wavelengths_modis, *responses = np.loadtxt(filename, skiprows=8, unpack=True, usecols=np.arange(12))
     responses = np.array([responses])[0]
     ind = np.where(wavelengths_modis <= 900)[0]
     wavelengths_modis = wavelengths_modis[ind]
@@ -29,7 +29,7 @@ for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt
 
     for response, band_label, colour in zip(responses, band_labels, colours):
         plt.plot(wavelengths_modis, response, label=band_label, c=colour)
-    plt.xlim(380, 720)
+    plt.xlim(380, 780)
     plt.ylim(0, 1.01)
     plt.xlabel("Wavelength [nm]")
     plt.ylabel("Relative response")
@@ -43,11 +43,10 @@ for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt
     difference_relative = 100*difference_absolute / radiance_space
 
     for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
-        bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True)
+        bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
         for patch, colour in zip(bplot["boxes"], colours):
             patch.set_facecolor(colour)
         plt.xlabel(f"Difference [{unit}]")
-        plt.yticks(np.arange(1,11), band_labels)
         plt.title(satellite_label)
         plt.show()
 
