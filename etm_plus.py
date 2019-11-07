@@ -10,6 +10,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from bandaveraging import split_spectrum, bandaverage_multi
 
 bands = [1,2,3,4,8]
+band_labels = [f"ETM+\nband {band}" for band in bands]
 responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
 colours = ["b", "g", "r", "xkcd:dark red", "k"]
 
@@ -37,13 +38,19 @@ difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
 for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
-    for diff, band, colour in zip(difference_set, bands, colours):
-        vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
-        ME = np.median(diff)
-        MAE = np.median(np.abs(diff))
-        plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
-        plt.xlim(vmin, vmax)
-        plt.xlabel(f"Difference [{unit}]")
-        plt.ylabel("Frequency")
-        plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.6f} {unit}; Med. Abs. Err. {MAE:.6f} {unit}")
-        plt.show()
+    plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95])
+    plt.xlabel(f"Difference [{unit}]")
+    plt.yticks(np.arange(1,6), band_labels)
+    plt.title("Landsat 7 ETM+")
+    plt.show()
+
+#    for diff, band, colour in zip(difference_set, bands, colours):
+#        vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
+#        ME = np.median(diff)
+#        MAE = np.median(np.abs(diff))
+#        plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
+#        plt.xlim(vmin, vmax)
+#        plt.xlabel(f"Difference [{unit}]")
+#        plt.ylabel("Frequency")
+#        plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.6f} {unit}; Med. Abs. Err. {MAE:.6f} {unit}")
+#        plt.show()
