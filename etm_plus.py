@@ -36,24 +36,14 @@ radiance_space = np.array([bandaverage_multi(response[0], response[1], wavelengt
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-for diff, band, colour in zip(difference_absolute, bands, colours):
-    vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
-    ME = np.median(diff)
-    MAE = np.median(np.abs(diff))
-    plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
-    plt.xlim(vmin, vmax)
-    plt.xlabel("Difference [sr$^{-1}$]")
-    plt.ylabel("Frequency")
-    plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.6f}" + " sr$^{-1}$" + f"; Med. Abs. Err. {MAE:.6f}" + " sr$^{-1}$")
-    plt.show()
-
-for diff, band, colour in zip(difference_relative, bands, colours):
-    vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
-    ME = np.median(diff)
-    MAE = np.median(np.abs(diff))
-    plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
-    plt.xlim(vmin, vmax)
-    plt.xlabel("Difference [%]")
-    plt.ylabel("Frequency")
-    plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.2f} % ; Med. Abs. Err. {MAE:.2f} %")
-    plt.show()
+for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
+    for diff, band, colour in zip(difference_set, bands, colours):
+        vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
+        ME = np.median(diff)
+        MAE = np.median(np.abs(diff))
+        plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
+        plt.xlim(vmin, vmax)
+        plt.xlabel(f"Difference [{unit}]")
+        plt.ylabel("Frequency")
+        plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.6f} {unit}; Med. Abs. Err. {MAE:.6f} {unit}")
+        plt.show()
