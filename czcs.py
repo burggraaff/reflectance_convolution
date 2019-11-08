@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
-from bandaveraging import split_spectrum, bandaverage_multi
+from bandaveraging import split_spectrum, bandaverage_multi, plot_bands
 
 band_labels = [f"{wvl} nm" for wvl in [443, 520, 550, 670]]
 wavelengths_czcs, *responses = np.loadtxt("spectral_response/CZCS_RSRs.txt", skiprows=56, unpack=True)
@@ -14,15 +14,7 @@ responses = np.array(responses)
 responses[responses < 0] = 0
 colours = ["xkcd:dark blue", "xkcd:lime green", "xkcd:forest green", "xkcd:dark red"]
 
-for response, band_label, colour in zip(responses, band_labels, colours):
-    plt.plot(wavelengths_czcs, response, label=band_label, c=colour)
-plt.xlim(380, 800)
-plt.ylim(0, 1.01)
-plt.xlabel("Wavelength [nm]")
-plt.ylabel("Relative response")
-plt.title("CZCS")
-plt.legend(loc="best")
-plt.show()
+plot_bands(wavelengths_czcs, responses, band_labels=band_labels, colours=colours, sensor_label="CZCS")
 
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")

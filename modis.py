@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
-from bandaveraging import split_spectrum, bandaverage_multi
+from bandaveraging import split_spectrum, bandaverage_multi, plot_bands
 
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")
@@ -28,15 +28,7 @@ for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt
     responses = responses[:, ind]
     colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:blue", "xkcd:cyan", "xkcd:bright green", "xkcd:green", "xkcd:forest green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
 
-    for response, band_label, colour in zip(responses, band_labels, colours):
-        plt.plot(wavelengths_modis, response, label=band_label, c=colour)
-    plt.xlim(380, 780)
-    plt.ylim(0, 1.01)
-    plt.xlabel("Wavelength [nm]")
-    plt.ylabel("Relative response")
-    plt.title(satellite_label)
-    plt.legend(loc="best")
-    plt.show()
+    plot_bands(wavelengths_modis, responses, band_labels=band_labels, colours=colours, sensor_label=satellite_label)
 
     reflectance_space = np.array([bandaverage_multi(wavelengths_modis, response, wavelengths, R_rs) for response in responses])
     radiance_space = np.array([bandaverage_multi(wavelengths_modis, response, wavelengths, Lw) for response in responses]) / np.array([bandaverage_multi(wavelengths_modis, response, wavelengths, Ed) for response in responses])
@@ -50,7 +42,7 @@ for sat, filename in zip(["Aqua", "Terra"], ["spectral_response/HMODISA_RSRs.txt
         plt.xlabel(f"Difference [{unit}]")
         plt.title(satellite_label)
         plt.grid(ls="--", color="0.5")
-        plt.savefig(f"results/MODIS_{sat}_{label}.pdf")
+        plt.savefig(f"results/{satellite_label}_{label}.pdf")
         plt.show()
 
 #    for diff, band, colour in zip(difference_set, bands, colours):

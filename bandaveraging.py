@@ -3,6 +3,7 @@ Module with functions for band-averaging
 """
 
 import numpy as np
+from matplotlib import pyplot as plt
 
 def split_spectrum(data_table, label):
     keys_relevant = [key for key in data_table.keys() if label in key]
@@ -28,3 +29,22 @@ def bandaverage_multi(band_wavelengths, band_response, data_wavelengths, data_re
     weight_sum = np.trapz(band_response, x=band_wavelengths)
     response_average = response_sum / weight_sum
     return response_average
+
+def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_label=None):
+    if colours is None:
+        colours = ["k"] * len(responses)
+    if band_labels is None:
+        band_labels = [None] * len(responses)
+
+    for response, band_label, colour in zip(responses, band_labels, colours):
+        plt.plot(wavelengths, response, label=band_label, c=colour)
+    plt.xlim(380, 800)
+    plt.ylim(0, 1.01)
+    plt.xlabel("Wavelength [nm]")
+    plt.ylabel("Relative response")
+    plt.title(sensor_label)
+    plt.legend(loc="best")
+    plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/{sensor_label}_bands.pdf")
+    plt.show()
+    plt.close()

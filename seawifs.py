@@ -6,8 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from bandaveraging import split_spectrum, bandaverage_multi
+from bandaveraging import split_spectrum, bandaverage_multi, plot_bands
 
 band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765]]
 wavelengths_seawifs, *responses_raw = np.loadtxt("spectral_response/SeaWiFS_RSRs.txt", skiprows=9, unpack=True, usecols=np.arange(8))
@@ -15,15 +14,7 @@ responses_raw = np.array(responses_raw)
 responses = responses_raw / responses_raw.max(axis=1)[:, np.newaxis]
 colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:lime green", "xkcd:forest green", "xkcd:dark red", "k"]
 
-for response, band_label, colour in zip(responses, band_labels, colours):
-    plt.plot(wavelengths_seawifs, response, label=band_label, c=colour)
-plt.xlim(380, 800)
-plt.ylim(0, 1.01)
-plt.xlabel("Wavelength [nm]")
-plt.ylabel("Relative response")
-plt.title("SeaWiFS")
-plt.legend(loc="best")
-plt.show()
+plot_bands(wavelengths_seawifs, responses, band_labels=band_labels, colours=colours, sensor_label="SeaWiFS")
 
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")
