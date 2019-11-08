@@ -39,7 +39,7 @@ radiance_space = np.array([bandaverage_multi(wavelengths_czcs, response, wavelen
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
+for difference_set, unit, label in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"], ["abs", "rel"]):
     lower_percentile = np.nanpercentile(difference_set, 15.9, axis=1)
     medians = np.nanmedian(difference_set, axis=1)
     upper_percentile = np.nanpercentile(difference_set, 84.1, axis=1)
@@ -54,6 +54,7 @@ for difference_set, unit in zip([difference_absolute, difference_relative], ["sr
     plt.xlabel(f"Difference [{unit}]")
     plt.title("CZCS")
     plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/CZCS_{label}.pdf")
     plt.show()
 
 #    for diff, band, colour in zip(difference_set, bands, colours):

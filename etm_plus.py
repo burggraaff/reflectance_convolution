@@ -38,13 +38,14 @@ radiance_space = np.array([bandaverage_multi(response[0], response[1], wavelengt
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
+for difference_set, unit, label in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"], ["abs", "rel"]):
     bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
     plt.title("Landsat 7 ETM+")
     plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/ETM+_{label}.pdf")
     plt.show()
 
 #    for diff, band, colour in zip(difference_set, bands, colours):
