@@ -57,7 +57,7 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"boxcar_map_{absrel}.pdf")
+    plt.savefig(f"results/boxcar_map_{absrel}.pdf")
     plt.show()
 
     # contourf plot
@@ -70,7 +70,7 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"boxcar_contours_{absrel}.pdf")
+    plt.savefig(f"results/boxcar_contours_{absrel}.pdf")
     plt.show()
 
     # contourf plot of absolute differences
@@ -83,5 +83,5 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Abs. difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"boxcar_contours_absolute_{absrel}.pdf")
+    plt.savefig(f"results/boxcar_contours_absolute_{absrel}.pdf")
     plt.show()
