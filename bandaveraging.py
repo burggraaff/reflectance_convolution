@@ -99,6 +99,13 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
     plt.xlabel(f"Difference [{unit}]")
     plt.title(sensor_label)
     plt.grid(ls="--", color="0.5")
+
+    xlim = plt.xlim()
+    if xlim[0] > 0:
+        plt.xlim(xmin=0)
+    elif xlim[-1] < 0:
+        plt.xlim(xmax=0)
+
     plt.savefig(f"results/{sensor_label}_{label}.pdf")
     plt.show()
     plt.close()
