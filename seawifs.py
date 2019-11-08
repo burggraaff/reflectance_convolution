@@ -3,8 +3,7 @@ Generate boxcar and gaussian spectral response functions
 """
 
 import numpy as np
-from matplotlib import pyplot as plt
-from bandaveraging import plot_bands, load_data, calculate_differences
+from bandaveraging import plot_bands, load_data, calculate_differences, boxplot_absolute, boxplot_relative
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
@@ -18,23 +17,5 @@ plot_bands(wavelengths_seawifs, responses, band_labels=band_labels, colours=colo
 
 difference_absolute, difference_relative = calculate_differences(wavelengths_seawifs, responses, wavelengths_data, Ed, Lw, R_rs)
 
-for difference_set, unit, label in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"], ["abs", "rel"]):
-    bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
-    for patch, colour in zip(bplot["boxes"], colours):
-        patch.set_facecolor(colour)
-    plt.xlabel(f"Difference [{unit}]")
-    plt.title("SeaWiFS")
-    plt.grid(ls="--", color="0.5")
-    plt.savefig(f"results/SeaWiFS_{label}.pdf")
-    plt.show()
-
-#    for diff, band, colour in zip(difference_set, bands, colours):
-#        vmin, vmax = np.nanpercentile(diff, 0.5), np.nanpercentile(diff, 99.5)
-#        ME = np.median(diff)
-#        MAE = np.median(np.abs(diff))
-#        plt.hist(diff, bins=np.linspace(vmin, vmax, 100), color=colour)
-#        plt.xlim(vmin, vmax)
-#        plt.xlabel(f"Difference [{unit}]")
-#        plt.ylabel("Frequency")
-#        plt.title(f"ETM+ band {band} \n Med. Err. {ME:+.6f} {unit}; Med. Abs. Err. {MAE:.6f} {unit}")
-#        plt.show()
+boxplot_relative(difference_relative, colours=colours, band_labels=band_labels, sensor_label="SeaWiFS")
+boxplot_absolute(difference_absolute, colours=colours, band_labels=band_labels, sensor_label="SeaWiFS")

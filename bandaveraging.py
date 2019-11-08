@@ -78,3 +78,58 @@ def calculate_differences(wavelengths_sensor, responses_sensor, wavelengths_data
     difference_relative = 100 * difference_absolute / radiance_space
 
     return difference_absolute, difference_relative
+
+def calculate_median_and_errors(differences):
+    lower_percentile = np.nanpercentile(differences, 15.9, axis=1)
+    medians = np.nanmedian(differences, axis=1)
+    upper_percentile = np.nanpercentile(differences, 84.1, axis=1)
+    lower_error = medians - lower_percentile
+    upper_error = upper_percentile - medians
+    return medians, lower_error, upper_error
+
+def boxplot_relative(differences, colours=None, band_labels=None, sensor_label=None):
+    if sensor_label is None:
+        sensor_label = ""
+    if band_labels is None:
+        band_labels = [""] * len(differences)
+    if colours is None:
+        colours = ["k"] * len(differences)
+
+    medians, lower_error, upper_error = calculate_median_and_errors(differences)
+    for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
+        print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) %")
+
+    bplot = plt.boxplot(differences.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
+    for patch, colour in zip(bplot["boxes"], colours):
+        patch.set_facecolor(colour)
+    plt.xlabel("Difference [%]")
+    plt.title(sensor_label)
+    plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/{sensor_label}_rel.pdf")
+    plt.show()
+    plt.close()
+
+def boxplot_absolute(differences, colours=None, band_labels=None, sensor_label=None, scaling_exponent=6):
+    if sensor_label is None:
+        sensor_label = ""
+    if band_labels is None:
+        band_labels = [""] * len(differences)
+    if colours is None:
+        colours = ["k"] * len(differences)
+
+    differences_scaled = differences * 10**scaling_exponent
+    unit = "$10^{-" + f"{scaling_exponent}" + "}$ sr$^{-1}$"
+
+    medians, lower_error, upper_error = calculate_median_and_errors(differences_scaled)
+    for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
+        print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) x 10^-6 sr^-1")
+
+    bplot = plt.boxplot(differences_scaled.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
+    for patch, colour in zip(bplot["boxes"], colours):
+        patch.set_facecolor(colour)
+    plt.xlabel(f"Difference [{unit}]")
+    plt.title(sensor_label)
+    plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/{sensor_label}_abs.pdf")
+    plt.show()
+    plt.close()
