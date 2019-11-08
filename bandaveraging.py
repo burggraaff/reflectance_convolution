@@ -4,6 +4,8 @@ Module with functions for band-averaging
 
 import numpy as np
 from matplotlib import pyplot as plt
+from astropy.io.ascii import read
+from astropy import table
 
 def split_spectrum(data_table, label):
     keys_relevant = [key for key in data_table.keys() if label in key]
@@ -48,3 +50,16 @@ def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_la
     plt.savefig(f"results/{sensor_label}_bands.pdf")
     plt.show()
     plt.close()
+
+def load_data():
+    data_norcohab = read("data/norcohab_processed.tab")
+    data_archemhab = read("data/archemhab_processed.tab")
+
+    data_all = table.vstack([data_norcohab, data_archemhab])
+    data_all = data_norcohab
+
+    wavelengths, Ed = split_spectrum(data_all, "Ed")
+    wavelengths, Lw = split_spectrum(data_all, "Lw")
+    wavelengths, R_rs = split_spectrum(data_all, "R_rs")
+
+    return wavelengths, Ed, Lw, R_rs

@@ -4,9 +4,9 @@ Generate boxcar and gaussian spectral response functions
 
 import numpy as np
 from matplotlib import pyplot as plt
-from astropy.io.ascii import read
-from astropy import table
-from bandaveraging import split_spectrum, bandaverage_multi, plot_bands
+from bandaveraging import bandaverage_multi, plot_bands, load_data
+
+wavelengths_data, Ed, Lw, R_rs = load_data()
 
 band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765]]
 wavelengths_seawifs, *responses_raw = np.loadtxt("spectral_response/SeaWiFS_RSRs.txt", skiprows=9, unpack=True, usecols=np.arange(8))
@@ -16,18 +16,8 @@ colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:lime green",
 
 plot_bands(wavelengths_seawifs, responses, band_labels=band_labels, colours=colours, sensor_label="SeaWiFS")
 
-data_norcohab = read("data/norcohab_processed.tab")
-data_archemhab = read("data/archemhab_processed.tab")
-
-data_all = table.vstack([data_norcohab, data_archemhab])
-data_all = data_norcohab
-
-wavelengths, Ed = split_spectrum(data_all, "Ed")
-wavelengths, Lw = split_spectrum(data_all, "Lw")
-wavelengths, R_rs = split_spectrum(data_all, "R_rs")
-
-reflectance_space = np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths, R_rs) for response in responses])
-radiance_space = np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths, Lw) for response in responses]) / np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths, Ed) for response in responses])
+reflectance_space = np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths_data, R_rs) for response in responses])
+radiance_space = np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths_data, Lw) for response in responses]) / np.array([bandaverage_multi(wavelengths_seawifs, response, wavelengths_data, Ed) for response in responses])
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
