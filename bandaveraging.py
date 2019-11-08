@@ -106,6 +106,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
     elif xlim[-1] < 0:
         plt.xlim(xmax=0)
 
+    plt.tight_layout()
     plt.savefig(f"results/{sensor_label}_{label}.pdf")
     plt.show()
     plt.close()
