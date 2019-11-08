@@ -87,35 +87,35 @@ def calculate_median_and_errors(differences):
     upper_error = upper_percentile - medians
     return medians, lower_error, upper_error
 
-def boxplot_relative(differences, colours=None, band_labels=None, sensor_label=None):
-    if sensor_label is None:
-        sensor_label = ""
+def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, colours=None):
+    if band_labels is None:
+        band_labels = [""] * len(data)
+    if colours is None:
+        colours = ["k"] * len(data)
+
+    bplot = plt.boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
+    for patch, colour in zip(bplot["boxes"], colours):
+        patch.set_facecolor(colour)
+    plt.xlabel(f"Difference [{unit}]")
+    plt.title(sensor_label)
+    plt.grid(ls="--", color="0.5")
+    plt.savefig(f"results/{sensor_label}_{label}.pdf")
+    plt.show()
+    plt.close()
+
+def boxplot_relative(differences, band_labels=None, sensor_label="", **kwargs):
     if band_labels is None:
         band_labels = [""] * len(differences)
-    if colours is None:
-        colours = ["k"] * len(differences)
 
     medians, lower_error, upper_error = calculate_median_and_errors(differences)
     for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
         print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) %")
 
-    bplot = plt.boxplot(differences.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
-    for patch, colour in zip(bplot["boxes"], colours):
-        patch.set_facecolor(colour)
-    plt.xlabel("Difference [%]")
-    plt.title(sensor_label)
-    plt.grid(ls="--", color="0.5")
-    plt.savefig(f"results/{sensor_label}_rel.pdf")
-    plt.show()
-    plt.close()
+    make_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
 
-def boxplot_absolute(differences, colours=None, band_labels=None, sensor_label=None, scaling_exponent=6):
-    if sensor_label is None:
-        sensor_label = ""
+def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exponent=6, **kwargs):
     if band_labels is None:
         band_labels = [""] * len(differences)
-    if colours is None:
-        colours = ["k"] * len(differences)
 
     differences_scaled = differences * 10**scaling_exponent
     unit = "$10^{-" + f"{scaling_exponent}" + "}$ sr$^{-1}$"
@@ -124,12 +124,4 @@ def boxplot_absolute(differences, colours=None, band_labels=None, sensor_label=N
     for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
         print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) x 10^-6 sr^-1")
 
-    bplot = plt.boxplot(differences_scaled.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
-    for patch, colour in zip(bplot["boxes"], colours):
-        patch.set_facecolor(colour)
-    plt.xlabel(f"Difference [{unit}]")
-    plt.title(sensor_label)
-    plt.grid(ls="--", color="0.5")
-    plt.savefig(f"results/{sensor_label}_abs.pdf")
-    plt.show()
-    plt.close()
+    make_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
