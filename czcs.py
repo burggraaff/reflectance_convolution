@@ -40,6 +40,14 @@ difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
 for difference_set, unit in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"]):
+    lower_percentile = np.nanpercentile(difference_set, 15.9, axis=1)
+    medians = np.nanmedian(difference_set, axis=1)
+    upper_percentile = np.nanpercentile(difference_set, 84.1, axis=1)
+    lower_error = medians - lower_percentile
+    upper_error = upper_percentile - medians
+    for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
+        print(f"CZCS {band} band: {med} (+{up}, -{low}) {unit}")
+
     bplot = plt.boxplot(difference_set.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
