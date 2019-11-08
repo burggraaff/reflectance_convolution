@@ -63,3 +63,18 @@ def load_data():
     wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
     return wavelengths, Ed, Lw, R_rs
+
+def bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, data):
+    result = np.array([bandaverage_multi(wavelengths_sensor, response, wavelengths_data, data) for response in responses_sensor])
+    return result
+
+def calculate_differences(wavelengths_sensor, responses_sensor, wavelengths_data, Ed, Lw, R_rs):
+    reflectance_space = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, R_rs)
+    mean_Lw = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Lw)
+    mean_Ed = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Ed)
+    radiance_space = mean_Lw / mean_Ed
+
+    difference_absolute = reflectance_space - radiance_space
+    difference_relative = 100 * difference_absolute / radiance_space
+
+    return difference_absolute, difference_relative

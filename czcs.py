@@ -4,7 +4,7 @@ Generate boxcar and gaussian spectral response functions
 
 import numpy as np
 from matplotlib import pyplot as plt
-from bandaveraging import bandaverage_multi, plot_bands, load_data
+from bandaveraging import plot_bands, load_data, calculate_differences
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
@@ -16,10 +16,7 @@ colours = ["xkcd:dark blue", "xkcd:lime green", "xkcd:forest green", "xkcd:dark 
 
 plot_bands(wavelengths_czcs, responses, band_labels=band_labels, colours=colours, sensor_label="CZCS")
 
-reflectance_space = np.array([bandaverage_multi(wavelengths_czcs, response, wavelengths_data, R_rs) for response in responses])
-radiance_space = np.array([bandaverage_multi(wavelengths_czcs, response, wavelengths_data, Lw) for response in responses]) / np.array([bandaverage_multi(wavelengths_czcs, response, wavelengths_data, Ed) for response in responses])
-difference_absolute = reflectance_space - radiance_space
-difference_relative = 100*difference_absolute / radiance_space
+difference_absolute, difference_relative = calculate_differences(wavelengths_czcs, responses, wavelengths_data, Ed, Lw, R_rs)
 
 for difference_set, unit, label in zip([difference_absolute, difference_relative], ["sr$^{-1}$", "%"], ["abs", "rel"]):
     lower_percentile = np.nanpercentile(difference_set, 15.9, axis=1)
