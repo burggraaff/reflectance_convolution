@@ -51,12 +51,17 @@ def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_la
     plt.show()
     plt.close()
 
-def load_data():
+def load_data_full():
     data_norcohab = read("data/norcohab_processed.tab")
     data_archemhab = read("data/archemhab_processed.tab")
 
     data_all = table.vstack([data_norcohab, data_archemhab])
-    data_all = data_norcohab
+#    data_all = data_norcohab
+
+    return data_all
+
+def load_data():
+    data_all = load_data_full()
 
     wavelengths, Ed = split_spectrum(data_all, "Ed")
     wavelengths, Lw = split_spectrum(data_all, "Lw")
