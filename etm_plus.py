@@ -8,10 +8,10 @@ from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplo
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-bands = [1,2,3,4,8]
+bands = [1,2,3,4]
 band_labels = [f"ETM+\nband {band}" for band in bands]
 responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
-colours = ["b", "g", "r", "xkcd:dark red", "k"]
+colours = ["b", "g", "r", "xkcd:dark red"]
 
 for response, band, colour in zip(responses, bands, colours):
     plt.plot(response[0], response[1], label=f"ETM+ band {band}", c=colour)

@@ -8,9 +8,9 @@ from matplotlib import pyplot as plt
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-band_labels = ["CA", "Blue", "Green", "Red", "NIR", "Pan"]
+band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
 responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_labels]
-colours = ["xkcd:dark blue", "xkcd:blue", "xkcd:green", "xkcd:red", "xkcd:dark brown", "k"]
+colours = ["xkcd:dark blue", "xkcd:blue", "xkcd:green", "xkcd:red", "xkcd:dark brown"]
 
 for response, band, colour in zip(responses, band_labels, colours):
     plt.plot(response[0], response[1], label=f"OLI band {band}", c=colour)
