@@ -14,7 +14,10 @@ for wvl in wavelengths:
     Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", f"Ed_{wvl}")
     Ed[f"Ed_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer)
 
-    Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", f"Lu_{wvl}")
+    try:  # mu gets properly loaded on Linux
+        Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", f"Lu_{wvl}")
+    except KeyError: # but not on Windows
+        Lu.rename_column(f"Lu_{wvl} [ÂµW/cm**2/nm/sr]", f"Lu_{wvl}")
     Lu[f"Lu_{wvl}"].unit = u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian)
     Lu[f"Lu_{wvl}"] = Lu[f"Lu_{wvl}"].to(u.watt / (u.meter**2 * u.nanometer * u.steradian))
 
