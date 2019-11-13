@@ -31,7 +31,7 @@ for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     Lw = R_rs * Es
 
     data[Es_k].unit = u.microwatt / (u.cm**2 * u.nm)
-    data.rename_column(Es_k, f"Es_{wavelength:.1f}")
+    data.rename_column(Es_k, f"Ed_{wavelength:.1f}")
 
     data[R_rs_k].unit = 1 / u.steradian
     data.rename_column(R_rs_k, f"R_rs_{wavelength:.1f}")
@@ -52,7 +52,6 @@ m.drawcoastlines()
 m.drawparallels(np.arange(-90, 95, 15), labels=[1,1,0,0])
 m.drawmeridians(np.arange(-180, 180, 30), labels=[0,0,1,1])
 
-
 m.scatter(data["lon"], data["lat"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
 plt.savefig("Tara_ocean_map.pdf")
@@ -64,7 +63,7 @@ wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
 fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
 
 for row in data:
-    spec_Es = [row[key] for key in data.keys() if "Es" in key]
+    spec_Es = [row[key] for key in data.keys() if "Ed" in key]
     spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
     spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
 
