@@ -73,11 +73,13 @@ for row in data:
 for ax, label in zip(axs.ravel(), ["$E_s$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
+    if ax.get_ylim()[0] > 0:
+        ax.set_ylim(ymin=0)
 
 axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(345, 805)
 
-axs[0].set_title("Tara Mediterranean spectra")
+axs[0].set_title(f"Tara Mediterranean spectra ({len(data)})")
 plt.savefig("Tara_med_spectra.pdf")
 plt.show()
 plt.close()
