@@ -31,11 +31,22 @@ for wvl in wavelengths:
     Lw = combined_table[f"Lu_{wvl}"] - 0.028 * combined_table[f"Ls_{wvl}"]
     Lw.name = f"Lw_{wvl}"
     combined_table.add_column(Lw)
+
+Lw_keys_NIR = [key for key in combined_table.keys() if "Lw_8" in key]
+NIR_mean = np.mean([combined_table[key] for key in Lw_keys_NIR], axis=0)
+combined_table.add_column(table.Column(data=NIR_mean, name="offset"))
+for key in combined_table.keys():
+    if "Lw" in key:
+        combined_table[key] = combined_table[key] - combined_table["offset"]
+
+remove_indices = [i for i, row in enumerate(combined_table) if row["Lw_400"] < 0]
+combined_table.remove_rows(remove_indices)
+
+for wvl in wavelengths:
     R_rs = combined_table[f"Lw_{wvl}"] / combined_table[f"Ed_{wvl}"]
     R_rs.name = f"R_rs_{wvl}"
     R_rs.unit = 1 / u.steradian
     combined_table.add_column(R_rs)
-
 
 # Plot map of observations
 fig = plt.figure(figsize=(10, 7.5), tight_layout=True)
@@ -73,7 +84,7 @@ for ax, label in zip(axs.ravel(), ["$L_u$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]
 axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(320, 950)
 
-axs[0].set_title("NORCOHAB spectra")
+axs[0].set_title(f"NORCOHAB spectra ({len(combined_table)})")
 plt.savefig("NORCOHAB_spectra.pdf")
 plt.show()
 plt.close()
