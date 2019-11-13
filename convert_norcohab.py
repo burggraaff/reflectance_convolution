@@ -32,21 +32,14 @@ for wvl in wavelengths:
     Lw.name = f"Lw_{wvl}"
     combined_table.add_column(Lw)
 
-Lw_keys_NIR = [key for key in combined_table.keys() if "Lw_8" in key]
-NIR_mean = np.mean([combined_table[key] for key in Lw_keys_NIR], axis=0)
-combined_table.add_column(table.Column(data=NIR_mean, name="offset"))
-for key in combined_table.keys():
-    if "Lw" in key:
-        combined_table[key] = combined_table[key] - combined_table["offset"]
-
-remove_indices = [i for i, row in enumerate(combined_table) if row["Lw_400"] < 0]
-combined_table.remove_rows(remove_indices)
-
 for wvl in wavelengths:
     R_rs = combined_table[f"Lw_{wvl}"] / combined_table[f"Ed_{wvl}"]
     R_rs.name = f"R_rs_{wvl}"
     R_rs.unit = 1 / u.steradian
     combined_table.add_column(R_rs)
+
+remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
+combined_table.remove_rows(remove_indices)
 
 # Plot map of observations
 fig = plt.figure(figsize=(10, 7.5), tight_layout=True)
