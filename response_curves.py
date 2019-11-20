@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
 class Sensor(object):
     def __init__(self, name, band_labels, colours, response_wavelengths, responses):
@@ -12,6 +13,27 @@ class Sensor(object):
 
     def __repr__(self):
         return self.name + " (bands: " + ", ".join(self.band_labels) + ")"
+
+    def plot(self, ax=None, saveto=None):
+        if ax is None:
+            fig, ax = plt.subplots()
+            if saveto is None:
+                saveto = f"results/{self.name}_bands.pdf"
+
+        for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
+            ax.plot(wavelengths, response, label=label, c=colour)
+        ax.set_xlim(380, 900)
+        ax.set_ylim(0, 1.01)
+        ax.set_xlabel("Wavelength [nm]")
+        ax.set_ylabel("Relative response")
+        ax.set_title(self.name)
+        ax.legend(loc="best")
+        ax.grid(ls="--", color="0.5")
+
+        if saveto is not None:
+            plt.savefig(saveto)
+            plt.show()
+            plt.close()
 
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
