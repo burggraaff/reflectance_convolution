@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import bandaveraging as ba
 
 class Sensor(object):
     def __init__(self, name, band_labels, colours, response_wavelengths, responses):
@@ -34,6 +35,17 @@ class Sensor(object):
             plt.savefig(saveto)
             plt.show()
             plt.close()
+
+    def band_average(self, *args, **kwargs):
+        result = np.array([ba.bandaverage_multi(wvl, response, *args, **kwargs) for wvl, response in zip(self.wavelengths, self.responses)])
+        return result
+
+    def boxplot_relative(self, *args, **kwargs):
+        ba.boxplot_relative(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+
+    def boxplot_absolute(self, *args, **kwargs):
+        ba.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+
 
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
