@@ -201,6 +201,7 @@ def load_SPECTACLE():
         responses_proc = np.vstack([np.interp(wavelengths_spectacle, wavelengths_raw, response_raw) for response_raw in responses_raw])
         responses.extend(responses_proc)
     responses = np.vstack(responses)
+    responses = responses / responses.max(axis=1)[:,np.newaxis]
     response_wavelengths = [wavelengths_spectacle for band in band_labels]
 
     SPECTACLE = Sensor("SPECTACLE", band_labels, colours, response_wavelengths, responses)
