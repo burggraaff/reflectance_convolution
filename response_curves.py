@@ -8,6 +8,7 @@ class Sensor(object):
 
         assert len(band_labels) == len(colours) == len(response_wavelengths) == len(responses)
         self.band_labels = band_labels
+        self.sensor_band_labels = [self.name + " " + label for label in self.band_labels]
         self.colours = colours
         self.responses = responses
         self.wavelengths = response_wavelengths
@@ -23,7 +24,7 @@ class Sensor(object):
 
         for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
             ax.plot(wavelengths, response, label=label, c=colour)
-        ax.set_xlim(380, 900)
+        ax.set_xlim(380, 925)
         ax.set_ylim(0, 1.01)
         ax.set_xlabel("Wavelength [nm]")
         ax.set_ylabel("Relative response")
@@ -57,3 +58,15 @@ def load_OLI():
     OLI = Sensor("OLI", band_labels, colours, response_wavelengths, responses)
 
     return OLI
+
+def load_ETM_plus():
+    bands = [1,2,3,4]
+    band_labels = [f"ETM+\nband {band}" for band in bands]
+    responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
+    response_wavelengths = [r[0] for r in responses]
+    responses = [r[1] for r in responses]
+    colours = ["b", "g", "r", "xkcd:dark red"]
+
+    ETM_plus = Sensor("ETM+", band_labels, colours, response_wavelengths, responses)
+
+    return ETM_plus
