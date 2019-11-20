@@ -36,7 +36,7 @@ class Sensor(object):
             ax.set_xlabel("Wavelength [nm]")
             ax.set_ylabel("Relative response")
             ax.legend(loc="best")
-        ax.set_title(self.name)
+            ax.set_title(self.name)
         ax.set_yticks([0,0.25,0.5,0.75,1])
         ax.grid(ls="--", color="0.5")
 
