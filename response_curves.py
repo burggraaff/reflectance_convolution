@@ -49,7 +49,6 @@ class Sensor(object):
     def boxplot_absolute(self, *args, **kwargs):
         ba.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
-
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
     responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_labels]
@@ -201,3 +200,5 @@ def load_SPECTACLE():
     SPECTACLE = Sensor("SPECTACLE", band_labels, colours, response_wavelengths, responses)
 
     return SPECTACLE
+
+functions = ([load_OLI, load_ETM_plus, load_VIIRS, load_SeaWiFS, load_Sentinel2A, load_Sentinel2B, load_MODISA, load_MODIST, load_CZCS, load_OLCIA, load_OLCIB, load_SPECTACLE])
