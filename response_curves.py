@@ -72,7 +72,7 @@ def load_ETM_plus():
     responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
     response_wavelengths = [r[0] for r in responses]
     responses = [r[1] for r in responses]
-    colours = ["b", "g", "r", "xkcd:dark red"]
+    colours = ["b", "g", "r", "k"]
 
     ETM_plus = Sensor("ETM+", band_labels, colours, response_wavelengths, responses)
 
