@@ -2,20 +2,19 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-import numpy as np
-from bandaveraging import plot_bands, load_data, calculate_differences, boxplot_absolute, boxplot_relative
+from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
+import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-band_labels = [f"{wvl} nm" for wvl in [443, 520, 550, 670]]
-wavelengths_czcs, *responses = np.loadtxt("spectral_response/CZCS_RSRs.txt", skiprows=56, unpack=True)
-responses = np.array(responses)
-responses[responses < 0] = 0
-colours = ["xkcd:dark blue", "xkcd:lime green", "xkcd:forest green", "xkcd:dark red"]
+CZCS = rc.load_CZCS()
 
-plot_bands(wavelengths_czcs, responses, band_labels=band_labels, colours=colours, sensor_label="CZCS")
+CZCS.plot()
 
-difference_absolute, difference_relative = calculate_differences(wavelengths_czcs, responses, wavelengths_data, Ed, Lw, R_rs)
+reflectance_space = CZCS.band_average(wavelengths_data, R_rs)
+radiance_space = CZCS.band_average(wavelengths_data, Lw) / CZCS.band_average(wavelengths_data, Ed)
+difference_absolute = reflectance_space - radiance_space
+difference_relative = 100*difference_absolute / radiance_space
 
-boxplot_relative(difference_relative, colours=colours, band_labels=band_labels, sensor_label="CZCS")
-boxplot_absolute(difference_absolute, colours=colours, band_labels=band_labels, sensor_label="CZCS")
+CZCS.boxplot_relative(difference_relative)
+CZCS.boxplot_absolute(difference_absolute)

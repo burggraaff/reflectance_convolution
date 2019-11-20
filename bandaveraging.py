@@ -52,11 +52,13 @@ def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_la
     plt.close()
 
 def load_data_full():
-    data_norcohab = read("data/norcohab_processed.tab")
-    data_archemhab = read("data/archemhab_processed.tab")
+#    data_norcohab = read("data/norcohab_processed.tab")
+#    data_archemhab = read("data/archemhab_processed.tab")
 
-    data_all = table.vstack([data_norcohab, data_archemhab])
+#    data_all = table.vstack([data_norcohab, data_archemhab])
 #    data_all = data_norcohab
+
+    data_all = read("data/tara_med_processed.tab")
 
     return data_all
 
@@ -102,7 +104,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
-    plt.title(sensor_label)
+    plt.title("Tara Med.: "+sensor_label)
     plt.grid(ls="--", color="0.5")
 
     xlim = plt.xlim()
@@ -112,7 +114,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
         plt.xlim(xmax=0)
 
     plt.tight_layout()
-    plt.savefig(f"results/{sensor_label}_{label}.pdf")
+    plt.savefig(f"results/Tara_med/{sensor_label}_{label}.pdf")
     plt.show()
     plt.close()
 

@@ -2,20 +2,19 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-import numpy as np
-from bandaveraging import plot_bands, load_data, calculate_differences, boxplot_absolute, boxplot_relative
+from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
+import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-band_labels = [f"M{j}" for j in np.arange(1,7)]
-wavelengths_viirs, *responses_raw = np.loadtxt("spectral_response/VIIRSN_IDPSv3_RSRs.txt", skiprows=5, unpack=True, usecols=np.arange(7))
-responses_raw = np.array(responses_raw)
-responses = responses_raw / responses_raw.max(axis=1)[:, np.newaxis]
-colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:forest green", "xkcd:dark red", "k"]
+VIIRS = rc.load_VIIRS()
 
-plot_bands(wavelengths_viirs, responses, band_labels=band_labels, colours=colours, sensor_label="VIIRS")
+VIIRS.plot()
 
-difference_absolute, difference_relative = calculate_differences(wavelengths_viirs, responses, wavelengths_data, Ed, Lw, R_rs)
+reflectance_space = VIIRS.band_average(wavelengths_data, R_rs)
+radiance_space = VIIRS.band_average(wavelengths_data, Lw) / VIIRS.band_average(wavelengths_data, Ed)
+difference_absolute = reflectance_space - radiance_space
+difference_relative = 100*difference_absolute / radiance_space
 
-boxplot_relative(difference_relative, colours=colours, band_labels=band_labels, sensor_label="VIIRS")
-boxplot_absolute(difference_absolute, colours=colours, band_labels=band_labels, sensor_label="VIIRS")
+VIIRS.boxplot_relative(difference_relative)
+VIIRS.boxplot_absolute(difference_absolute)

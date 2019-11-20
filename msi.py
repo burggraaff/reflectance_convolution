@@ -2,21 +2,19 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-import numpy as np
-from bandaveraging import plot_bands, load_data, calculate_differences, boxplot_absolute, boxplot_relative
+from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
+import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-for sat, filename in zip(["A", "B"], ["spectral_response/MSI/MSI_S2A.txt", "spectral_response/MSI/MSI_S2B.txt"]):
-    satellite_label = f"Sentinel-2{sat}"
-    band_labels = [f"B{nr}" for nr in range(1,8)]
-    wavelengths_msi, *responses = np.loadtxt(filename, skiprows=1, unpack=True)
-    responses = np.array([responses])[0]
-    colours = ["xkcd:blue", "xkcd:cyan", "xkcd:green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
+for func in [rc.load_Sentinel2A, rc.load_Sentinel2B]:
+    sensor = func()
+    sensor.plot()
 
-    plot_bands(wavelengths_msi, responses, band_labels=band_labels, colours=colours, sensor_label=satellite_label)
+    reflectance_space = sensor.band_average(wavelengths_data, R_rs)
+    radiance_space = sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)
+    difference_absolute = reflectance_space - radiance_space
+    difference_relative = 100*difference_absolute / radiance_space
 
-    difference_absolute, difference_relative = calculate_differences(wavelengths_msi, responses, wavelengths_data, Ed, Lw, R_rs)
-
-    boxplot_relative(difference_relative, colours=colours, band_labels=band_labels, sensor_label=satellite_label)
-    boxplot_absolute(difference_absolute, colours=colours, band_labels=band_labels, sensor_label=satellite_label)
+    sensor.boxplot_relative(difference_relative)
+    sensor.boxplot_absolute(difference_absolute)
