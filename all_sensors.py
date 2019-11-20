@@ -2,13 +2,27 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
+from bandaveraging import load_data
+from matplotlib import pyplot as plt
 import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-for func in rc.functions:
-    sensor = func()
+sensors = [func() for func in rc.functions]
+
+# plot all response curves
+fig, axs = plt.subplots(nrows=len(sensors), sharex=True, sharey=True, tight_layout=True, figsize=(3, 15))
+for sensor, ax in zip(sensors, axs):
+    sensor.plot(ax)
+
+for ax in axs[:-1]:
+    ax.tick_params(bottom=False, labelbottom=False)
+axs[-1].set_xlabel("Wavelength [nm]")
+plt.savefig("results/all_bands.pdf")
+plt.show()
+plt.close()
+
+for sensor in sensors:
     sensor.plot()
 
     reflectance_space = sensor.band_average(wavelengths_data, R_rs)

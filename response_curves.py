@@ -24,14 +24,20 @@ class Sensor(object):
             if saveto is None:
                 saveto = f"results/{self.name}_bands.pdf"
 
+            independent = True
+        else:
+            independent = False
+
         for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
             ax.plot(wavelengths, response, label=label, c=colour)
         ax.set_xlim(380, 925)
         ax.set_ylim(0, 1.01)
-        ax.set_xlabel("Wavelength [nm]")
-        ax.set_ylabel("Relative response")
+        if independent:
+            ax.set_xlabel("Wavelength [nm]")
+            ax.set_ylabel("Relative response")
+            ax.legend(loc="best")
         ax.set_title(self.name)
-        ax.legend(loc="best")
+        ax.set_yticks([0,0.25,0.5,0.75,1])
         ax.grid(ls="--", color="0.5")
 
         if saveto is not None:
@@ -62,7 +68,7 @@ def load_OLI():
 
 def load_ETM_plus():
     bands = [1,2,3,4]
-    band_labels = [f"ETM+\nband {band}" for band in bands]
+    band_labels = ["Blue", "Green", "Red", "NIR"]
     responses = [np.loadtxt(f"spectral_response/ETM+/spectral_b{x}.dat", skiprows=3, unpack=True) for x in bands]
     response_wavelengths = [r[0] for r in responses]
     responses = [r[1] for r in responses]
