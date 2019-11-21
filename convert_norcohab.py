@@ -8,38 +8,30 @@ from astropy import units as u
 Ed = read("data/NORCOHAB/HE302_irrad.tab", data_start=186, header_start=185)
 Lu = read("data/NORCOHAB/HE302_rad.tab", data_start=186, header_start=185)
 Ls = read("data/NORCOHAB/HE302_ssr.tab", data_start=186, header_start=185)
+Rrs = read("data/NORCOHAB/HE302_rrs.tab", data_start=186, header_start=185)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:
     Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", f"Ed_{wvl}")
     Ed[f"Ed_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer)
 
-    try:  # mu gets properly loaded on Linux
-        Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", f"Lu_{wvl}")
-    except KeyError: # but not on Windows
-        Lu.rename_column(f"Lu_{wvl} [ÂµW/cm**2/nm/sr]", f"Lu_{wvl}")
-    Lu[f"Lu_{wvl}"].unit = u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian)
-    Lu[f"Lu_{wvl}"] = Lu[f"Lu_{wvl}"].to(u.watt / (u.meter**2 * u.nanometer * u.steradian))
+    Rrs.rename_column(f"Rrs_{wvl} [1/sr]", f"R_rs_{wvl}")
+    Rrs[f"R_rs_{wvl}"].unit = 1 / u.steradian
 
-    Ls.rename_column(f"Ls_{wvl} [W/m**2/nm/sr]", f"Ls_{wvl}")
-    Ls[f"Ls_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
-
-combined_table = table.join(Ed, Lu, keys=["Event"])
-combined_table = table.join(combined_table, Ls, keys=["Event"])
+combined_table = table.join(Ed, Rrs, keys=["Event"])
 
 for wvl in wavelengths:
-    Lw = combined_table[f"Lu_{wvl}"] - 0.028 * combined_table[f"Ls_{wvl}"]
+    Lw = combined_table[f"Ed_{wvl}"] * combined_table[f"R_rs_{wvl}"]
     Lw.name = f"Lw_{wvl}"
+    Lw.unit = u.watt / (u.meter**2 * u.nanometer)
     combined_table.add_column(Lw)
-
-for wvl in wavelengths:
-    R_rs = combined_table[f"Lw_{wvl}"] / combined_table[f"Ed_{wvl}"]
-    R_rs.name = f"R_rs_{wvl}"
-    R_rs.unit = 1 / u.steradian
-    combined_table.add_column(R_rs)
 
 remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
 combined_table.remove_rows(remove_indices)
+
+for key in ["Date/Time", "Latitude", "Longitude", "Altitude [m]"]:
+    combined_table.rename_column(f"{key}_1", key)
+    combined_table.remove_column(f"{key}_2")
 
 # Plot map of observations
 fig = plt.figure(figsize=(10, 7.5), tight_layout=True)
@@ -58,19 +50,17 @@ plt.savefig("NORCOHAB_map.pdf")
 plt.show()
 
 # Plot all Ed, Lu, Lsky, Lw, R_rs spectra
-fig, axs = plt.subplots(nrows=5, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,10))
+fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,10))
 
 for row in combined_table:
-    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_Lu = [row[f"Lu_{wvl}"] for wvl in wavelengths]
-    spec_Ls = [row[f"Ls_{wvl}"] for wvl in wavelengths]
     spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
+    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
     spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
 
-    for ax, spec in zip(axs.ravel(), [spec_Lu, spec_Ls, spec_Ed, spec_Lw, spec_R_rs]):
+    for ax, spec in zip(axs.ravel(), [spec_Lw, spec_Ed, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.15, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$L_u$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$L_{sky}$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$E_d$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$L_w$ [W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$E_d$ [W cm$^{-2}$ nm$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 
@@ -82,7 +72,6 @@ plt.savefig("NORCOHAB_spectra.pdf")
 plt.show()
 plt.close()
 
-combined_table.remove_columns(["Date/Time_1", "Latitude_1", "Longitude_1", "Altitude [m]_1", "Date/Time_2", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
 combined_table.write("data/norcohab_processed.tab", format="ascii.fast_tab", overwrite=True)
 
 wavelengths_interp = np.arange(380, 800.5, 0.5)
