@@ -100,6 +100,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
     if colours is None:
         colours = ["k"] * len(data)
 
+    plt.figure(figsize=(5, data.shape[1]//3), tight_layout=True)
     bplot = plt.boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
