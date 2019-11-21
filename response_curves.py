@@ -208,4 +208,4 @@ def load_SPECTACLE():
 
     return SPECTACLE
 
-functions = ([load_OLI, load_ETM_plus, load_VIIRS, load_SeaWiFS, load_Sentinel2A, load_Sentinel2B, load_MODISA, load_MODIST, load_CZCS, load_OLCIA, load_OLCIB, load_SPECTACLE])
+functions = ([load_ETM_plus, load_OLI, load_CZCS, load_SeaWiFS, load_MODISA, load_MODIST, load_VIIRS, load_Sentinel2A, load_Sentinel2B, load_OLCIA, load_OLCIB, load_SPECTACLE])
