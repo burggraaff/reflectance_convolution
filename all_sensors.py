@@ -2,9 +2,10 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from bandaveraging import load_data
+from bandaveraging import load_data, boxplot_relative, boxplot_absolute
 from matplotlib import pyplot as plt
 import response_curves as rc
+import numpy as np
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
@@ -25,13 +26,19 @@ plt.savefig("results/all_bands.pdf")
 plt.show()
 plt.close()
 
-for sensor in sensors:
-    sensor.plot()
+reflectance_space = np.vstack([sensor.band_average(wavelengths_data, R_rs) for sensor in sensors])
+radiance_space = np.vstack([sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)  for sensor in sensors])
 
-    reflectance_space = sensor.band_average(wavelengths_data, R_rs)
-    radiance_space = sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)
-    difference_absolute = reflectance_space - radiance_space
-    difference_relative = 100*difference_absolute / radiance_space
+difference_absolute = reflectance_space - radiance_space
+difference_relative = 100*difference_absolute / radiance_space
 
-    sensor.boxplot_relative(difference_relative)
-    sensor.boxplot_absolute(difference_absolute)
+labels = [sensor.sensor_band_labels for sensor in sensors]
+labels = [label for sublist in labels for label in sublist]
+
+colours = [sensor.colours for sensor in sensors]
+colours = [colour for sublist in colours for colour in sublist]
+
+boxplot_relative(difference_relative, band_labels=labels, colours=colours, sensor_label="")
+
+#sensor.boxplot_relative(difference_relative)
+#sensor.boxplot_absolute(difference_absolute)
