@@ -5,10 +5,10 @@ from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 
-Ed = read("data/NORCOHAB/HE302_irrad.tab", data_start=186, header_start=185)
-Lu = read("data/NORCOHAB/HE302_rad.tab", data_start=186, header_start=185)
-Ls = read("data/NORCOHAB/HE302_ssr.tab", data_start=186, header_start=185)
-Rrs = read("data/NORCOHAB/HE302_rrs.tab", data_start=186, header_start=185)
+Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
+Lu = read("data/HE302/HE302_rad.tab", data_start=186, header_start=185)
+Ls = read("data/HE302/HE302_ssr.tab", data_start=186, header_start=185)
+Rrs = read("data/HE302/HE302_rrs.tab", data_start=186, header_start=185)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:

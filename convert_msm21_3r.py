@@ -5,9 +5,9 @@ from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 
-Ed = read("data/ARCHEMHAB/MSM21_3_Ed-5nm.tab", data_start=142, header_start=141)
-Lu = read("data/ARCHEMHAB/MSM21_3_Lsfc-5nm.tab", data_start=142, header_start=141)
-Ls = read("data/ARCHEMHAB/MSM21_3_Lsky-5nm.tab", data_start=141, header_start=140)
+Ed = read("data/MSM21_3/MSM21_3_Ed-5nm.tab", data_start=142, header_start=141)
+Lu = read("data/MSM21_3/MSM21_3_Lsfc-5nm.tab", data_start=142, header_start=141)
+Ls = read("data/MSM21_3/MSM21_3_Lsky-5nm.tab", data_start=141, header_start=140)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:
