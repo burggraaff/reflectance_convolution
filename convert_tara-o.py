@@ -77,7 +77,7 @@ for ax, label in zip(axs.ravel(), ["$E_s$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ 
 axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(400, 750)
 
-axs[0].set_title("Tara-O spectra")
+axs[0].set_title(f"Tara-O spectra ({len(data)})")
 plt.savefig("spectra_Tara-O.pdf")
 plt.show()
 plt.close()
