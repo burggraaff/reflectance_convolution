@@ -41,9 +41,9 @@ remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
 
-remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_800"] >= 0.003]
+remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
 combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(800 nm) >= 0.003")
+print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
 
 # Plot map of observations
 fig = plt.figure(figsize=(10, 10), tight_layout=True)
