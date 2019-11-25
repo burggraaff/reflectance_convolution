@@ -56,7 +56,7 @@ m.drawcoastlines()
 m.drawparallels(np.arange(55, 75, 5), labels=[1,1,0,0])
 m.drawmeridians(np.arange(-60, -5, 5), labels=[0,0,1,1])
 
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60)
+m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
 plt.savefig("map_MSM21_3R.pdf")
 plt.show()

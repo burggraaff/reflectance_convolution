@@ -44,7 +44,7 @@ m.drawcoastlines()
 m.drawparallels(np.arange(40, 70, 2), labels=[1,1,0,0])
 m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
 
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60)
+m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
 plt.savefig("map_HE302.pdf")
 plt.show()
