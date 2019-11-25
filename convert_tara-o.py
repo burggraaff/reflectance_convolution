@@ -6,7 +6,7 @@ from astropy import table
 from astropy import units as u
 from pathlib import Path
 
-folder = Path("data/Tara_Mediterranean/")
+folder = Path("data/Tara-O/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
 
 data = table.vstack([read(file, data_start=35) for file in files])
@@ -44,17 +44,17 @@ for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
 # Plot map of observations
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
 
-m = Basemap(projection='gnom', lat_0=43.5, lon_0=19, llcrnrlon=0, urcrnrlon=40, llcrnrlat=30, urcrnrlat=44, resolution="h")
+m = Basemap(projection='moll', lon_0=0, resolution="i")
 m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
 m.drawmapboundary(fill_color="#DDEEFF")
 m.drawcoastlines()
 
-m.drawparallels(np.arange(30, 50, 2.5), labels=[1,1,0,0])
-m.drawmeridians(np.arange(0, 45, 5), labels=[0,0,1,1])
+m.drawparallels(np.arange(-90, 95, 15), labels=[1,1,0,0])
+m.drawmeridians(np.arange(-180, 180, 30), labels=[0,0,1,1])
 
-m.scatter(data["lon"], data["lat"], latlon=True, c="r", edgecolors="k", s=60)
+m.scatter(data["lon"], data["lat"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
-plt.savefig("Tara_med_map.pdf")
+plt.savefig("map_Tara-O.pdf")
 plt.show()
 
 # Plot all Es, Lw, R_rs spectra
@@ -73,15 +73,13 @@ for row in data:
 for ax, label in zip(axs.ravel(), ["$E_s$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
-    if ax.get_ylim()[0] > 0:
-        ax.set_ylim(ymin=0)
 
 axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(345, 805)
+axs[-1].set_xlim(400, 750)
 
-axs[0].set_title(f"Tara Mediterranean spectra ({len(data)})")
-plt.savefig("Tara_med_spectra.pdf")
+axs[0].set_title("Tara-O spectra")
+plt.savefig("spectra_Tara-O.pdf")
 plt.show()
 plt.close()
 
-data.write("data/tara_med_processed.tab", format="ascii.fast_tab", overwrite=True)
+data.write("data/tara-o_processed.tab", format="ascii.fast_tab", overwrite=True)
