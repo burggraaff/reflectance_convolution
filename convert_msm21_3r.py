@@ -36,6 +36,15 @@ for wvl in wavelengths:
     R_rs.unit = 1 / u.steradian
     combined_table.add_column(R_rs)
 
+R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
+remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -0.001 for key in R_rs_keys)]
+combined_table.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with negative values")
+
+remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_800"] >= 0.003]
+combined_table.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with values of R_rs(800 nm) >= 0.003")
+
 # Plot map of observations
 fig = plt.figure(figsize=(10, 10), tight_layout=True)
 
@@ -49,7 +58,7 @@ m.drawmeridians(np.arange(-60, -5, 5), labels=[0,0,1,1])
 
 m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60)
 
-plt.savefig("ARCHEMHAB_map.pdf")
+plt.savefig("map_MSM21_3R.pdf")
 plt.show()
 
 # Plot all Ed, Lu, Ls, R_rs spectra
@@ -62,7 +71,7 @@ for row in combined_table:
     spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
 
     for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lu, spec_Ls, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.02, zorder=1)
+        ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
 
 for ax, label in zip(axs.ravel(), ["$E_d$ [W m$^{-2}$ nm$^{-1}$]", "$L_u$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$L_s$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
     ax.set_ylabel(label)
@@ -78,10 +87,10 @@ axs[1,0].set_xlabel("Wavelength [nm]")
 axs[1,1].set_xlabel("Wavelength [nm]")
 axs[0,0].set_xlim(320, 950)
 
-fig.suptitle("ARCHEMHAB spectra")
-plt.savefig("ARCHEMHAB_spectra.pdf")
+fig.suptitle(f"MSM21_3R spectra ({len(combined_table)})")
+plt.savefig("spectra_MSM21_3.pdf")
 plt.show()
 plt.close()
 
 combined_table.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-combined_table.write("data/archemhab_processed.tab", format="ascii.fast_tab", overwrite=True)
+combined_table.write("data/msm21_3r_processed.tab", format="ascii.fast_tab", overwrite=True)
