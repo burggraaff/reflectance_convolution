@@ -46,7 +46,7 @@ m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
 
 m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60)
 
-plt.savefig("NORCOHAB_map.pdf")
+plt.savefig("map_HE302.pdf")
 plt.show()
 
 # Plot all Ed, Lu, Lsky, Lw, R_rs spectra
@@ -67,12 +67,12 @@ for ax, label in zip(axs.ravel(), ["$L_w$ [W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$
 axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(320, 950)
 
-axs[0].set_title(f"NORCOHAB spectra ({len(combined_table)})")
-plt.savefig("NORCOHAB_spectra.pdf")
+axs[0].set_title(f"HE302 spectra ({len(combined_table)})")
+plt.savefig("spectra_HE302.pdf")
 plt.show()
 plt.close()
 
-combined_table.write("data/norcohab_processed.tab", format="ascii.fast_tab", overwrite=True)
+combined_table.write("data/he302_processed.tab", format="ascii.fast_tab", overwrite=True)
 
 wavelengths_interp = np.arange(380, 800.5, 0.5)
 

@@ -88,7 +88,7 @@ axs[1,1].set_xlabel("Wavelength [nm]")
 axs[0,0].set_xlim(320, 950)
 
 fig.suptitle(f"MSM21_3R spectra ({len(combined_table)})")
-plt.savefig("spectra_MSM21_3.pdf")
+plt.savefig("spectra_MSM21_3R.pdf")
 plt.show()
 plt.close()
 
