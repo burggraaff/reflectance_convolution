@@ -43,9 +43,9 @@ remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
 
-remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] > 0.1 for key in R_rs_keys)]
-combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values > 0.1")
+#remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] > 0.1 for key in R_rs_keys)]
+#combined_table.remove_rows(remove_indices)
+#print(f"Removed {len(remove_indices)} rows with values > 0.1")
 
 remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400.0"] < 0]
 combined_table.remove_rows(remove_indices)
@@ -86,7 +86,7 @@ axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(320, 950)
 
 fig.suptitle(f"SeaSWIR-T spectra ({len(combined_table)})")
-plt.savefig("spectra_SeaSWIR-T.pdf")
+plt.savefig("spectra_SeaSWIR-R.pdf")
 plt.show()
 plt.close()
 
