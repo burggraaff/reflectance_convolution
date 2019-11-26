@@ -91,4 +91,4 @@ plt.show()
 plt.close()
 
 combined_table.remove_columns(["Event_1", "Event_2", "Campaign_1", "Campaign_2", "Station_1", "Station_2"])
-combined_table.write("data/so-p4_processed.tab", format="ascii.fast_tab", overwrite=True)
+combined_table.write("data/seaswir-r_processed.tab", format="ascii.fast_tab", overwrite=True)
