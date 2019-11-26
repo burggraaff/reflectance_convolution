@@ -85,7 +85,7 @@ for ax, label in zip(axs.ravel(), ["$E_d$ [W m$^{-2}$ nm$^{-1}$]", "$L_u$ [W m$^
 axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(320, 950)
 
-fig.suptitle(f"SO-P4 spectra ({len(combined_table)})")
+axs[0].set_title(f"SO-P4 spectra ({len(combined_table)})")
 plt.savefig("spectra_SO-P4.pdf")
 plt.show()
 plt.close()
