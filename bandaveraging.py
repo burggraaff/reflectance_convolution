@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
+import sys
 
 def split_spectrum(data_table, label):
     keys_relevant = [key for key in data_table.keys() if label in key]
@@ -52,14 +53,7 @@ def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_la
     plt.close()
 
 def load_data_full():
-#    data_norcohab = read("data/norcohab_processed.tab")
-#    data_archemhab = read("data/archemhab_processed.tab")
-
-#    data_all = table.vstack([data_norcohab, data_archemhab])
-#    data_all = data_norcohab
-
-    data_all = read("data/tara_med_processed.tab")
-
+    data_all = read(sys.argv[1])
     return data_all
 
 def load_data():
