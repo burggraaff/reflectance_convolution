@@ -58,9 +58,9 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
+    cax.set_ylabel(f"Difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"gauss_map_{absrel}.pdf")
+    plt.savefig(f"results/gauss_map_{absrel}.pdf")
     plt.show()
 
     # contourf plots
@@ -71,9 +71,9 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
+    cax.set_ylabel(f"Difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"gauss_contours_{absrel}.pdf")
+    plt.savefig(f"results/gauss_contours_{absrel}.pdf")
     plt.show()
 
     # contourf plot of absolute differences
@@ -84,7 +84,7 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    cax.set_ylabel(f"Abs. difference (Rad. space - Refl. space, {unit})")
+    cax.set_ylabel(f"Abs. difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"gauss_contours_absolute_{absrel}.pdf")
+    plt.savefig(f"results/gauss_contours_absolute_{absrel}.pdf")
     plt.show()

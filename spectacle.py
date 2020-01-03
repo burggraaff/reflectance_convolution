@@ -7,14 +7,14 @@ import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-ETM_plus = rc.load_ETM_plus()
+SPECTACLE = rc.load_SPECTACLE()
 
-ETM_plus.plot()
+SPECTACLE.plot()
 
-reflectance_space = ETM_plus.band_average(wavelengths_data, R_rs)
-radiance_space = ETM_plus.band_average(wavelengths_data, Lw) / ETM_plus.band_average(wavelengths_data, Ed)
+reflectance_space = SPECTACLE.band_average(wavelengths_data, R_rs)
+radiance_space = SPECTACLE.band_average(wavelengths_data, Lw) / SPECTACLE.band_average(wavelengths_data, Ed)
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-ETM_plus.boxplot_relative(difference_relative)
-ETM_plus.boxplot_absolute(difference_absolute)
+SPECTACLE.boxplot_relative(difference_relative)
+SPECTACLE.boxplot_absolute(difference_absolute)

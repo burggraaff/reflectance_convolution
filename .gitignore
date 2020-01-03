@@ -1,5 +1,6 @@
 data
 spectral_response
+results
 *.pdf
 
 # Byte-compiled / optimized / DLL files

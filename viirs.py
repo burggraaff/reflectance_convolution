@@ -7,14 +7,14 @@ import response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
-ETM_plus = rc.load_ETM_plus()
+VIIRS = rc.load_VIIRS()
 
-ETM_plus.plot()
+VIIRS.plot()
 
-reflectance_space = ETM_plus.band_average(wavelengths_data, R_rs)
-radiance_space = ETM_plus.band_average(wavelengths_data, Lw) / ETM_plus.band_average(wavelengths_data, Ed)
+reflectance_space = VIIRS.band_average(wavelengths_data, R_rs)
+radiance_space = VIIRS.band_average(wavelengths_data, Lw) / VIIRS.band_average(wavelengths_data, Ed)
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-ETM_plus.boxplot_relative(difference_relative)
-ETM_plus.boxplot_absolute(difference_absolute)
+VIIRS.boxplot_relative(difference_relative)
+VIIRS.boxplot_absolute(difference_absolute)
