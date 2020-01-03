@@ -64,7 +64,7 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     plt.show()
 
     # contourf plots
-    im = plt.contourf(gauss_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
+    im = plt.contourf(gauss_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 11), cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     plt.title("Difference for Gaussian responses")
@@ -77,7 +77,7 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     plt.show()
 
     # contourf plot of absolute differences
-    im = plt.contourf(np.abs(gauss_result), vmin=0, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(0, vmax, 25))
+    im = plt.contourf(np.abs(gauss_result), vmin=0, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(0, vmax, 11))
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     plt.title("Absolute difference for Gaussian responses")
