@@ -10,8 +10,11 @@ wavelengths = np.arange(350, 1301, 1)
 Ld = read("data/SeaSWIR/SeaSWIR_ASD_Ldspec.tab", data_start=974, header_start=973)
 Ldkeys = [key for key in Ld.keys() if "Ld" in key]
 for Ldkey, wvl in zip(Ldkeys, wavelengths):
-    Ed = Ld[Ldkey] * np.pi
+    # multiply by pi to convert L to E (integrate over hemisphere)
+    # divide by 1e5 for normalisation to W/m^2/nm (empirical)
+    Ed = Ld[Ldkey] * np.pi / 1e5
     Ed.name = f"Ed_{wvl}"
+    Ed.unit = u.watt / (u.m**2 * u.nm)
     Ld.add_column(Ed)
     Ld.remove_column(Ldkey)
 Ed = Ld
@@ -27,7 +30,7 @@ combined_table = table.join(Ed, Rrs, keys=["Station"])
 for wvl in wavelengths:
     Lw = combined_table[f"R_rs_{wvl}"] * combined_table[f"Ed_{wvl}"]
     Lw.name = f"Lw_{wvl}"
-#    Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
+    Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
     combined_table.add_column(Lw)
 
 for key in combined_table.keys():
