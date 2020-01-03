@@ -47,25 +47,6 @@ def calculate_median_and_errors(differences):
     upper_error = upper_percentile - medians
     return medians, lower_error, upper_error
 
-def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_label=None):
-    if colours is None:
-        colours = ["k"] * len(responses)
-    if band_labels is None:
-        band_labels = [None] * len(responses)
-
-    for response, band_label, colour in zip(responses, band_labels, colours):
-        plt.plot(wavelengths, response, label=band_label, c=colour)
-    plt.xlim(380, 800)
-    plt.ylim(0, 1.01)
-    plt.xlabel("Wavelength [nm]")
-    plt.ylabel("Relative response")
-    plt.title(sensor_label)
-    plt.legend(loc="best")
-    plt.grid(ls="--", color="0.5")
-    plt.savefig(f"results/{sensor_label}_bands.pdf")
-    plt.show()
-    plt.close()
-
 def load_data_full():
     data_all = read(sys.argv[1])
     return data_all
