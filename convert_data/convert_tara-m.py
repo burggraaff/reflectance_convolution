@@ -54,7 +54,7 @@ m.drawmeridians(np.arange(0, 45, 5), labels=[0,0,1,1])
 
 m.scatter(data["lon"], data["lat"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
-plt.savefig("map_Tara-M.pdf")
+plt.savefig("data/plots/map_Tara-M.pdf")
 plt.show()
 
 # Plot all Es, Lw, R_rs spectra
@@ -80,7 +80,7 @@ axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(345, 805)
 
 axs[0].set_title(f"Tara-M spectra ({len(data)})")
-plt.savefig("spectra_Tara-M.pdf")
+plt.savefig("data/plots/spectra_Tara-M.pdf")
 plt.show()
 plt.close()
 

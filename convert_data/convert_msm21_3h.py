@@ -56,7 +56,7 @@ m.drawmeridians(np.arange(-60, -5, 5), labels=[0,0,1,1])
 
 m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
-plt.savefig("map_MSM21_3H.pdf")
+plt.savefig("data/plots/map_MSM21_3H.pdf")
 plt.show()
 
 
@@ -82,7 +82,7 @@ axs[2].set_xlabel("Wavelength [nm]")
 axs[0].set_xlim(360, 800)
 
 axs[0].set_title(f"MSM21_3H spectra ({len(combined_table)})")
-plt.savefig("spectra_MSM21_3H.pdf")
+plt.savefig("data/plots/spectra_MSM21_3H.pdf")
 plt.show()
 plt.close()
 

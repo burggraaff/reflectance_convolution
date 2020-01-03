@@ -62,7 +62,7 @@ m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
 
 m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
-plt.savefig("map_SO-P4.pdf")
+plt.savefig("data/plots/map_SO-P4.pdf")
 plt.show()
 
 # Plot all Ed, Lu, Ls, R_rs spectra
@@ -86,7 +86,7 @@ axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(320, 950)
 
 axs[0].set_title(f"SO-P4 spectra ({len(combined_table)})")
-plt.savefig("spectra_SO-P4.pdf")
+plt.savefig("data/plots/spectra_SO-P4.pdf")
 plt.show()
 plt.close()
 
