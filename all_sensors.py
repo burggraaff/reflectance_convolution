@@ -2,7 +2,7 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from bandaveraging import load_data, boxplot_relative, boxplot_absolute
+from bandaveraging import load_data, boxplot_relative, boxplot_absolute, calculate_differences
 from matplotlib import pyplot as plt
 import response_curves as rc
 import numpy as np
@@ -29,8 +29,7 @@ plt.close()
 reflectance_space = np.vstack([sensor.band_average(wavelengths_data, R_rs) for sensor in sensors])
 radiance_space = np.vstack([sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)  for sensor in sensors])
 
-difference_absolute = reflectance_space - radiance_space
-difference_relative = 100*difference_absolute / radiance_space
+difference_absolute, difference_relative = calculate_differences(reflectance_space, radiance_space)
 
 labels = [sensor.sensor_band_labels for sensor in sensors]
 labels = [label for sublist in labels for label in sublist]
