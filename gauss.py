@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from astropy.io.ascii import read
 from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from bandaveraging import split_spectrum, bandaverage_multi
+from sba.bandaveraging import split_spectrum, bandaverage_multi
 
 wavelengths_band = np.arange(320, 800, 0.1)
 

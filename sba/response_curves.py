@@ -1,7 +1,7 @@
 import xarray as xr
 import numpy as np
 from matplotlib import pyplot as plt
-import bandaveraging as ba
+from . import bandaveraging as ba
 from pathlib import Path
 
 class Sensor(object):

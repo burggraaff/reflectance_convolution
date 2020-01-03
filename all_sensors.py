@@ -2,9 +2,9 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from bandaveraging import load_data, boxplot_relative, boxplot_absolute, calculate_differences
+from sba.bandaveraging import load_data, boxplot_relative, boxplot_absolute, calculate_differences
 from matplotlib import pyplot as plt
-import response_curves as rc
+import sba.response_curves as rc
 import numpy as np
 
 wavelengths_data, Ed, Lw, R_rs = load_data()

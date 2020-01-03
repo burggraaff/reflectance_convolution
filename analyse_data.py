@@ -1,5 +1,5 @@
 import numpy as np
-from bandaveraging import split_spectrum, load_data_full
+from sba.bandaveraging import split_spectrum, load_data_full
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
 

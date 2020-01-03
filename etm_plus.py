@@ -2,8 +2,8 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
-import response_curves as rc
+from sba.bandaveraging import load_data, bandaverage_multi, boxplot_absolute, boxplot_relative
+import sba.response_curves as rc
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
 
