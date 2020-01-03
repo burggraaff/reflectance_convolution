@@ -34,9 +34,6 @@ R_rs_keys = [key for key in data.keys() if "Rrs" in key]
 
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = float(Ed_k[2:])
-    Ed = data[Ed_k]
-    R_rs = data[R_rs_k]
-    Lw = R_rs * Ed
 
     data[Ed_k].unit = u.microwatt / (u.cm**2 * u.nm)
     data[Ed_k] = data[Ed_k].to(u.watt / (u.m**2 * u.nm))
@@ -45,6 +42,7 @@ for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     data[R_rs_k].unit = 1 / u.steradian
     data.rename_column(R_rs_k, f"R_rs_{wavelength:.1f}")
 
+    Lw = data[f"Ed_{wavelength:.1f}"] * data[f"R_rs_{wavelength:.1f}"]
     Lw.name = f"Lw_{wavelength:.1f}"
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
@@ -65,20 +63,20 @@ m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k
 plt.savefig("data/plots/map_RSP.pdf")
 plt.show()
 
-# Plot all Es, Lw, R_rs spectra
+# Plot all Ed, Lw, R_rs spectra
 wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
 
 fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
 
 for row in data:
-    spec_Es = [row[key] for key in data.keys() if "Ed" in key]
+    spec_Ed = [row[key] for key in data.keys() if "Ed" in key]
     spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
     spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
 
-    for ax, spec in zip(axs.ravel(), [spec_Es, spec_Lw, spec_R_rs]):
+    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.3, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$E_s$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 

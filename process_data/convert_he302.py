@@ -23,7 +23,7 @@ combined_table = table.join(Ed, Rrs, keys=["Event"])
 for wvl in wavelengths:
     Lw = combined_table[f"Ed_{wvl}"] * combined_table[f"R_rs_{wvl}"]
     Lw.name = f"Lw_{wvl}"
-    Lw.unit = u.watt / (u.meter**2 * u.nanometer)
+    Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
     combined_table.add_column(Lw)
 
 remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
@@ -58,10 +58,10 @@ for row in combined_table:
     spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
     spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
 
-    for ax, spec in zip(axs.ravel(), [spec_Lw, spec_Ed, spec_R_rs]):
+    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.15, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$L_w$ [W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$E_d$ [W cm$^{-2}$ nm$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 

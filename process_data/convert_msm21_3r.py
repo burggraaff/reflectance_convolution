@@ -61,33 +61,28 @@ m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, 
 plt.savefig("data/plots/map_MSM21_3R.pdf")
 plt.show()
 
-# Plot all Ed, Lu, Ls, R_rs spectra
-fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
+# Plot all Ed, Lw, R_rs spectra
+fig, axs = plt.subplots(nrows=3, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
 
 for row in combined_table:
     spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_Lu = [row[f"Lu_{wvl}"] for wvl in wavelengths]
-    spec_Ls = [row[f"Ls_{wvl}"] for wvl in wavelengths]
+    spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
     spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
 
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lu, spec_Ls, spec_R_rs]):
+    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$E_d$ [W m$^{-2}$ nm$^{-1}$]", "$L_u$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$L_s$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 
-axs[0,0].tick_params(bottom=False, labelbottom=False)
-axs[0,1].tick_params(bottom=False, labelbottom=False)
-axs[0,1].tick_params(left=False, labelleft=False, right=True, labelright=True)
-axs[1,1].tick_params(left=False, labelleft=False, right=True, labelright=True)
-axs[0,1].yaxis.set_label_position("right")
-axs[1,1].yaxis.set_label_position("right")
-axs[1,0].set_xlabel("Wavelength [nm]")
-axs[1,1].set_xlabel("Wavelength [nm]")
-axs[0,0].set_xlim(320, 950)
+axs[0].tick_params(bottom=False, labelbottom=False)
+axs[1].tick_params(bottom=False, labelbottom=False)
+axs[2].set_xlabel("Wavelength [nm]")
+axs[2].set_xlabel("Wavelength [nm]")
+axs[0].set_xlim(360, 800)
 
-fig.suptitle(f"MSM21_3R spectra ({len(combined_table)})")
+axs[0].set_title(f"MSM21_3R spectra ({len(combined_table)})")
 plt.savefig("data/plots/spectra_MSM21_3R.pdf")
 plt.show()
 plt.close()

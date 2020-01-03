@@ -29,18 +29,17 @@ R_rs_keys = [key for key in data.keys() if "Rrs" in key]
 
 for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     wavelength = float(Es_k[2:])
-    Es = data[Es_k]
-    R_rs = data[R_rs_k]
-    Lw = R_rs * Es
 
     data[Es_k].unit = u.microwatt / (u.cm**2 * u.nm)
+    data[Es_k] = data[Es_k].to(u.watt / (u.m**2 * u.nm))
     data.rename_column(Es_k, f"Ed_{wavelength:.1f}")
 
     data[R_rs_k].unit = 1 / u.steradian
     data.rename_column(R_rs_k, f"R_rs_{wavelength:.1f}")
 
+    Lw = data[f"Ed_{wavelength:.1f}"] * data[f"R_rs_{wavelength:.1f}"]
     Lw.name = f"Lw_{wavelength:.1f}"
-    Lw.unit = u.microwatt / (u.cm**2 * u.nm * u.steradian)
+    Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
 
 
@@ -73,7 +72,7 @@ for row in data:
     for ax, spec in zip(axs.ravel(), [spec_Es, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.1, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$E_s$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 

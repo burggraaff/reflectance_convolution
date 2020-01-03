@@ -71,7 +71,7 @@ for row in combined_table:
     for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$E_d$ [W m$^{-2}$ nm$^{-1}$]", "$L_w$ [W m$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 

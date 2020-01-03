@@ -34,6 +34,21 @@ for file in files:
 
 data = table.vstack(tabs)
 
+Ed_keys = [key for key in data.keys() if "Ed" in key]
+Lw_keys = [key for key in data.keys() if "Lw" in key]
+R_rs_keys = [key for key in data.keys() if "Rrs" in key]
+
+for key in Ed_keys:
+    data[key].unit = u.microwatt / (u.cm**2 * u.nm)
+    data[key] = data[key].to(u.watt / (u.m**2 * u.nm))
+
+for key in Lw_keys:
+    data[key].unit = u.microwatt / (u.cm**2 * u.nm * u.steradian)
+    data[key] = data[key].to(u.watt / (u.m**2 * u.nm * u.steradian))
+
+for key in R_rs_keys:
+    data[key].unit = 1 / u.steradian
+
 # Plot map of observations
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
 
@@ -63,7 +78,7 @@ for row in data:
     for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
         ax.plot(wavelengths, spec, c="k", alpha=0.7, zorder=1)
 
-for ax, label in zip(axs.ravel(), ["$E_d$ [$\mu$W cm$^{-2}$ nm$^{-1}$]", "$L_w$ [$\mu$W cm$^{-2}$ nm$^{-1}$ sr$^{-1}$]", "$R_{rs}$ [sr$^{-1}$]"]):
+for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.set_ylabel(label)
     ax.grid(ls="--", zorder=0)
 
