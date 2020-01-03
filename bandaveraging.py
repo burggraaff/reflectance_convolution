@@ -27,11 +27,32 @@ def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response
 
 def bandaverage_multi(band_wavelengths, band_response, data_wavelengths, data_response_multi):
     response_interpolated = np.array([np.interp(band_wavelengths, data_wavelengths, data_response, left=0, right=0) for data_response in data_response_multi])
-    response_multiplied = response_interpolated * band_response
-    response_sum = np.trapz(response_multiplied, x=band_wavelengths, axis=1)
     weight_sum = np.trapz(band_response, x=band_wavelengths)
-    response_average = response_sum / weight_sum
+    response_average = band_response @ response_interpolated.T / weight_sum
     return response_average
+
+def bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, data):
+    result = np.array([bandaverage_multi(wavelengths_sensor, response, wavelengths_data, data) for response in responses_sensor])
+    return result
+
+def calculate_differences(wavelengths_sensor, responses_sensor, wavelengths_data, Ed, Lw, R_rs):
+    reflectance_space = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, R_rs)
+    mean_Lw = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Lw)
+    mean_Ed = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Ed)
+    radiance_space = mean_Lw / mean_Ed
+
+    difference_absolute = reflectance_space - radiance_space
+    difference_relative = 100 * difference_absolute / radiance_space
+
+    return difference_absolute, difference_relative
+
+def calculate_median_and_errors(differences):
+    lower_percentile = np.nanpercentile(differences, 15.9, axis=1)
+    medians = np.nanmedian(differences, axis=1)
+    upper_percentile = np.nanpercentile(differences, 84.1, axis=1)
+    lower_error = medians - lower_percentile
+    upper_error = upper_percentile - medians
+    return medians, lower_error, upper_error
 
 def plot_bands(wavelengths, responses, band_labels=None, colours=None, sensor_label=None):
     if colours is None:
@@ -64,29 +85,6 @@ def load_data():
     wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
     return wavelengths, Ed, Lw, R_rs
-
-def bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, data):
-    result = np.array([bandaverage_multi(wavelengths_sensor, response, wavelengths_data, data) for response in responses_sensor])
-    return result
-
-def calculate_differences(wavelengths_sensor, responses_sensor, wavelengths_data, Ed, Lw, R_rs):
-    reflectance_space = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, R_rs)
-    mean_Lw = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Lw)
-    mean_Ed = bandaverage_multi_multiband(wavelengths_sensor, responses_sensor, wavelengths_data, Ed)
-    radiance_space = mean_Lw / mean_Ed
-
-    difference_absolute = reflectance_space - radiance_space
-    difference_relative = 100 * difference_absolute / radiance_space
-
-    return difference_absolute, difference_relative
-
-def calculate_median_and_errors(differences):
-    lower_percentile = np.nanpercentile(differences, 15.9, axis=1)
-    medians = np.nanmedian(differences, axis=1)
-    upper_percentile = np.nanpercentile(differences, 84.1, axis=1)
-    lower_error = medians - lower_percentile
-    upper_error = upper_percentile - medians
-    return medians, lower_error, upper_error
 
 def double_boxplot(data, label="", unit="", sensor_label="", band_labels=None, colours=None):
     if band_labels is None:
