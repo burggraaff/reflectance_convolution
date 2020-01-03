@@ -21,6 +21,9 @@ for key, new_key in zip(data.keys(), header):
 data.remove_columns([key for key in data.keys() if "sd" in key])
 data.remove_columns([key for key in data.keys() if "LU" in key])
 
+data.rename_column("lat", "Latitude")
+data.rename_column("lon", "Longitude")
+
 Es_keys = [key for key in data.keys() if "ES" in key]
 R_rs_keys = [key for key in data.keys() if "Rrs" in key]
 
@@ -52,7 +55,7 @@ m.drawcoastlines()
 m.drawparallels(np.arange(30, 50, 2.5), labels=[1,1,0,0])
 m.drawmeridians(np.arange(0, 45, 5), labels=[0,0,1,1])
 
-m.scatter(data["lon"], data["lat"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
+m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
 
 plt.savefig("data/plots/map_Tara-M.pdf")
 plt.show()
