@@ -27,8 +27,10 @@ def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response
 
 def bandaverage_multi(band_wavelengths, band_response, data_wavelengths, data_response_multi):
     response_interpolated = np.array([np.interp(band_wavelengths, data_wavelengths, data_response, left=0, right=0) for data_response in data_response_multi])
+    response_multiplied = response_interpolated * band_response
+    response_sum = np.trapz(response_multiplied, x=band_wavelengths, axis=1)
     weight_sum = np.trapz(band_response, x=band_wavelengths)
-    response_average = band_response @ response_interpolated.T / weight_sum
+    response_average = response_sum / weight_sum
     return response_average
 
 def calculate_differences(reflectance_space, radiance_space):
