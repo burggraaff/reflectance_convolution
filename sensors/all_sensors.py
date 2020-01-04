@@ -2,9 +2,10 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from sba.bandaveraging import load_data, boxplot_relative, boxplot_absolute, calculate_differences
-from matplotlib import pyplot as plt
+from sba.bandaveraging import load_data, calculate_differences
 import sba.response_curves as rc
+from sba import plotting as p
+from matplotlib import pyplot as plt
 import numpy as np
 
 wavelengths_data, Ed, Lw, R_rs = load_data()
@@ -37,5 +38,5 @@ labels = [label for sublist in labels for label in sublist]
 colours = [sensor.colours for sensor in sensors]
 colours = [colour for sublist in colours for colour in sublist]
 
-boxplot_absolute(difference_absolute, band_labels=labels, colours=colours, sensor_label="")
-boxplot_relative(difference_relative, band_labels=labels, colours=colours, sensor_label="")
+p.boxplot_absolute(difference_absolute, band_labels=labels, colours=colours, sensor_label="")
+p.boxplot_relative(difference_relative, band_labels=labels, colours=colours, sensor_label="")

@@ -1,7 +1,7 @@
 import xarray as xr
 import numpy as np
 from matplotlib import pyplot as plt
-from . import bandaveraging as ba
+from . import bandaveraging as ba, plotting as p
 from pathlib import Path
 
 class Sensor(object):
@@ -50,10 +50,10 @@ class Sensor(object):
         return result
 
     def boxplot_relative(self, *args, **kwargs):
-        ba.boxplot_relative(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+        p.boxplot_relative(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
     def boxplot_absolute(self, *args, **kwargs):
-        ba.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+        p.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
