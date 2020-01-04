@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from . import bandaveraging as ba, plotting as p
 from pathlib import Path
+import sys
 
 class Sensor(object):
     def __init__(self, name, band_labels, colours, response_wavelengths, responses):
@@ -209,3 +210,11 @@ def load_SPECTACLE():
     return SPECTACLE
 
 functions = ([load_ETM_plus, load_OLI, load_CZCS, load_SeaWiFS, load_MODISA, load_MODIST, load_VIIRS, load_Sentinel2A, load_Sentinel2B, load_OLCIA, load_OLCIB, load_SPECTACLE])
+
+from_name = {"ETM+": load_ETM_plus, "OLI": load_OLI, "CZCS": load_CZCS, "SeaWiFS": load_SeaWiFS, "MODISA": load_MODISA, "MODIST": load_MODIST, "VIIRS": load_VIIRS, "Sentinel2A": load_Sentinel2A, "Sentinel2B": load_Sentinel2B, "OLCIA": load_OLCIA, "OLCIB": load_OLCIB, "SPECTACLE": load_SPECTACLE}
+
+def load_from_name():
+    sensor_names = sys.argv[2:]
+    functions = [from_name[name] for name in sensor_names]
+    sensors = [function() for function in functions]
+    return sensors

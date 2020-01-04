@@ -3,12 +3,13 @@ Generate boxcar and gaussian spectral response functions
 """
 
 from sba.bandaveraging import load_data
-import sba.response_curves as rc
+from sba.response_curves import load_from_name
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
+sensors = load_from_name()
 
-for func in [rc.load_MODISA, rc.load_MODIST]:
-    sensor = func()
+for sensor in sensors:
+    print(sensor)
     sensor.plot()
 
     reflectance_space = sensor.band_average(wavelengths_data, R_rs)
