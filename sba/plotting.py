@@ -90,3 +90,29 @@ def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exp
 
     make_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
     double_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
+
+def plot_spectra(data, data_label="", alpha=0.1):
+    # Plot all Es, Lw, R_rs spectra
+    wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
+
+    fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
+
+    for row in data:
+        spec_Ed = [row[key] for key in data.keys() if "Ed" in key]
+        spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
+        spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
+
+        for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
+            ax.plot(wavelengths, spec, c="k", alpha=alpha, zorder=1)
+
+    for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
+        ax.set_ylabel(label)
+        ax.grid(ls="--", zorder=0)
+
+    axs[-1].set_xlabel("Wavelength [nm]")
+    axs[-1].set_xlim(400, 750)
+
+    axs[0].set_title(f"{data_label} spectra ({len(data)})")
+    plt.savefig(f"data/plots/spectra_{data_label}.pdf")
+    plt.show()
+    plt.close()

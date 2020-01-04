@@ -4,6 +4,7 @@ from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
+from sba.plotting import plot_spectra
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)
@@ -59,32 +60,7 @@ m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, 
 plt.savefig("data/plots/map_MSM21_3H.pdf")
 plt.show()
 
-
-# Plot all Ed, Lw, R_rs spectra
-fig, axs = plt.subplots(nrows=3, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
-
-for row in combined_table:
-    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
-    spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
-
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-
-axs[0].tick_params(bottom=False, labelbottom=False)
-axs[1].tick_params(bottom=False, labelbottom=False)
-axs[2].set_xlabel("Wavelength [nm]")
-axs[2].set_xlabel("Wavelength [nm]")
-axs[0].set_xlim(360, 800)
-
-axs[0].set_title(f"MSM21_3H spectra ({len(combined_table)})")
-plt.savefig("data/plots/spectra_MSM21_3H.pdf")
-plt.show()
-plt.close()
+plot_spectra(combined_table, data_label="MSM21_3H", alpha=0.05)
 
 combined_table.remove_columns(["Event_2", "Sample label_1", "Sample label_2", "Altitude [m]", "Latitude_2", "Longitude_2"])
 combined_table.write("data/msm21_3h_processed.tab", format="ascii.fast_tab", overwrite=True)

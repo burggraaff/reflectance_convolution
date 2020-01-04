@@ -4,6 +4,7 @@ from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
+from sba.plotting import plot_spectra
 
 Ed = read("data/SeaSWIR/SeaSWIR_TRIOS_Ed.tab", data_start=238, header_start=237)
 
@@ -18,6 +19,7 @@ colnames = colnames + colnames_rrs + colnames_rrs2
 for j, newname in enumerate(colnames, 1):
     Rrs.rename_column(f"col{j}", newname)
 Rrs.remove_columns(colnames_rrs2)
+Rrs.remove_columns(['Ratio (drho/rho, 750nm)', 'Ratio (dLsky/Lsky, 750nm)', 'Ratio (dLw/Lw, 750nm)', 'Ratio (dEd/Ed, 750nm)', 'Ratio (d(Lsk/Ed)/(Lsk/Ed), 750nm)'])
 
 for wvl in wavelengths:
     if wvl % 1 == 0:
@@ -67,28 +69,7 @@ m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, 
 plt.savefig("data/plots/map_SeaSWIR-R.pdf")
 plt.show()
 
-# Plot all Ed, Lu, Ls, R_rs spectra
-fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
-
-for row in combined_table:
-    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
-    spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
-
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(320, 950)
-
-axs[0].set_title(f"SeaSWIR-T spectra ({len(combined_table)})")
-plt.savefig("data/plots/spectra_SeaSWIR-R.pdf")
-plt.show()
-plt.close()
+plot_spectra(combined_table, data_label="SeaSWIR-R", alpha=0.05)
 
 combined_table.remove_columns(["Event_1", "Event_2", "Campaign_1", "Campaign_2", "Station_1", "Station_2"])
 combined_table.write("data/seaswir-r_processed.tab", format="ascii.fast_tab", overwrite=True)

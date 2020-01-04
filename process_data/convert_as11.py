@@ -5,6 +5,7 @@ from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
+from sba.plotting import plot_spectra
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -65,29 +66,6 @@ m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k
 plt.savefig("data/plots/map_AS11.pdf")
 plt.show()
 
-# Plot all Es, Lw, R_rs spectra
-wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
-
-fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
-
-for row in data:
-    spec_Ed = [row[key] for key in data.keys() if "Ed" in key]
-    spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
-    spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
-
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.7, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(400, 750)
-
-axs[0].set_title(f"AS11 spectra ({len(data)})")
-plt.savefig("data/plots/spectra_AS11.pdf")
-plt.show()
-plt.close()
+plot_spectra(data, data_label="AS11", alpha=0.7)
 
 data.write("data/as11_processed.tab", format="ascii.fast_tab", overwrite=True)

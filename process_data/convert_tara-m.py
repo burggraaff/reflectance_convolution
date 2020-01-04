@@ -5,6 +5,7 @@ from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
+from sba.plotting import plot_spectra
 
 folder = Path("data/Tara-M/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
@@ -59,31 +60,6 @@ m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k
 plt.savefig("data/plots/map_Tara-M.pdf")
 plt.show()
 
-# Plot all Es, Lw, R_rs spectra
-wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
-
-fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
-
-for row in data:
-    spec_Es = [row[key] for key in data.keys() if "Ed" in key]
-    spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
-    spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
-
-    for ax, spec in zip(axs.ravel(), [spec_Es, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.1, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-    if ax.get_ylim()[0] > 0:
-        ax.set_ylim(ymin=0)
-
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(345, 805)
-
-axs[0].set_title(f"Tara-M spectra ({len(data)})")
-plt.savefig("data/plots/spectra_Tara-M.pdf")
-plt.show()
-plt.close()
+plot_spectra(data, data_label="Tara-M", alpha=0.1)
 
 data.write("data/tara-m_processed.tab", format="ascii.fast_tab", overwrite=True)

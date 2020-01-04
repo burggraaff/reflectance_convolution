@@ -4,6 +4,7 @@ from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
+from sba.plotting import plot_spectra
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -68,28 +69,7 @@ m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, 
 plt.savefig("data/plots/map_SeaSWIR-A.pdf")
 plt.show()
 
-# Plot all Ed, Lu, Ls, R_rs spectra
-fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0})
-
-for row in combined_table:
-    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
-    spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
-
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.05, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(320, 950)
-
-axs[0].set_title(f"SeaSWIR-A spectra ({len(combined_table)})")
-plt.savefig("data/plots/spectra_SeaSWIR-A.pdf")
-plt.show()
-plt.close()
+plot_spectra(combined_table, data_label="SeaSWIR-A", alpha=0.05)
 
 combined_table.remove_columns(["Date/Time (end, UTC)", "Date/Time (end, local time)", "Date/Time (start, local time)"])
 combined_table.write("data/seaswir-a_processed.tab", format="ascii.fast_tab", overwrite=True)

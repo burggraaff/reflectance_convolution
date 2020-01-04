@@ -4,6 +4,7 @@ from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
+from sba.plotting import plot_spectra
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Lu = read("data/HE302/HE302_rad.tab", data_start=186, header_start=185)
@@ -50,28 +51,7 @@ m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, 
 plt.savefig("data/plots/map_HE302.pdf")
 plt.show()
 
-# Plot all Ed, Lu, Lsky, Lw, R_rs spectra
-fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,10))
-
-for row in combined_table:
-    spec_Lw = [row[f"Lw_{wvl}"] for wvl in wavelengths]
-    spec_Ed = [row[f"Ed_{wvl}"] for wvl in wavelengths]
-    spec_R_rs = [row[f"R_rs_{wvl}"] for wvl in wavelengths]
-
-    for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-        ax.plot(wavelengths, spec, c="k", alpha=0.15, zorder=1)
-
-for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
-    ax.set_ylabel(label)
-    ax.grid(ls="--", zorder=0)
-
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(320, 950)
-
-axs[0].set_title(f"HE302 spectra ({len(combined_table)})")
-plt.savefig("data/plots/spectra_HE302.pdf")
-plt.show()
-plt.close()
+plot_spectra(combined_table, data_label="HE302", alpha=0.15)
 
 combined_table.write("data/he302_processed.tab", format="ascii.fast_tab", overwrite=True)
 
