@@ -5,7 +5,7 @@ Generate boxcar and gaussian spectral response functions
 from sba.bandaveraging import load_data
 import sba.response_curves as rc
 
-wavelengths_data, Ed, Lw, R_rs = load_data()
+label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 OLI = rc.load_OLI()
 
@@ -16,5 +16,5 @@ radiance_space = OLI.band_average(wavelengths_data, Lw) / OLI.band_average(wavel
 difference_absolute = reflectance_space - radiance_space
 difference_relative = 100*difference_absolute / radiance_space
 
-OLI.boxplot_relative(difference_relative)
-OLI.boxplot_absolute(difference_absolute)
+OLI.boxplot_relative(difference_relative, data_label=label)
+OLI.boxplot_absolute(difference_absolute, data_label=label)

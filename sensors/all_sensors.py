@@ -8,7 +8,7 @@ from sba import plotting as p
 from matplotlib import pyplot as plt
 import numpy as np
 
-wavelengths_data, Ed, Lw, R_rs = load_data()
+label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 sensors = [func() for func in rc.functions]
 
@@ -38,5 +38,5 @@ labels = [label for sublist in labels for label in sublist]
 colours = [sensor.colours for sensor in sensors]
 colours = [colour for sublist in colours for colour in sublist]
 
-p.boxplot_absolute(difference_absolute, band_labels=labels, colours=colours, sensor_label="")
-p.boxplot_relative(difference_relative, band_labels=labels, colours=colours, sensor_label="")
+p.boxplot_absolute(difference_absolute, band_labels=labels, colours=colours, sensor_label="", data_label=label)
+p.boxplot_relative(difference_relative, band_labels=labels, colours=colours, sensor_label="", data_label=label)

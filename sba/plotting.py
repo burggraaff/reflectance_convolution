@@ -3,8 +3,12 @@ Module with functions for plotting
 """
 from matplotlib import pyplot as plt
 from .bandaveraging import calculate_median_and_errors
+from pathlib import Path
 
-def double_boxplot(data, label="", unit="", sensor_label="", band_labels=None, colours=None):
+def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band_labels=None, colours=None):
+    save_folder = Path(f"results/{data_label}")
+    save_folder.mkdir(exist_ok=True)
+
     if band_labels is None:
         band_labels = [""] * len(data)
     if colours is None:
@@ -22,7 +26,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", band_labels=None, c
         ax.set_xlabel(f"Difference [{unit}]")
         ax.grid(ls="--", color="0.5")
 
-    axs[0].set_title("Tara Med.: "+sensor_label)
+    axs[0].set_title(f"Data: {data_label} ; Sensor: {sensor_label}")
 
     xlim = axs[0].get_xlim()
     if xlim[0] > 0:
@@ -37,11 +41,14 @@ def double_boxplot(data, label="", unit="", sensor_label="", band_labels=None, c
     else: # absolute plot
         axs[1].set_xlim(-30.1, 30.1)
 
-    plt.savefig(f"results/Tara_med/{sensor_label}_{label}_double.pdf")
+    plt.savefig(f"{save_folder}/{data_label}_{sensor_label}_{label}_double.pdf")
     plt.show()
     plt.close()
 
-def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, colours=None):
+def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_labels=None, colours=None):
+    save_folder = Path(f"results/{data_label}")
+    save_folder.mkdir(exist_ok=True)
+
     if band_labels is None:
         band_labels = [""] * len(data)
     if colours is None:
@@ -52,7 +59,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
-    plt.title("Tara Med.: "+sensor_label)
+    plt.title(f"Data: {data_label} ; Sensor: {sensor_label}")
     plt.grid(ls="--", color="0.5")
 
     xlim = plt.xlim()
@@ -62,7 +69,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", band_labels=None, col
         plt.xlim(xmax=0)
 
     plt.tight_layout()
-    plt.savefig(f"results/Tara_med/{sensor_label}_{label}.pdf")
+    plt.savefig(f"{save_folder}/{data_label}_{sensor_label}_{label}.pdf")
     plt.show()
     plt.close()
 

@@ -5,7 +5,7 @@ Generate boxcar and gaussian spectral response functions
 from sba.bandaveraging import load_data
 import sba.response_curves as rc
 
-wavelengths_data, Ed, Lw, R_rs = load_data()
+label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 for func in [rc.load_Sentinel2A, rc.load_Sentinel2B]:
     sensor = func()
@@ -16,5 +16,5 @@ for func in [rc.load_Sentinel2A, rc.load_Sentinel2B]:
     difference_absolute = reflectance_space - radiance_space
     difference_relative = 100*difference_absolute / radiance_space
 
-    sensor.boxplot_relative(difference_relative)
-    sensor.boxplot_absolute(difference_absolute)
+    sensor.boxplot_relative(difference_relative, data_label=label)
+    sensor.boxplot_absolute(difference_absolute, data_label=label)
