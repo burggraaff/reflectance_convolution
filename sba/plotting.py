@@ -110,7 +110,7 @@ def plot_spectra(data, data_label="", alpha=0.1):
         ax.grid(ls="--", zorder=0)
 
     axs[-1].set_xlabel("Wavelength [nm]")
-    axs[-1].set_xlim(400, 750)
+    axs[-1].set_xlim(wavelengths[0], wavelengths[-1])
 
     axs[0].set_title(f"{data_label} spectra ({len(data)})")
     plt.savefig(f"data/plots/spectra_{data_label}.pdf")
