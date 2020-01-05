@@ -14,7 +14,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band
     if colours is None:
         colours = ["k"] * len(data)
 
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(10, data.shape[1]//3), tight_layout=True, sharey=True, gridspec_kw={"hspace": 0, "wspace": 0})
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(10, 1+0.3*data.shape[0]), tight_layout=True, sharey=True, gridspec_kw={"hspace": 0, "wspace": 0})
     bplot_main = axs[0].boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot_main["boxes"], colours):
         patch.set_facecolor(colour)
@@ -54,7 +54,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_l
     if colours is None:
         colours = ["k"] * len(data)
 
-    plt.figure(figsize=(5, data.shape[1]//3), tight_layout=True)
+    plt.figure(figsize=(5, 1+0.3*data.shape[0]), tight_layout=True)
     bplot = plt.boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
