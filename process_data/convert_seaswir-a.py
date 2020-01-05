@@ -40,6 +40,11 @@ for key in combined_table.keys():
     elif key[-2:] == "_2":
         combined_table.remove_column(key)
 
+# Check for rows where no Ed data were provided
+remove_indices = [i for i, mask_row in enumerate(combined_table.mask) if mask_row["Ed_500"]]
+combined_table.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows without Ed data")
+
 R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -0.001 for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
