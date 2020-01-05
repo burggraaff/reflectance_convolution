@@ -26,7 +26,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band
         ax.set_xlabel(f"Difference [{unit}]")
         ax.grid(ls="--", color="0.5")
 
-    axs[0].set_title(f"Data: {data_label} ; Sensor: {sensor_label}")
+    axs[0].set_title(f"Data: {data_label} ($N$ = {data.shape[1]}) ; Sensor: {sensor_label}")
 
     xlim = axs[0].get_xlim()
     if xlim[0] > 0:
@@ -59,7 +59,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_l
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
-    plt.title(f"Data: {data_label} ; Sensor: {sensor_label}")
+    plt.title(f"Data: {data_label} ($N$ = {data.shape[1]})  ; Sensor: {sensor_label}")
     plt.grid(ls="--", color="0.5")
 
     xlim = plt.xlim()
