@@ -37,8 +37,14 @@ for wvl in wavelengths:
     R_rs.unit = 1 / u.steradian
     combined_table.add_column(R_rs)
 
+# Remove rows where Ed_405 is abnormally low compared to Ed_400
+diff = combined_table["Ed_400"] - combined_table["Ed_405"]
+remove_indices = [i for i, row in enumerate(combined_table) if diff[i] > 0.15]
+combined_table.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.15")
+
 R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
-remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -0.001 for key in R_rs_keys)]
+remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] < 0 for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
 
