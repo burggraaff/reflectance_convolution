@@ -43,18 +43,21 @@ remove_indices = [i for i, row in enumerate(combined_table) if diff[i] > 0.15]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.15")
 
+# Remove rows with negative R_rs
 R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] < 0 for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
 
-remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] > 0.1 for key in R_rs_keys)]
+# Remote rows with spiky R_rs
+remove_indices = [i for i, row in enumerate(combined_table) if any([np.abs(row[key1]-row[key2]) >= 0.002 for key1, key2 in zip(R_rs_keys, R_rs_keys[1:])])]
 combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values > 0.1")
+print(f"Removed {len(remove_indices)} rows with differences in R_rs >=0.002 between wavelengths")
 
-remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
+# Remove rows with R_rs(800 nm) >= 0.003
+remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_800"] >= 0.003]
 combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
+print(f"Removed {len(remove_indices)} rows with values of R_rs(800 nm) >= 0.003")
 
 # Plot map of observations
 fig = plt.figure(figsize=(10, 10), tight_layout=True)
