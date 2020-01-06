@@ -20,7 +20,7 @@ for tab, label, colour in zip(data, labels, colours):
 
 data = table.vstack(data)
 
-# Plot map of observations
+# Plot world map
 fig = plt.figure(figsize=(8, 5), tight_layout=True)
 
 m = Basemap(projection='moll', lon_0=0, resolution="i")
