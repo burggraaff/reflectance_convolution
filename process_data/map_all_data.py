@@ -31,5 +31,7 @@ m.drawmeridians(np.arange(-180, 180, 30), labels=[0,0,1,1])
 
 m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="", s=30, zorder=10)
 
+plt.title(f"Locations of all spectra ($N = {len(data)}$)")
+
 plt.savefig("data/plots/map_all_data.pdf")
 plt.show()
