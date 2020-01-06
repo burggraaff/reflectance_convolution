@@ -32,18 +32,23 @@ for wvl in wavelengths:
     Ed.unit = u.watt / (u.meter**2 * u.nanometer)
     combined_table.add_column(Ed)
 
+# Remove rows with jumps in Ed >0.5 between wavelengths
+Ed_keys = [key for key in combined_table.keys() if "Ed" in key]
+remove_indices = [i for i, row in enumerate(combined_table) if any([np.abs(row[key1]-row[key2]) >= 0.5 for key1, key2 in zip(Ed_keys, Ed_keys[1:])])]
+combined_table.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with Ed jumps > 0.5")
+
+# Remove rows with negative R_rs
 R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] <= -0.001 for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
 
-remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
-combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
-
+# Remove rows with NaN values
 remove_indices = [i for i, row_mask in enumerate(combined_table.mask) if any(row_mask[key] for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
+
 # Plot map of observations
 fig = plt.figure(figsize=(10, 10), tight_layout=True)
 
