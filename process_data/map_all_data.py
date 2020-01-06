@@ -11,9 +11,9 @@ folder = Path("data")
 all_data_files = list(folder.glob("*processed.tab"))
 
 data = [read(file, include_names=["Latitude", "Longitude"]) for file in all_data_files]
+labels = [file.stem[:-10] for file in all_data_files]
 
-for file, tab in zip(all_data_files, data):
-    label = file.stem[:-10]
+for label, tab in zip(labels, data):
     tab.add_column(table.Column(name="Label", data=[label for row in tab]))
 
 data = table.vstack(data)
