@@ -7,7 +7,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra
 
-folder = Path("data/CLT/")
+folder = Path("data/CLT/ASD/")
 files = list(folder.glob("*ASD*.txt"))
 
 tabs = []
