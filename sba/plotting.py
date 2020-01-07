@@ -4,6 +4,7 @@ Module with functions for plotting
 from matplotlib import pyplot as plt
 from .bandaveraging import calculate_median_and_errors
 from pathlib import Path
+import numpy as np
 
 def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band_labels=None, colours=None):
     save_folder = Path(f"results/{data_label}")
@@ -25,6 +26,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band
     for ax in axs:
         ax.set_xlabel(f"Difference [{unit}]")
         ax.grid(ls="--", color="0.5")
+        ax.axvline(0, ls="--", color="k")
 
     axs[0].set_title(f"Data: {data_label} ($N$ = {data.shape[1]}) ; Sensor: {sensor_label}")
 
@@ -38,6 +40,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band
 
     if label == "rel": # relative plot
         axs[1].set_xlim(-5.1, 5.1)
+        axs[1].set_xticks(np.arange(-5, 6, 1))
     else: # absolute plot
         axs[1].set_xlim(-30.1, 30.1)
 
@@ -61,6 +64,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_l
     plt.xlabel(f"Difference [{unit}]")
     plt.title(f"Data: {data_label} ($N$ = {data.shape[1]})  ; Sensor: {sensor_label}")
     plt.grid(ls="--", color="0.5")
+    plt.axvline(0, ls="--", color="k")
 
     xlim = plt.xlim()
     if xlim[0] > 0:
