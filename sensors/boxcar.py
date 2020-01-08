@@ -24,20 +24,24 @@ def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
     boxcar_sensor = Sensor("Boxcar", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_in_boxcar], [response])
     return boxcar_sensor
 
-raise Exception
-
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
     for j,fwhm in enumerate(FWHMs):
-        if center-fwhm/2 < wavelengths[0] or center+fwhm/2 > wavelengths[-1]:
-            # Skip combination if the boxcar response does not fall entirely
-            # within the data wavelength range
+        half_width = fwhm / 2.
+        if center-half_width < wavelengths_data[0] or center+half_width > wavelengths_data[-1]:
+            # Skip if the boxcar response does not fall entirely within the data wavelength range
             continue
-        wavelengths_boxcar, response_boxcar = generate_boxcar(center, fwhm)
-        boxcar_reflectance_space = bandaverage_multi(wavelengths_boxcar, response_boxcar, wavelengths, R_rs)
-        boxcar_radiance_space = bandaverage_multi(wavelengths_boxcar, response_boxcar, wavelengths, Lw) / bandaverage_multi(wavelengths_boxcar, response_boxcar, wavelengths, Ed)
-        result_absolute[j,i] = np.median((boxcar_reflectance_space - boxcar_radiance_space))
-        result_relative[j,i] = 100*np.median((boxcar_reflectance_space - boxcar_radiance_space) / boxcar_radiance_space)
+        boxcar = generate_boxcar(center, fwhm)
+        reflectance_space = boxcar.band_average(wavelengths_data, R_rs)
+        radiance_space = boxcar.band_average(wavelengths_data, Lw) / boxcar.band_average(wavelengths_data, Ed)
+
+        difference_absolute = reflectance_space - radiance_space
+        difference_relative = 100*difference_absolute / radiance_space
+
+        result_absolute[j,i] = np.median(difference_absolute)
+        result_relative[j,i] = np.median(difference_relative)
+
+raise Exception
 
 for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel"], ["sr$^{-1}$", "%"]):
     low, high = np.nanmin(boxcar_result), np.nanmax(boxcar_result)
