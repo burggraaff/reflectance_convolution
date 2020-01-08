@@ -1,10 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Lu = read("data/HE302/HE302_rad.tab", data_start=186, header_start=185)
@@ -35,35 +33,8 @@ for key in ["Date/Time", "Latitude", "Longitude", "Altitude [m]"]:
     combined_table.rename_column(f"{key}_1", key)
     combined_table.remove_column(f"{key}_2")
 
-# Plot map of observations
-fig = plt.figure(figsize=(10, 7.5), tight_layout=True)
-
-m = Basemap(projection='gnom', lat_0=55, lon_0=0, llcrnrlon=-10, urcrnrlon=11, llcrnrlat=50.5, urcrnrlat=59.5, resolution="h")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(40, 70, 2), labels=[1,1,0,0])
-m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
-
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_HE302.pdf")
-plt.show()
+map_data(combined_table, data_label="HE302", projection='gnom', lat_0=55, lon_0=0, llcrnrlon=-10, urcrnrlon=11, llcrnrlat=50.5, urcrnrlat=59.5, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
 
 plot_spectra(combined_table, data_label="HE302", alpha=0.15)
 
 combined_table.write("data/he302_processed.tab", format="ascii.fast_tab", overwrite=True)
-
-wavelengths_interp = np.arange(380, 800.5, 0.5)
-
-def interpolate_row(row, spectrum):
-    spectrum_data = np.array([row[f"{spectrum}_{wvl}"] for wvl in wavelengths])
-    spectrum_interpolated = np.interp(wavelengths_interp, wavelengths, spectrum_data, left=0, right=0)
-    return spectrum_interpolated
-
-def interpolate_table(data_table, spectrum):
-    interpolated_data = np.array([interpolate_row(row, spectrum) for row in data_table])
-    table_names = [f"{spectrum}_{wvl}" for wvl in wavelengths_interp]
-    interpolated_table = table.Table(data=interpolated_data, names=table_names)
-    return interpolated_table

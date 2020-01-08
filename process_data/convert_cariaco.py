@@ -1,11 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -80,21 +78,7 @@ remove_indices = [i for i, row in enumerate(data) if row["Ed_600"] <= 0.1]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with missing values")
 
-# Plot map of observations
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-
-m = Basemap(projection='gnom', lat_0=10.5, lon_0=-64.67, llcrnrlon=-70, urcrnrlon=-59, llcrnrlat=5, urcrnrlat=15, resolution="h")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(4, 16, 2), labels=[1,1,0,0])
-m.drawmeridians(np.arange(-70, -56, 2), labels=[0,0,1,1])
-
-m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_CARIACO.pdf")
-plt.show()
+map_data(data, data_label="CARIACO", projection='gnom', lat_0=10.5, lon_0=-64.67, llcrnrlon=-70, urcrnrlon=-59, llcrnrlat=5, urcrnrlat=15, resolution="h", parallels=np.arange(4, 16, 2), meridians=np.arange(-70, -56, 2))
 
 plot_spectra(data, data_label="CARIACO", alpha=0.1)
 

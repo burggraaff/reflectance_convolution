@@ -1,10 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -58,21 +56,7 @@ remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] <
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
 
-# Plot map of observations
-fig = plt.figure(figsize=(5, 10), tight_layout=True)
-
-m = Basemap(projection='merc', lat_0=10, lon_0=-30, llcrnrlon=-60, urcrnrlon=7, llcrnrlat=-38, urcrnrlat=55, resolution="i")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(-40, 60, 10), labels=[1,1,0,0])
-m.drawmeridians(np.arange(-60, 20, 10), labels=[0,0,1,1])
-
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_SeaSWIR-A.pdf")
-plt.show()
+map_data(combined_table, data_label="SeaSWIR-A", projection='merc', lat_0=10, lon_0=-30, llcrnrlon=-60, urcrnrlon=7, llcrnrlat=-38, urcrnrlat=55, resolution="i", figsize=(5,10), parallels=np.arange(-40, 60, 10), meridians=np.arange(-60, 20, 10))
 
 plot_spectra(combined_table, data_label="SeaSWIR-A", alpha=0.05)
 

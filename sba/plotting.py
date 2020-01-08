@@ -2,6 +2,7 @@
 Module with functions for plotting
 """
 from matplotlib import pyplot as plt
+from mpl_toolkits.basemap import Basemap
 from .bandaveraging import calculate_median_and_errors
 from pathlib import Path
 import numpy as np
@@ -125,5 +126,25 @@ def plot_spectra(data, data_label="", alpha=0.1):
 
     axs[0].set_title(f"{data_label} spectra ({len(data)})")
     plt.savefig(f"data/plots/spectra_{data_label}.pdf")
+    plt.show()
+    plt.close()
+
+def map_data(data, data_label="", projection="moll", figsize=(10, 6), parallels=np.arange(-90, 95, 15), meridians=np.arange(-180, 180, 30), **kwargs):
+    # Plot map of observations
+    plt.figure(figsize=figsize, tight_layout=True)
+
+    m = Basemap(projection=projection, **kwargs)
+    m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
+    m.drawmapboundary(fill_color="#DDEEFF")
+    m.drawcoastlines()
+
+    m.drawparallels(parallels, labels=[1,1,0,0])
+    m.drawmeridians(meridians, labels=[0,0,0,1])
+
+    m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
+
+    plt.title(f"Locations of {data_label} data ($N = {len(data)}$)")
+
+    plt.savefig(f"data/plots/map_{data_label}.pdf")
     plt.show()
     plt.close()

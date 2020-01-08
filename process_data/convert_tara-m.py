@@ -1,11 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
 
 folder = Path("data/Tara-M/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
@@ -43,22 +41,7 @@ for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
 
-
-# Plot map of observations
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-
-m = Basemap(projection='gnom', lat_0=43.5, lon_0=19, llcrnrlon=0, urcrnrlon=40, llcrnrlat=30, urcrnrlat=44, resolution="h")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(30, 50, 2.5), labels=[1,1,0,0])
-m.drawmeridians(np.arange(0, 45, 5), labels=[0,0,1,1])
-
-m.scatter(data["Longitude"], data["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_Tara-M.pdf")
-plt.show()
+map_data(data, data_label="Tara-M", projection="gnom", lat_0=43.5, lon_0=19, llcrnrlon=0, urcrnrlon=40, llcrnrlat=30, urcrnrlat=44, resolution="h", parallels=np.arange(30, 50, 2.5), meridians=np.arange(0, 45, 5))
 
 plot_spectra(data, data_label="Tara-M", alpha=0.1)
 

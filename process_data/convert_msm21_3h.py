@@ -1,10 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)
@@ -49,21 +47,7 @@ remove_indices = [i for i, row_mask in enumerate(combined_table.mask) if any(row
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
 
-# Plot map of observations
-fig = plt.figure(figsize=(10, 10), tight_layout=True)
-
-m = Basemap(projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(55, 75, 5), labels=[1,1,0,0])
-m.drawmeridians(np.arange(-60, -5, 5), labels=[0,0,1,1])
-
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_MSM21_3H.pdf")
-plt.show()
+map_data(combined_table, data_label="MSM21_3H", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
 
 plot_spectra(combined_table, data_label="MSM21_3H", alpha=0.05)
 
