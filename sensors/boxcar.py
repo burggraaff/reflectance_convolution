@@ -12,7 +12,7 @@ from sba.response_curves import Sensor
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 wavelengths_central = np.arange(330, 800, 5)
-FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36, 104, 4)])
+FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 82, 2)])
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
