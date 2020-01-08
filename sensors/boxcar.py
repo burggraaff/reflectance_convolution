@@ -10,7 +10,9 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import split_spectrum, bandaverage_multi
 
 wavelengths_central = np.arange(330, 800, 5)
-FWHMs = np.arange(1, 75, 2)
+FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36, 104, 4)])
+
+raise Exception
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
