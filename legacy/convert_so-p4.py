@@ -1,10 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
-from sba.plotting import plot_spectra
+from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 Ed = read("data/SO-P4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SO-P4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
@@ -37,45 +35,37 @@ for wvl in wavelengths:
     R_rs.unit = 1 / u.steradian
     combined_table.add_column(R_rs)
 
+# Normalise by R_rs(750 nm), re-calculate Lw
+normalisation = combined_table["R_rs_750"].copy()
+for wvl in wavelengths:
+    combined_table[f"R_rs_{wvl}"] = combined_table[f"R_rs_{wvl}"] - normalisation
+    combined_table[f"Lw_{wvl}"] = combined_table[f"R_rs_{wvl}"] * combined_table[f"Ed_{wvl}"]
+
 # Remove rows where Ed_405 is abnormally low compared to Ed_400
 diff = combined_table["Ed_400"] - combined_table["Ed_405"]
 remove_indices = [i for i, row in enumerate(combined_table) if diff[i] > 0.15]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.15")
 
-# Remove rows with negative R_rs
-R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
-remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] < 0 for key in R_rs_keys)]
-combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
-
 # Remote rows with spiky R_rs
+R_rs_keys = [key for key in combined_table.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(combined_table) if any([np.abs(row[key1]-row[key2]) >= 0.002 for key1, key2 in zip(R_rs_keys, R_rs_keys[1:])])]
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with differences in R_rs >=0.002 between wavelengths")
 
-# Remove rows with R_rs(800 nm) >= 0.003
-remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_800"] >= 0.003]
+# Remove rows with negative R_rs
+remove_indices = [i for i, row in enumerate(combined_table) if any(row[key] < -0.001 for key in R_rs_keys)]
 combined_table.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(800 nm) >= 0.003")
+print(f"Removed {len(remove_indices)} rows with negative values")
 
-# Plot map of observations
-fig = plt.figure(figsize=(10, 10), tight_layout=True)
+# Remove columns that are consistently negative in R_rs
+for wvl in wavelengths[(wavelengths < 375) | (wavelengths > 700)]:
+    remove_keys = [f"{s}_{wvl:.0f}" for s in ("Ed", "Lw", "R_rs")]
+    combined_table.remove_columns(remove_keys)
 
-m = Basemap(projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h")
-m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
-m.drawmapboundary(fill_color="#DDEEFF")
-m.drawcoastlines()
-
-m.drawparallels(np.arange(40, 70, 2), labels=[1,1,0,0])
-m.drawmeridians(np.arange(-20, 20, 2), labels=[0,0,1,1])
-
-m.scatter(combined_table["Longitude"], combined_table["Latitude"], latlon=True, c="r", edgecolors="k", s=60, zorder=10)
-
-plt.savefig("data/plots/map_SO-P4.pdf")
-plt.show()
+map_data(combined_table, data_label="SO-P4", projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
 
 plot_spectra(combined_table, data_label="SO-P4", alpha=0.05)
 
 combined_table.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-combined_table.write("data/so-p4_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(combined_table, "SO-P4")
