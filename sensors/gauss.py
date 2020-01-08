@@ -7,24 +7,23 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import split_spectrum, bandaverage_multi
 from sba.bandaveraging import load_data
+from sba.response_curves import Sensor
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
-
-raise Exception
 
 wavelengths_band = np.arange(320, 800, 0.1)
 
 wavelengths_central = np.arange(360, 780, 5)
-FWHMs = np.arange(1, 75, 3)
+FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36, 104, 4)])
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
 
-wavelengths_interp = np.arange(380, 800.5, 0.5)
-
-def generate_gaussian(x, center, fwhm):
-    response = np.exp(-(x-center)**2 / (2 * fwhm**2))
-    return response
+def generate_gaussian(center, fwhm):
+    half_width = fwhm / 2.
+    response = np.exp(-(wavelengths_band-center)**2 / (2 * fwhm**2))
+    gaussian_sensor = Sensor("Gaussian", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_band], [response])
+    return gaussian_sensor
 
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
@@ -33,11 +32,15 @@ for i,center in enumerate(wavelengths_central):
             # Skip combination if the gaussian response does not fall
             # within the data wavelength range up to 3 stds out
             continue
-        gaussian_response = generate_gaussian(wavelengths_band, center, fwhm)
-        gauss_reflectance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, R_rs)
-        gauss_radiance_space = bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Lw) / bandaverage_multi(wavelengths_band, gaussian_response, wavelengths, Ed)
-        result_absolute[j,i] = np.median((gauss_reflectance_space - gauss_radiance_space))
-        result_relative[j,i] = 100*np.median((gauss_reflectance_space - gauss_radiance_space) / gauss_radiance_space)
+        gaussian = generate_gaussian(center, fwhm)
+        reflectance_space = gaussian.band_average(wavelengths_data, R_rs)
+        radiance_space = gaussian.band_average(wavelengths_data, Lw) / gaussian.band_average(wavelengths_data, Ed)
+
+        difference_absolute = reflectance_space - radiance_space
+        difference_relative = 100*difference_absolute / radiance_space
+
+        result_absolute[j,i] = np.median(difference_absolute)
+        result_relative[j,i] = np.median(difference_relative)
 
 for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel"], ["sr$^{-1}$", "%"]):
     low, high = np.nanmin(gauss_result), np.nanmax(gauss_result)
@@ -54,7 +57,7 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/gauss_map_{absrel}.pdf")
+    plt.savefig(f"results/gaussian/map_{absrel}.pdf")
     plt.show()
 
     # contourf plots
@@ -67,7 +70,7 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/gauss_contours_{absrel}.pdf")
+    plt.savefig(f"results/gaussian/contours_{absrel}.pdf")
     plt.show()
 
     # contourf plot of absolute differences
@@ -80,5 +83,5 @@ for gauss_result, absrel, unit in zip([result_absolute, result_relative], ["abs"
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Abs. difference (Refl. space - Rad. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/gauss_contours_absolute_{absrel}.pdf")
+    plt.savefig(f"results/gaussian/contours_absolute_{absrel}.pdf")
     plt.show()
