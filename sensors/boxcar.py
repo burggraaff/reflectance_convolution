@@ -41,15 +41,13 @@ for i,center in enumerate(wavelengths_central):
         result_absolute[j,i] = np.median(difference_absolute)
         result_relative[j,i] = np.median(difference_relative)
 
-raise Exception
-
-for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel"], ["sr$^{-1}$", "%"]):
-    low, high = np.nanmin(boxcar_result), np.nanmax(boxcar_result)
+for result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel"], ["sr$^{-1}$", "%"]):
+    low, high = np.nanmin(result), np.nanmax(result)
     vmin = np.min([low, -high])
     vmax = np.max([-low, high])
 
     # imshow plot
-    im = plt.imshow(boxcar_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto", cmap=plt.cm.seismic)
+    im = plt.imshow(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto", cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     plt.title("Difference for boxcar responses")
@@ -58,11 +56,11 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar_map_{absrel}.pdf")
+    plt.savefig(f"results/boxcar/map_{absrel}.pdf")
     plt.show()
 
     # contourf plot
-    im = plt.contourf(boxcar_result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
+    im = plt.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     plt.title("Difference for boxcar responses")
@@ -71,11 +69,11 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar_contours_{absrel}.pdf")
+    plt.savefig(f"results/boxcar/contours_{absrel}.pdf")
     plt.show()
 
     # contourf plot of absolute differences
-    im = plt.contourf(np.abs(boxcar_result), vmin=0, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(0, vmax, 25))
+    im = plt.contourf(np.abs(result), vmin=0, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(0, vmax, 25))
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
     plt.title("Absolute difference for boxcar responses")
@@ -84,5 +82,5 @@ for boxcar_result, absrel, unit in zip([result_absolute, result_relative], ["abs
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Abs. difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar_contours_absolute_{absrel}.pdf")
+    plt.savefig(f"results/boxcar/contours_absolute_{absrel}.pdf")
     plt.show()
