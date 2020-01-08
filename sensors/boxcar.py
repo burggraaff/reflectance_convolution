@@ -4,11 +4,12 @@ Generate boxcar and gaussian spectral response functions
 
 import numpy as np
 from matplotlib import pyplot as plt
-from astropy.io.ascii import read
-from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import split_spectrum, bandaverage_multi
 from sba.response_curves import Sensor
+from sba.bandaveraging import load_data
+
+label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 wavelengths_central = np.arange(330, 800, 5)
 FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36, 104, 4)])
@@ -24,15 +25,6 @@ def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
     return boxcar_sensor
 
 raise Exception
-
-data_norcohab = read("data/norcohab_processed.tab")
-data_archemhab = read("data/archemhab_processed.tab")
-
-data_all = table.vstack([data_norcohab, data_archemhab])
-
-wavelengths, Ed = split_spectrum(data_all, "Ed")
-wavelengths, Lw = split_spectrum(data_all, "Lw")
-wavelengths, R_rs = split_spectrum(data_all, "R_rs")
 
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
