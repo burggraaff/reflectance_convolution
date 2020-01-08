@@ -44,9 +44,9 @@ remove_indices = [i for i, row in enumerate(combined_table) if row["R_rs_400"] <
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
 
-map_data(combined_table, data_label="MSM21_3R", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
+map_data(combined_table, data_label="MSM213-R", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
 
-plot_spectra(combined_table, data_label="MSM21_3R", alpha=0.05)
+plot_spectra(combined_table, data_label="MSM213-R", alpha=0.05)
 
 combined_table.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-write_data(combined_table, label="MSM21_3-R")
+write_data(combined_table, label="MSM213-R")

@@ -47,9 +47,9 @@ remove_indices = [i for i, row_mask in enumerate(combined_table.mask) if any(row
 combined_table.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
 
-map_data(combined_table, data_label="MSM21_3H", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
+map_data(combined_table, data_label="MSM213-H", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
 
-plot_spectra(combined_table, data_label="MSM21_3H", alpha=0.05)
+plot_spectra(combined_table, data_label="MSM213-H", alpha=0.05)
 
 combined_table.remove_columns(["Event_2", "Sample label_1", "Sample label_2", "Altitude [m]", "Latitude_2", "Longitude_2"])
-write_data(combined_table, label="MSM21_3-H")
+write_data(combined_table, label="MSM213-H")
