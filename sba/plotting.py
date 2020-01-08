@@ -3,7 +3,7 @@ Module with functions for plotting
 """
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
-from .bandaveraging import calculate_median_and_errors
+from .bandaveraging import calculate_median_and_errors, split_spectrum
 from pathlib import Path
 import numpy as np
 
@@ -105,17 +105,14 @@ def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exp
 
 def plot_spectra(data, data_label="", alpha=0.1):
     # Plot all Es, Lw, R_rs spectra
-    wavelengths = [float(key[3:]) for key in data.keys() if "Lw" in key]
+    wavelengths, Ed = split_spectrum(data, "Ed")
+    wavelengths, Lw = split_spectrum(data, "Lw")
+    wavelengths, R_rs = split_spectrum(data, "R_rs")
 
     fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
 
-    for row in data:
-        spec_Ed = [row[key] for key in data.keys() if "Ed" in key]
-        spec_Lw = [row[key] for key in data.keys() if "Lw" in key]
-        spec_R_rs = [row[key] for key in data.keys() if "R_rs" in key]
-
-        for ax, spec in zip(axs.ravel(), [spec_Ed, spec_Lw, spec_R_rs]):
-            ax.plot(wavelengths, spec, c="k", alpha=alpha, zorder=1)
+    for ax, spectrum in zip(axs.ravel(), [Ed, Lw, R_rs]):
+        ax.plot(wavelengths, spectrum.T, c="k", alpha=alpha, zorder=1)
 
     for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
         ax.set_ylabel(label)
