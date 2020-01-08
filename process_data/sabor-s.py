@@ -1,10 +1,10 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 import csv
+from sba.io import read, write_data
 
 csv.field_size_limit(1000000)  # Increase to allow large number of columns
 
@@ -68,4 +68,4 @@ map_data(data, data_label="SABOR-S", projection="gnom", lat_0=37, lon_0=-70, llc
 
 plot_spectra(data, data_label="SABOR-S", alpha=0.5)
 
-data.write("data/sabor-s_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="SABOR-S")

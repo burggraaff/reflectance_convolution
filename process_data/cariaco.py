@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -82,4 +82,4 @@ map_data(data, data_label="CARIACO", projection='gnom', lat_0=10.5, lon_0=-64.67
 
 plot_spectra(data, data_label="CARIACO", alpha=0.1)
 
-data.write("data/cariaco_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="CARIACO")

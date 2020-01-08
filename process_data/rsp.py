@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 folder = Path("data/RSP/")
 files = list(folder.glob("*.txt"))
@@ -50,4 +50,4 @@ map_data(data, data_label="RSP", lon_0=0, resolution="i")
 
 plot_spectra(data, data_label="RSP", alpha=0.3)
 
-data.write("data/rsp_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="RSP")

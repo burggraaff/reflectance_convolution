@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 folder = Path("data/CLT/ASD/")
 files = list(folder.glob("*ASD*.txt"))
@@ -54,4 +54,4 @@ map_data(data, data_label="CLT-A", projection='gnom', lat_0=36.9, lon_0=-75.8, l
 
 plot_spectra(data, data_label="CLT-A", alpha=0.2)
 
-data.write("data/clt-a_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="CLT-A")

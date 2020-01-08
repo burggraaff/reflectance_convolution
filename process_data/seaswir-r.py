@@ -1,8 +1,8 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 Ed = read("data/SeaSWIR/SeaSWIR_TRIOS_Ed.tab", data_start=238, header_start=237)
 
@@ -56,4 +56,4 @@ map_data(combined_table, data_label="SeaSWIR-R", projection='merc', lat_0=10, lo
 plot_spectra(combined_table, data_label="SeaSWIR-R", alpha=0.05)
 
 combined_table.remove_columns(["Event_1", "Event_2", "Campaign_1", "Campaign_2", "Station_1", "Station_2"])
-combined_table.write("data/seaswir-r_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(combined_table, label="SeaSWIR-R")

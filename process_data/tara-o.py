@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 folder = Path("data/Tara-O/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
@@ -45,4 +45,4 @@ map_data(data, data_label="Tara-O", lon_0=0, resolution="i")
 
 plot_spectra(data, data_label="Tara-O", alpha=0.1)
 
-data.write("data/tara-o_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="Tara-O")

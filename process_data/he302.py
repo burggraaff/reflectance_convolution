@@ -1,8 +1,8 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Lu = read("data/HE302/HE302_rad.tab", data_start=186, header_start=185)
@@ -37,4 +37,4 @@ map_data(combined_table, data_label="HE302", projection='gnom', lat_0=55, lon_0=
 
 plot_spectra(combined_table, data_label="HE302", alpha=0.15)
 
-combined_table.write("data/he302_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(combined_table, label="HE302")

@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -52,4 +52,4 @@ map_data(data, data_label="AS11", projection="gnom", lat_0=21, lon_0=68, llcrnrl
 
 plot_spectra(data, data_label="AS11", alpha=0.7)
 
-data.write("data/as11_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="AS11")

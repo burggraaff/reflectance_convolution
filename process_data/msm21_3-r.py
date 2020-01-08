@@ -1,8 +1,8 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 Ed = read("data/MSM21_3/MSM21_3_Ed-5nm.tab", data_start=142, header_start=141)
 Lu = read("data/MSM21_3/MSM21_3_Lsfc-5nm.tab", data_start=142, header_start=141)
@@ -49,4 +49,4 @@ map_data(combined_table, data_label="MSM21_3R", projection='gnom', lat_0=66, lon
 plot_spectra(combined_table, data_label="MSM21_3R", alpha=0.05)
 
 combined_table.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-combined_table.write("data/msm21_3r_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(combined_table, label="MSM21_3-R")

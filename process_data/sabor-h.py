@@ -1,9 +1,9 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 data = read("data/SABOR/sabor_HyperPro_2014.txt", data_start=35)
 header = read("data/SABOR/sabor_HyperPro_2014.txt", data_start=32, data_end=33)
@@ -41,4 +41,4 @@ map_data(data, data_label="SABOR-H", projection="gnom", lat_0=37, lon_0=-70, llc
 
 plot_spectra(data, data_label="SABOR-H", alpha=0.5)
 
-data.write("data/sabor-h_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(data, label="SABOR-H")

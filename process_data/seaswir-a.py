@@ -1,8 +1,8 @@
 import numpy as np
-from astropy.io.ascii import read
 from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
+from sba.io import read, write_data
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -61,4 +61,4 @@ map_data(combined_table, data_label="SeaSWIR-A", projection='merc', lat_0=10, lo
 plot_spectra(combined_table, data_label="SeaSWIR-A", alpha=0.05)
 
 combined_table.remove_columns(["Date/Time (end, UTC)", "Date/Time (end, local time)", "Date/Time (start, local time)"])
-combined_table.write("data/seaswir-a_processed.tab", format="ascii.fast_tab", overwrite=True)
+write_data(combined_table, label="SeaSWIR-A")
