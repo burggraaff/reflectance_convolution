@@ -8,19 +8,22 @@ from astropy.io.ascii import read
 from astropy import table
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import split_spectrum, bandaverage_multi
+from sba.response_curves import Sensor
 
 wavelengths_central = np.arange(330, 800, 5)
 FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36, 104, 4)])
-
-raise Exception
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
 
 def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
-    wavelengths_in_boxcar = np.arange(center-fwhm/2., center+fwhm/2.+boxcar_wavelength_step, boxcar_wavelength_step)
+    half_width = fwhm / 2.
+    wavelengths_in_boxcar = np.arange(center-half_width, center+half_width+boxcar_wavelength_step, boxcar_wavelength_step)
     response = np.ones_like(wavelengths_in_boxcar)
-    return wavelengths_in_boxcar, response
+    boxcar_sensor = Sensor("Boxcar", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_in_boxcar], [response])
+    return boxcar_sensor
+
+raise Exception
 
 data_norcohab = read("data/norcohab_processed.tab")
 data_archemhab = read("data/archemhab_processed.tab")
