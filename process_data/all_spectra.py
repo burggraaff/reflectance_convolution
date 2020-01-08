@@ -49,7 +49,6 @@ fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridsp
 for file in all_data_files:
     data = read(file)
     label = file.stem[:-10]
-    nr_spectra += len(data)
 
     wavelengths, Ed = split_spectrum(data, "Ed")
     wavelengths, Lw = split_spectrum(data, "Lw")
