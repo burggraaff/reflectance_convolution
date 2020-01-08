@@ -3,8 +3,6 @@ Module with functions for band-averaging
 """
 
 import numpy as np
-from astropy.io.ascii import read
-from astropy import table
 
 def split_spectrum(data_table, label):
     keys_relevant = [key for key in data_table.keys() if label in key]
