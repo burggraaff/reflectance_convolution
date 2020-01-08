@@ -5,6 +5,7 @@ Generate boxcar and gaussian spectral response functions
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from sba.bandaveraging import calculate_differences
 from sba.io import load_data
 from sba.response_curves import Sensor
 
@@ -35,8 +36,7 @@ for i,center in enumerate(wavelengths_central):
         reflectance_space = gaussian.band_average(wavelengths_data, R_rs)
         radiance_space = gaussian.band_average(wavelengths_data, Lw) / gaussian.band_average(wavelengths_data, Ed)
 
-        difference_absolute = reflectance_space - radiance_space
-        difference_relative = 100*difference_absolute / radiance_space
+        difference_absolute, difference_relative = calculate_differences(reflectance_space, radiance_space)
 
         result_absolute[j,i] = np.median(difference_absolute)
         result_relative[j,i] = np.median(difference_relative)
