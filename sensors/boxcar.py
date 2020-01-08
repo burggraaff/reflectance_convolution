@@ -6,8 +6,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import split_spectrum, bandaverage_multi
+from sba.io import load_data
 from sba.response_curves import Sensor
-from sba.bandaveraging import load_data
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 

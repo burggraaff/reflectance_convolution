@@ -2,7 +2,7 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from sba.bandaveraging import load_data
+from sba.io import load_data
 from sba.response_curves import load_from_name
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()

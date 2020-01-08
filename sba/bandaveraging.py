@@ -5,8 +5,6 @@ Module with functions for band-averaging
 import numpy as np
 from astropy.io.ascii import read
 from astropy import table
-import sys
-from pathlib import Path
 
 def split_spectrum(data_table, label):
     keys_relevant = [key for key in data_table.keys() if label in key]
@@ -46,15 +44,3 @@ def calculate_median_and_errors(differences):
     lower_error = medians - lower_percentile
     upper_error = upper_percentile - medians
     return medians, lower_error, upper_error
-
-def load_data():
-    filename = Path(sys.argv[1])
-    data_all = read(filename)
-
-    label = filename.stem[:-10]
-
-    wavelengths, Ed = split_spectrum(data_all, "Ed")
-    wavelengths, Lw = split_spectrum(data_all, "Lw")
-    wavelengths, R_rs = split_spectrum(data_all, "R_rs")
-
-    return label, wavelengths, Ed, Lw, R_rs

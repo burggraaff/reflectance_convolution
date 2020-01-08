@@ -1,5 +1,20 @@
 from astropy.io.ascii import read
 from numpy import loadtxt, genfromtxt
+from pathlib import Path
+import sys
+from .bandaveraging import split_spectrum
+
+def load_data():
+    filename = Path(sys.argv[1])
+    data_all = read(filename)
+
+    label = filename.stem[:-10]
+
+    wavelengths, Ed = split_spectrum(data_all, "Ed")
+    wavelengths, Lw = split_spectrum(data_all, "Lw")
+    wavelengths, R_rs = split_spectrum(data_all, "R_rs")
+
+    return label, wavelengths, Ed, Lw, R_rs
 
 def write_data(data, label, **kwargs):
     label_lowercase = label.lower()

@@ -2,7 +2,8 @@
 Generate boxcar and gaussian spectral response functions
 """
 
-from sba.bandaveraging import load_data, calculate_differences
+from sba.bandaveraging import calculate_differences
+from sba.io import load_data
 import sba.response_curves as rc
 from sba import plotting as p
 from matplotlib import pyplot as plt
