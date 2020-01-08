@@ -6,13 +6,13 @@ from .bandaveraging import split_spectrum
 
 def load_data():
     filename = Path(sys.argv[1])
-    data_all = read(filename)
+    data = read(filename)
 
     label = filename.stem[:-10]
 
-    wavelengths, Ed = split_spectrum(data_all, "Ed")
-    wavelengths, Lw = split_spectrum(data_all, "Lw")
-    wavelengths, R_rs = split_spectrum(data_all, "R_rs")
+    wavelengths, Ed = split_spectrum(data, "Ed")
+    wavelengths, Lw = split_spectrum(data, "Lw")
+    wavelengths, R_rs = split_spectrum(data, "R_rs")
 
     return label, wavelengths, Ed, Lw, R_rs
 
