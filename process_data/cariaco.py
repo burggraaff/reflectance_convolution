@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
-from sba.io import read, write_data
+from sba.io import read, write_data, find_auxiliary_information_seabass
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -26,17 +26,7 @@ for file in files:
     if 380 not in wavelengths:
         continue
 
-    with open(file, "r") as f:
-        lines = f.readlines()
-        lat_line = [line for line in lines if "north_latitude" in line][0]
-        lat = float(lat_line[16:-6])
-        lon_line = [line for line in lines if "west_longitude" in line][0]
-        lon = float(lon_line[16:-6])
-
-        date_line = [line for line in lines if "end_date" in line][0]
-        date = int(date_line[10:])
-        time_line = [line for line in lines if "start_time" in line][0]
-        time = time_line[12:-6]
+    date, time, lon, lat = find_auxiliary_information_seabass(file)
 
     cols = ["Date", "Time", "Latitude", "Longitude"] + [f"Ed_{wvl:.0f}" for wvl in wavelengths] + [f"R_rs_{wvl:.0f}" for wvl in wavelengths]
     dtype = [int, "S8", float, float] + 2 * [float for wvl in wavelengths]

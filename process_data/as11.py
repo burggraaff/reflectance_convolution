@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
-from sba.io import read, write_data
+from sba.io import read, write_data, find_auxiliary_information_seabass
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -16,15 +16,7 @@ for file in files:
     if len(np.where(Rrs < 0)[0]) > 0:
         continue
 
-    with open(file, "r") as f:
-        lines = f.readlines()
-        lat, lon = lines[20:22]
-        lat = float(lat[16:-6])
-        lon = float(lon[16:-6])
-
-        date, time = lines[16:18]
-        date = int(date[10:-1])
-        time = time[12:-6]
+    date, time, lon, lat = find_auxiliary_information_seabass(file)
 
     cols = ["Date", "Time", "Latitude", "Longitude"] + [f"Lw_{wvl:.2f}" for wvl in wavelengths] + [f"Ed_{wvl:.2f}" for wvl in wavelengths] + [f"R_rs_{wvl:.2f}" for wvl in wavelengths]
     dtype = [int, "S8", float, float] + 3 * [float for wvl in wavelengths]
