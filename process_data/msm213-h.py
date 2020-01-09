@@ -3,6 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.bandaveraging import split_spectrum
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)
@@ -36,11 +37,23 @@ remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
 
-# Remove rows with jumps in Ed >0.5 between wavelengths
-Ed_keys = [key for key in data.keys() if "Ed" in key]
-remove_indices = [i for i, row in enumerate(data) if any([np.abs(row[key1]-row[key2]) >= 0.5 for key1, key2 in zip(Ed_keys, Ed_keys[1:])])]
+# Remove rows with consecutive jumps in Ed > threshold between wavelengths
+threshold = 0.2
+wavelengths, Ed = split_spectrum(data, "Ed")
+diffs = np.diff(Ed, axis=1)
+diffs_abs = np.abs(diffs)
+all_rows = [np.where((col1 >= threshold) & (col2 >= threshold))[0] for col1, col2 in zip(diffs_abs.T, diffs_abs.T[1:])]
+all_rows = [row for sub in all_rows for row in sub]
+remove_indices = np.unique(all_rows)
 data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with Ed jumps > 0.5")
+print(f"Removed {len(remove_indices)} rows with consecutive Ed jumps > {threshold}")
+
+# Remove rows with singular jumps in Ed > 0.4 between wavelengths
+wavelengths, Ed = split_spectrum(data, "Ed")
+diffs = np.diff(Ed, axis=1)
+remove_indices = np.unique(np.where(np.abs(diffs) >= 0.35)[0])
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with Ed jumps > 0.35")
 
 # Remove rows with negative R_rs
 remove_indices = [i for i, row in enumerate(data) if any(row[key] <= -0.001 for key in R_rs_keys)]
