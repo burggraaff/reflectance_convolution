@@ -5,7 +5,7 @@ from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
 
-folder = Path("data/Tara-O/")
+folder = Path("data/TaraM/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
 
 data = table.vstack([read(file, data_start=35) for file in files])
@@ -41,8 +41,8 @@ for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
 
-map_data(data, data_label="Tara-O", lon_0=0, resolution="i")
+map_data(data, data_label="TaraM", projection="gnom", lat_0=43.5, lon_0=19, llcrnrlon=0, urcrnrlon=40, llcrnrlat=30, urcrnrlat=44, resolution="h", parallels=np.arange(30, 50, 2.5), meridians=np.arange(0, 45, 5))
 
-plot_spectra(data, data_label="Tara-O", alpha=0.1)
+plot_spectra(data, data_label="TaraM", alpha=0.1)
 
-write_data(data, label="Tara-O")
+write_data(data, label="TaraM")

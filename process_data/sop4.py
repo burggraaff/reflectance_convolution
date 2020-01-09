@@ -4,9 +4,9 @@ from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
 
-Ed = read("data/SO-P4/SO-P4_irrad.tab", data_start=142, header_start=141)
-Lu = read("data/SO-P4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
-Ls = read("data/SO-P4/SO-P4_sky_rad_40deg.tab", data_start=142, header_start=141)
+Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
+Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
+Ls = read("data/SOP4/SO-P4_sky_rad_40deg.tab", data_start=142, header_start=141)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:
@@ -63,9 +63,9 @@ for wvl in wavelengths[(wavelengths < 375) | (wavelengths > 700)]:
     remove_keys = [f"{s}_{wvl:.0f}" for s in ("Ed", "Lw", "R_rs")]
     data.remove_columns(remove_keys)
 
-map_data(data, data_label="SO-P4", projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
+map_data(data, data_label="SOP4", projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
 
-plot_spectra(data, data_label="SO-P4", alpha=0.05)
+plot_spectra(data, data_label="SOP4", alpha=0.05)
 
 data.remove_columns(["Latitude_1", "Longitude_1", "Altitude [m]_1", "Latitude_2", "Longitude_2", "Altitude [m]_2"])
-write_data(data, "SO-P4")
+write_data(data, "SOP4")
