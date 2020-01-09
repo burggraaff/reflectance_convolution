@@ -5,8 +5,6 @@ from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
-Lu = read("data/HE302/HE302_rad.tab", data_start=186, header_start=185)
-Ls = read("data/HE302/HE302_ssr.tab", data_start=186, header_start=185)
 Rrs = read("data/HE302/HE302_rrs.tab", data_start=186, header_start=185)
 
 wavelengths = np.arange(320, 955, 5)
