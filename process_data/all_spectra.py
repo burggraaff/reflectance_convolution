@@ -67,7 +67,7 @@ axs[-1].set_xlabel("Wavelength [nm]")
 axs[-1].set_xlim(300, 1000)
 
 axs[0].set_ylim(0, 2)
-axs[1].set_ylim(0, 0.05)
+axs[1].set_ylim(0, 0.015)
 axs[2].set_ylim(0, 0.01)
 
 axs[0].set_title(f"All spectra ({nr_spectra})")
