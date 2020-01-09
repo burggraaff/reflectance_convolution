@@ -30,6 +30,12 @@ for wvl in wavelengths:
     Ed.unit = u.watt / (u.meter**2 * u.nanometer)
     data.add_column(Ed)
 
+# Remove rows with NaN values
+R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key] for key in R_rs_keys)]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with NaN values")
+
 # Remove rows with jumps in Ed >0.5 between wavelengths
 Ed_keys = [key for key in data.keys() if "Ed" in key]
 remove_indices = [i for i, row in enumerate(data) if any([np.abs(row[key1]-row[key2]) >= 0.5 for key1, key2 in zip(Ed_keys, Ed_keys[1:])])]
@@ -37,15 +43,9 @@ data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with Ed jumps > 0.5")
 
 # Remove rows with negative R_rs
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(data) if any(row[key] <= -0.001 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
-
-# Remove rows with NaN values
-remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key] for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with NaN values")
 
 map_data(data, data_label="MSM213-H", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
 
