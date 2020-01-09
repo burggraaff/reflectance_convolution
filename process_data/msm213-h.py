@@ -55,11 +55,6 @@ remove_indices = np.unique(np.where(np.abs(diffs) >= 0.35)[0])
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with Ed jumps >= 0.35")
 
-# Remove rows with negative R_rs
-remove_indices = [i for i, row in enumerate(data) if any(row[key] <= -0.001 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
-
 map_data(data, data_label="MSM213-H", projection='gnom', lat_0=66, lon_0=-40.5, llcrnrlon=-53, urcrnrlon=-12, llcrnrlat=58, urcrnrlat=70.5, resolution="h", parallels=np.arange(55, 75, 5), meridians=np.arange(-60, -5, 5))
 
 plot_spectra(data, data_label="MSM213-H", alpha=0.05)
