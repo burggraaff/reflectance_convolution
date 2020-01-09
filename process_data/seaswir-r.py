@@ -29,6 +29,8 @@ for wvl in wavelengths:
     Ed[f"Ed_{wvl:.1f}"] = Ed[f"Ed_{wvl:.1f}"].to(u.watt / (u.meter**2 * u.nanometer))
 
     Rrs[f"R_rs_{wvl:.1f}"].unit = 1 / u.steradian
+    # Convert R_w to R_rs
+    Rrs[f"R_rs_{wvl:.1f}"] = Rrs[f"R_rs_{wvl:.1f}"] / np.pi
 
 data = table.join(Ed, Rrs, keys=["ID"])
 
@@ -39,17 +41,9 @@ for wvl in wavelengths:
     data.add_column(Lw)
 
 R_rs_keys = [key for key in data.keys() if "R_rs" in key]
-remove_indices = [i for i, row in enumerate(data) if any(row[key] <= -0.001 for key in R_rs_keys)]
+remove_indices = [i for i, row in enumerate(data) if any(row[key] <= 0 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")
-
-#remove_indices = [i for i, row in enumerate(data) if any(row[key] > 0.1 for key in R_rs_keys)]
-#data.remove_rows(remove_indices)
-#print(f"Removed {len(remove_indices)} rows with values > 0.1")
-
-remove_indices = [i for i, row in enumerate(data) if row["R_rs_400.0"] < 0]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
 
 map_data(data, data_label="SeaSWIR-R", projection='merc', lat_0=10, lon_0=-30, llcrnrlon=-60, urcrnrlon=7, llcrnrlat=-38, urcrnrlat=55, resolution="i", figsize=(5,10), parallels=np.arange(-40, 60, 10), meridians=np.arange(-60, 20, 10))
 
