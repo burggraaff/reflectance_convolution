@@ -23,9 +23,9 @@ for wvl in wavelengths:
     Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
     data.add_column(Lw)
 
-remove_indices = [i for i, row in enumerate(data) if row["R_rs_400"] < 0 or row["R_rs_800"] >= 0.003]
+remove_indices = [i for i, row in enumerate(data) if row["R_rs_800"] >= 0.003]
 data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with values of R_rs(400 nm) < 0 or R_rs(800 nm) >= 0.003")
+print(f"Removed {len(remove_indices)} rows with values of R_rs(800 nm) >= 0.003")
 
 for key in ["Date/Time", "Latitude", "Longitude", "Altitude [m]"]:
     data.rename_column(f"{key}_1", key)
