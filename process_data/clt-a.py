@@ -13,10 +13,6 @@ for file in files:
     skiprows = 51 if "2007" in file.stem else 47
     wavelengths, Es, Rrs = np.loadtxt(file, delimiter="\t", skiprows=skiprows, unpack=True, usecols=[0,1,3])
 
-    # Reject data with negative Rrs
-    if len(np.where(Rrs < 0)[0]) > 0:
-        continue
-
     date, time, lon, lat = find_auxiliary_information_seabass(file)
 
     cols = ["Date", "Time", "Latitude", "Longitude"] + [f"Ed_{wvl:.0f}" for wvl in wavelengths] + [f"R_rs_{wvl:.0f}" for wvl in wavelengths]
@@ -41,6 +37,10 @@ for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     Lw.name = f"Lw_{wavelength}"
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
+
+remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with R_rs < 0")
 
 map_data(data, data_label="CLT-A", projection='gnom', lat_0=36.9, lon_0=-75.8, llcrnrlon=-80, urcrnrlon=-70, llcrnrlat=32, urcrnrlat=42, resolution="h", parallels=np.arange(30, 45, 2), meridians=np.arange(-80, -70, 2))
 
