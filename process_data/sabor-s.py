@@ -64,6 +64,14 @@ for wvl in remove_wavelengths:
     except KeyError:
         continue
 
+# Clip small negative values (0 > R_rs > -1e-4) to 0
+R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+Lw_keys = [key for key in data.keys() if "Lw" in key]
+for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
+    ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
+    data[R_rs_k][ind] = 0
+    data[Lw_k][ind] = 0
+
 map_data(data, data_label="SABOR-S", projection="gnom", lat_0=37, lon_0=-70, llcrnrlon=-77, urcrnrlon=-64, llcrnrlat=35, urcrnrlat=43, resolution="h", parallels=np.arange(32, 45, 2), meridians=np.arange(-80, -60, 2))
 
 plot_spectra(data, data_label="SABOR-S", alpha=0.5)
