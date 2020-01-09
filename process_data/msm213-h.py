@@ -37,7 +37,7 @@ remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
 
-# Remove rows with consecutive jumps in Ed > threshold between wavelengths
+# Remove rows with consecutive jumps in Ed >= threshold between wavelengths
 threshold = 0.2
 wavelengths, Ed = split_spectrum(data, "Ed")
 diffs = np.diff(Ed, axis=1)
@@ -46,14 +46,14 @@ all_rows = [np.where((col1 >= threshold) & (col2 >= threshold))[0] for col1, col
 all_rows = [row for sub in all_rows for row in sub]
 remove_indices = np.unique(all_rows)
 data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with consecutive Ed jumps > {threshold}")
+print(f"Removed {len(remove_indices)} rows with consecutive Ed jumps >= {threshold}")
 
 # Remove rows with singular jumps in Ed > 0.4 between wavelengths
 wavelengths, Ed = split_spectrum(data, "Ed")
 diffs = np.diff(Ed, axis=1)
 remove_indices = np.unique(np.where(np.abs(diffs) >= 0.35)[0])
 data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with Ed jumps > 0.35")
+print(f"Removed {len(remove_indices)} rows with Ed jumps >= 0.35")
 
 # Remove rows with negative R_rs
 remove_indices = [i for i, row in enumerate(data) if any(row[key] <= -0.001 for key in R_rs_keys)]
