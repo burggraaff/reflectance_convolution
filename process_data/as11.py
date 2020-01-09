@@ -12,10 +12,6 @@ tabs = []
 for file in files:
     wavelengths, Lw, Es, Rrs = np.loadtxt(file, delimiter=",", skiprows=43, unpack=True, usecols=[0,1,3,4])
 
-    # Reject data with negative Rrs
-    if len(np.where(Rrs < 0)[0]) > 0:
-        continue
-
     date, time, lon, lat = find_auxiliary_information_seabass(file)
 
     cols = ["Date", "Time", "Latitude", "Longitude"] + [f"Lw_{wvl:.2f}" for wvl in wavelengths] + [f"Ed_{wvl:.2f}" for wvl in wavelengths] + [f"R_rs_{wvl:.2f}" for wvl in wavelengths]
@@ -25,9 +21,11 @@ for file in files:
 
 data = table.vstack(tabs)
 
+print(f"Original N = {len(data)}")
+
 Ed_keys = [key for key in data.keys() if "Ed" in key]
 Lw_keys = [key for key in data.keys() if "Lw" in key]
-R_rs_keys = [key for key in data.keys() if "Rrs" in key]
+R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 
 for key in Ed_keys:
     data[key].unit = u.microwatt / (u.cm**2 * u.nm)
@@ -39,6 +37,10 @@ for key in Lw_keys:
 
 for key in R_rs_keys:
     data[key].unit = 1 / u.steradian
+
+remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with R_rs < 0")
 
 map_data(data, data_label="AS11", projection="gnom", lat_0=21, lon_0=68, llcrnrlon=65, urcrnrlon=71, llcrnrlat=18, urcrnrlat=24, resolution="h", parallels=np.arange(16, 30, 2), meridians=np.arange(66, 72, 2))
 
