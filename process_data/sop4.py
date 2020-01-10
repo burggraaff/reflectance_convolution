@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.bandaveraging import split_spectrum
+from sba.data_processing import split_spectrum
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)

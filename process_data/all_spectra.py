@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.io.ascii import read
 from pathlib import Path
-from sba.bandaveraging import split_spectrum
+from sba.data_processing import split_spectrum
 
 folder = Path("data")
 

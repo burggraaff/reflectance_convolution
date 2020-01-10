@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.bandaveraging import split_spectrum
+from sba.data_processing import split_spectrum
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)

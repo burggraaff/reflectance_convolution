@@ -2,7 +2,7 @@ from astropy.io.ascii import read
 from numpy import loadtxt, genfromtxt
 from pathlib import Path
 import sys
-from .bandaveraging import split_spectrum
+from .data_processing import split_spectrum
 
 def load_data():
     filename = Path(sys.argv[1])
