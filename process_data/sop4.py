@@ -3,6 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.bandaveraging import split_spectrum
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
@@ -41,27 +42,42 @@ for wvl in wavelengths:
     data[f"R_rs_{wvl}"] = data[f"R_rs_{wvl}"] - normalisation
     data[f"Lw_{wvl}"] = data[f"R_rs_{wvl}"] * data[f"Ed_{wvl}"]
 
-# Remove rows where Ed_405 is abnormally low compared to Ed_400
-diff = data["Ed_400"] - data["Ed_405"]
-remove_indices = [i for i, row in enumerate(data) if diff[i] > 0.15]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.15")
-
-# Remote rows with spiky R_rs
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
-remove_indices = [i for i, row in enumerate(data) if any([np.abs(row[key1]-row[key2]) >= 0.002 for key1, key2 in zip(R_rs_keys, R_rs_keys[1:])])]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with differences in R_rs >=0.002 between wavelengths")
-
-# Remove rows with negative R_rs
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < -0.001 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
-
 # Remove columns that are consistently negative in R_rs
-for wvl in wavelengths[(wavelengths < 375) | (wavelengths > 700)]:
+for wvl in wavelengths[(wavelengths < 360) | (wavelengths > 750)]:
     remove_keys = [f"{s}_{wvl:.0f}" for s in ("Ed", "Lw", "R_rs")]
     data.remove_columns(remove_keys)
+print("Removed columns with wavelengths <360 and >750")
+
+# Remove rows with consecutive jumps in Ed >= threshold between wavelengths
+threshold = 0.005
+wavelengths, R_rs = split_spectrum(data, "R_rs")
+diffs = np.diff(R_rs, axis=1)
+diffs_abs = np.abs(diffs)
+all_rows = [np.where((col1 >= threshold) & (col2 >= threshold))[0] for col1, col2 in zip(diffs_abs.T, diffs_abs.T[1:])]
+all_rows = [row for sub in all_rows for row in sub]
+remove_indices = np.unique(all_rows)
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with consecutive R_rs jumps >= {threshold}")
+
+# Remove rows where Ed_405 is abnormally low compared to Ed_400
+diff = data["Ed_400"] - data["Ed_405"]
+remove_indices = np.where(diff > 0.01)[0]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.01")
+
+# Clip small negative values (0 > R_rs > -1e-4) to 0
+R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+Lw_keys = [key for key in data.keys() if "Lw" in key]
+for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
+    ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
+    data[R_rs_k][ind] = 0
+    data[Lw_k][ind] = 0
+
+# Remove rows with negative R_rs
+R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with negative values")
 
 map_data(data, data_label="SOP4", projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
 
