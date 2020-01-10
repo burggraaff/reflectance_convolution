@@ -30,7 +30,6 @@ data = table.vstack(tabs)
 Ed_keys = [key for key in data.keys() if "Ed" in key]
 R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 
-normalisation = data["R_rs_748"].copy()
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = int(Ed_k[3:])
 
