@@ -43,6 +43,14 @@ for wvl in wavelengths:
     data[f"R_rs_{wvl}"] = data[f"R_rs_{wvl}"] - normalisation
     data[f"Lw_{wvl}"] = data[f"R_rs_{wvl}"] * data[f"Ed_{wvl}"]
 
+# Remove rows where the maximum Ed is unphysically small (< threshold)
+threshold = 0.01
+wavelengths, Ed = split_spectrum(data, "Ed")
+max_values = np.max(Ed, axis=1)
+remove_indices = np.where(max_values < threshold)[0]
+data.remove_rows(remove_indices)
+print(f"Removed {len(remove_indices)} rows with max(Ed) < {threshold}")
+
 # Remove columns that are consistently negative in R_rs
 for wvl in wavelengths[(wavelengths < 360) | (wavelengths > 750)]:
     remove_keys = get_keys_with_label(data, f"{wvl:.0f}")
