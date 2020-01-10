@@ -3,6 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.data_processing import get_keys_with_label
 
 Ed = read("data/SeaSWIR/SeaSWIR_TRIOS_Ed.tab", data_start=238, header_start=237)
 
@@ -40,7 +41,7 @@ for wvl in wavelengths:
     Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
     data.add_column(Lw)
 
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+R_rs_keys = get_keys_with_label(data, "R_rs")
 remove_indices = [i for i, row in enumerate(data) if any(row[key] <= 0 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")

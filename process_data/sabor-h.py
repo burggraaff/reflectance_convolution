@@ -4,6 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.data_processing import get_keys_with_label
 
 data = read("data/SABOR/sabor_HyperPro_2014.txt", data_start=35)
 header = read("data/SABOR/sabor_HyperPro_2014.txt", data_start=32, data_end=33)
@@ -13,14 +14,13 @@ header = header[0].as_void()
 for key, new_key in zip(data.keys(), header):
     data.rename_column(key, new_key)
 
-data.remove_columns([key for key in data.keys() if "sd" in key])
-data.remove_columns([key for key in data.keys() if "Lu" in key])
+data.remove_columns(get_keys_with_label(data, "sd"))
+data.remove_columns(get_keys_with_label(data, "Lu"))
 
 data.rename_column("lat", "Latitude")
 data.rename_column("lon", "Longitude")
 
-Ed_keys = [key for key in data.keys() if "Ed" in key]
-R_rs_keys = [key for key in data.keys() if "Rrs" in key]
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "Rrs")
 
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = float(Ed_k[2:])

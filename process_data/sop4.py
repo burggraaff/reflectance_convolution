@@ -4,6 +4,7 @@ from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
 from sba.data_processing import split_spectrum
+from sba.data_processing import get_keys_with_label
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
@@ -44,7 +45,7 @@ for wvl in wavelengths:
 
 # Remove columns that are consistently negative in R_rs
 for wvl in wavelengths[(wavelengths < 360) | (wavelengths > 750)]:
-    remove_keys = [f"{s}_{wvl:.0f}" for s in ("Ed", "Lw", "R_rs")]
+    remove_keys = get_keys_with_label(data, f"{wvl:.0f}")
     data.remove_columns(remove_keys)
 print("Removed columns with wavelengths <360 and >750")
 
@@ -66,15 +67,13 @@ data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.01")
 
 # Clip small negative values (0 > R_rs > -1e-4) to 0
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
-Lw_keys = [key for key in data.keys() if "Lw" in key]
+Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
 for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
     ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
     data[R_rs_k][ind] = 0
     data[Lw_k][ind] = 0
 
 # Remove rows with negative R_rs
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")

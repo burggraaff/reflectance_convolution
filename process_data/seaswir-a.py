@@ -3,11 +3,12 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.data_processing import get_keys_with_label
 
 wavelengths = np.arange(350, 1301, 1)
 
 Ld = read("data/SeaSWIR/SeaSWIR_ASD_Ldspec.tab", data_start=974, header_start=973)
-Ldkeys = [key for key in Ld.keys() if "Ld" in key]
+Ldkeys = get_keys_with_label(Ld, "Ld")
 for Ldkey, wvl in zip(Ldkeys, wavelengths):
     # multiply by pi to convert L to E (integrate over hemisphere)
     # divide by 1e5 for normalisation to W/m^2/nm (empirical)
@@ -20,7 +21,7 @@ Ed = Ld
 # Units of Ld are not provided
 
 Rrs = read("data/SeaSWIR/SeaSWIR_ASD_Rw.tab", data_start=974, header_start=973)
-Rrskeys = [key for key in Rrs.keys() if "Refl" in key]
+Rrskeys = get_keys_with_label(Rrs, "Refl")
 for key, wvl in zip(Rrskeys, wavelengths):
     Rrs.rename_column(key, f"R_rs_{wvl}")
     # Convert R_w to R_rs
@@ -45,7 +46,7 @@ remove_indices = [i for i, mask_row in enumerate(data.mask) if mask_row["Ed_500"
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows without Ed data")
 
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+R_rs_keys = get_keys_with_label(data, "R_rs")
 remove_indices = [i for i, row in enumerate(data) if any(row[key] <= 0 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")

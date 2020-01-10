@@ -4,6 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
+from sba.data_processing import get_keys_with_label
 
 folder = Path("data/CLT/ASD/")
 files = list(folder.glob("*ASD*.txt"))
@@ -22,8 +23,7 @@ for file in files:
 
 data = table.vstack(tabs)
 
-Ed_keys = [key for key in data.keys() if "Ed" in key]
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = int(Ed_k[3:])

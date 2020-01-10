@@ -4,6 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
+from sba.data_processing import get_keys_with_label
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -27,8 +28,7 @@ for file in files:
 
 data = table.vstack(tabs)
 
-Ed_keys = [key for key in data.keys() if "Ed" in key]
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = int(Ed_k[3:])
@@ -44,7 +44,6 @@ for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     data.add_column(Lw)
 
 # Remove rows with NaN values
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key] for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
@@ -65,15 +64,13 @@ data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with R_rs > 0.02")
 
 # Clip small negative values (0 > R_rs > -1e-4) to 0
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
-Lw_keys = [key for key in data.keys() if "Lw" in key]
+Lw_keys = get_keys_with_label(data, "Lw")
 for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
     ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
     data[R_rs_k][ind] = 0
     data[Lw_k][ind] = 0
 
 # Remove rows with negative R_rs
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
 remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with negative values")

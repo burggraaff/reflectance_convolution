@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import split_spectrum
+from sba.data_processing import split_spectrum, get_keys_with_label
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)
@@ -32,7 +32,7 @@ for wvl in wavelengths:
     data.add_column(Ed)
 
 # Remove rows with NaN values
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+R_rs_keys = get_keys_with_label(data, "R_rs")
 remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key] for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")

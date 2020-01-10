@@ -3,8 +3,9 @@ from astropy import table
 from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
-import csv
 from sba.io import read, write_data
+from sba.data_processing import get_keys_with_label
+import csv
 
 csv.field_size_limit(1000000)  # Increase to allow large number of columns
 
@@ -21,13 +22,13 @@ for file in files:
     for key, new_key in zip(data_table.keys(), header):
         data_table.rename_column(key, new_key)
 
-    data_table.remove_columns([key for key in data_table.keys() if "stokes" in key])
-    data_table.remove_columns([key for key in data_table.keys() if "sd" in key])
-    data_table.remove_columns([key for key in data_table.keys() if "sky" in key])
-    data_table.remove_columns([key for key in data_table.keys() if "Lt" in key])
+    data_table.remove_columns(get_keys_with_label(data_table, "stokes"))
+    data_table.remove_columns(get_keys_with_label(data_table, "sd"))
+    data_table.remove_columns(get_keys_with_label(data_table, "sky"))
+    data_table.remove_columns(get_keys_with_label(data_table, "Lt"))
     # These data are normalised to R_rs(750 nm), so we must re-calculate Lw to get a fair comparison
-    data_table.remove_columns([key for key in data_table.keys() if "Lw" in key])
-    data_table.remove_columns([key for key in data_table.keys() if "AOT" in key])
+    data_table.remove_columns(get_keys_with_label(data_table, "Lw"))
+    data_table.remove_columns(get_keys_with_label(data_table, "AOT"))
 
     data_tables.append(data_table)
     print(file)
@@ -38,8 +39,7 @@ data.remove_column("col15346")
 data.rename_column("lat", "Latitude")
 data.rename_column("lon", "Longitude")
 
-Es_keys = [key for key in data.keys() if "Es" in key]
-R_rs_keys = [key for key in data.keys() if "Rrs" in key]
+Es_keys, R_rs_keys = get_keys_with_label(data, "Es", "Rrs")
 
 for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     wavelength = int(Es_k[2:])
@@ -65,8 +65,7 @@ for wvl in remove_wavelengths:
         continue
 
 # Clip small negative values (0 > R_rs > -1e-4) to 0
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
-Lw_keys = [key for key in data.keys() if "Lw" in key]
+Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
 for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
     ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
     data[R_rs_k][ind] = 0

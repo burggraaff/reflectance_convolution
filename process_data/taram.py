@@ -4,6 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.data_processing import get_keys_with_label
 
 folder = Path("data/TaraM/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
@@ -17,14 +18,13 @@ header = header[0].as_void()
 for key, new_key in zip(data.keys(), header):
     data.rename_column(key, new_key)
 
-data.remove_columns([key for key in data.keys() if "sd" in key])
-data.remove_columns([key for key in data.keys() if "LU" in key])
+data.remove_columns(get_keys_with_label(data, "sd"))
+data.remove_columns(get_keys_with_label(data, "LU"))
 
 data.rename_column("lat", "Latitude")
 data.rename_column("lon", "Longitude")
 
-Es_keys = [key for key in data.keys() if "ES" in key]
-R_rs_keys = [key for key in data.keys() if "Rrs" in key]
+Es_keys, R_rs_keys = get_keys_with_label(data, "ES", "Rrs")
 
 for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     wavelength = float(Es_k[2:])

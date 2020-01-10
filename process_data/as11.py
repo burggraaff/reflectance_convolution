@@ -4,6 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
+from sba.data_processing import get_keys_with_label
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -23,9 +24,7 @@ data = table.vstack(tabs)
 
 print(f"Original N = {len(data)}")
 
-Ed_keys = [key for key in data.keys() if "Ed" in key]
-Lw_keys = [key for key in data.keys() if "Lw" in key]
-R_rs_keys = [key for key in data.keys() if "R_rs" in key]
+Ed_keys, Lw_keys, R_rs_keys = get_keys_with_label(data, "Ed", "Lw", "R_rs")
 
 for key in Ed_keys:
     data[key].unit = u.microwatt / (u.cm**2 * u.nm)
