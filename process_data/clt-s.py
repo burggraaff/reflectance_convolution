@@ -51,12 +51,12 @@ def convert_timestamp(timestamp):
 data = []
 for j, row in enumerate(master_table):
     # Read each data file and combine them into one big table
+    data_files = [f"data/CLT/HyperSAS/{row['Station']}_SAS-H_L3a_{quantity}.txt" for quantity in ["Es", "Lsky", "Lt"]]
     try:
-        data_files = [f"data/CLT/HyperSAS/{row['Station']}_SAS-H_L3a_{quantity}.txt" for quantity in ["Es", "Lsky", "Lt"]]
+        Es, Lsky, Lt = [read_data_file(filename) for filename in data_files]
     except FileNotFoundError:
         # If a file is missing, go on to the next
         continue
-    Es, Lsky, Lt = [read_data_file(filename) for filename in data_files]
     data_table = table.join(Es, Lsky)
     data_table = table.join(data_table, Lt)
 
