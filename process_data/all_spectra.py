@@ -32,7 +32,7 @@ for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.grid(ls="--", zorder=0)
 
 axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(300, 1000)
+axs[-1].set_xlim(300, 1300)
 
 axs[0].set_ylim(ymin=0)
 axs[1].set_ylim(ymin=0)
@@ -64,7 +64,7 @@ for ax, label in zip(axs.ravel(), ["$E_d$", "$L_w$", "$R_{rs}$"]):
     ax.grid(ls="--", zorder=0)
 
 axs[-1].set_xlabel("Wavelength [nm]")
-axs[-1].set_xlim(300, 1000)
+axs[-1].set_xlim(300, 800)
 
 axs[0].set_ylim(0, 2)
 axs[1].set_ylim(0, 0.015)
