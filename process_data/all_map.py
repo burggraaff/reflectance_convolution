@@ -12,7 +12,7 @@ all_data_files = sorted(folder.glob("*processed.tab"))
 
 data = [read(file, include_names=["Latitude", "Longitude"]) for file in all_data_files]
 labels = [file.stem[:-10] for file in all_data_files]
-colours = ["xkcd:royal blue", "xkcd:orange", "xkcd:lime green", "xkcd:magenta", "xkcd:olive green", "xkcd:navy", "xkcd:maroon", "xkcd:bright pink", "xkcd:hunter green", "xkcd:vomit", "xkcd:chocolate", "xkcd:rust brown", "xkcd:crimson", "xkcd:black"]
+colours = ["xkcd:royal blue", "xkcd:orange", "xkcd:lime green", "xkcd:magenta", "xkcd:olive green", "xkcd:navy", "xkcd:yellow", "xkcd:maroon", "xkcd:bright pink", "xkcd:hunter green", "xkcd:vomit", "xkcd:chocolate", "xkcd:rust brown", "xkcd:crimson", "xkcd:bright red", "xkcd:black", "xkcd:neon green", "xkcd:goldenrod", "xkcd:navy", "xkcd:light orange", "xkcd:pale yellow"]
 
 for tab, label, colour in zip(data, labels, colours):
     tab.add_column(table.Column(name="Label", data=[label for row in tab]))
