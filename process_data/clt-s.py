@@ -118,6 +118,9 @@ for Ed_k, Ls_k, Lt_k in zip(Ed_keys, Ls_keys, Lt_keys):
 data.remove_columns(Ls_keys)
 data.remove_columns(Lt_keys)
 
+# Remove rows with missing R_rs values (< -1)
+remove_rows_based_on_threshold(data, "R_rs", "<", -1)
+
 plot_spectra(data, data_label="CLT-S", alpha=0.05)
 
 write_data(data, label="CLT-S")
