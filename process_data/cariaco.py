@@ -58,9 +58,6 @@ print(f"Removed {len(remove_indices)} rows with missing Ed values")
 
 remove_negative_R_rs(data)
 
-# Remove rows with unphysically high R_rs values (> 0.02)
-remove_rows_based_on_threshold(data, "R_rs", ">", 0.02)
-
 map_data(data, data_label="CARIACO", projection='gnom', lat_0=10.5, lon_0=-64.67, llcrnrlon=-70, urcrnrlon=-59, llcrnrlat=5, urcrnrlat=15, resolution="h", parallels=np.arange(4, 16, 2), meridians=np.arange(-70, -56, 2))
 
 plot_spectra(data, data_label="CARIACO", alpha=0.1)
