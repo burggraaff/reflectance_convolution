@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs
 
 folder = Path("data/CLT/ASD/")
 files = list(folder.glob("*ASD*.txt"))
@@ -38,9 +38,7 @@ for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
 
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with R_rs < 0")
+remove_negative_R_rs(data)
 
 map_data(data, data_label="CLT-A", projection='gnom', lat_0=36.9, lon_0=-75.8, llcrnrlon=-80, urcrnrlon=-70, llcrnrlat=32, urcrnrlat=42, resolution="h", parallels=np.arange(30, 45, 2), meridians=np.arange(-80, -70, 2))
 

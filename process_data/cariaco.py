@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs, remove_rows_based_on_threshold
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -49,9 +49,7 @@ data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
 
 # Remove rows with missing R_rs values (< -90)
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < -90 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with R_rs < -90")
+remove_rows_based_on_threshold(data, "R_rs", "<", -90)
 
 # Remove rows with missing Ed values (<)
 remove_indices = [i for i, row in enumerate(data) if row["Ed_600"] <= 0.1]
@@ -63,17 +61,7 @@ remove_indices = [i for i, row in enumerate(data) if any(row[key] > 0.02 for key
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with R_rs > 0.02")
 
-# Clip small negative values (0 > R_rs > -1e-4) to 0
-Lw_keys = get_keys_with_label(data, "Lw")
-for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
-    ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
-    data[R_rs_k][ind] = 0
-    data[Lw_k][ind] = 0
-
-# Remove rows with negative R_rs
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
+remove_negative_R_rs(data)
 
 map_data(data, data_label="CARIACO", projection='gnom', lat_0=10.5, lon_0=-64.67, llcrnrlon=-70, urcrnrlon=-59, llcrnrlat=5, urcrnrlat=15, resolution="h", parallels=np.arange(4, 16, 2), meridians=np.arange(-70, -56, 2))
 

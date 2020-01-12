@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -46,10 +46,7 @@ remove_indices = [i for i, mask_row in enumerate(data.mask) if mask_row["Ed_500"
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows without Ed data")
 
-R_rs_keys = get_keys_with_label(data, "R_rs")
-remove_indices = [i for i, row in enumerate(data) if any(row[key] <= 0 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
+remove_negative_R_rs(data)
 
 map_data(data, data_label="SeaSWIR-A", projection='merc', lat_0=10, lon_0=-30, llcrnrlon=-60, urcrnrlon=7, llcrnrlat=-38, urcrnrlat=55, resolution="i", figsize=(5,10), parallels=np.arange(-40, 60, 10), meridians=np.arange(-60, 20, 10))
 

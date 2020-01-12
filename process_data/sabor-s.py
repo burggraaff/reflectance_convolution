@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs
 import csv
 
 csv.field_size_limit(1000000)  # Increase to allow large number of columns
@@ -64,12 +64,7 @@ for wvl in remove_wavelengths:
     except KeyError:
         continue
 
-# Clip small negative values (0 > R_rs > -1e-4) to 0
-Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
-for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
-    ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
-    data[R_rs_k][ind] = 0
-    data[Lw_k][ind] = 0
+remove_negative_R_rs(data)
 
 map_data(data, data_label="SABOR-S", projection="gnom", lat_0=37, lon_0=-70, llcrnrlon=-77, urcrnrlon=-64, llcrnrlat=35, urcrnrlat=43, resolution="h", parallels=np.arange(32, 45, 2), meridians=np.arange(-80, -60, 2))
 

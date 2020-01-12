@@ -3,8 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import split_spectrum
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import split_spectrum, get_keys_with_label, remove_negative_R_rs
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
@@ -74,17 +73,7 @@ remove_indices = np.where(diff > 0.01)[0]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows where Ed(400 nm) - Ed(405 nm) > 0.01")
 
-# Clip small negative values (0 > R_rs > -1e-4) to 0
-Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
-for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
-    ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > -1e-4))
-    data[R_rs_k][ind] = 0
-    data[Lw_k][ind] = 0
-
-# Remove rows with negative R_rs
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with negative values")
+remove_negative_R_rs(data)
 
 map_data(data, data_label="SOP4", projection='gnom', lat_0=56, lon_0=5, llcrnrlon=-2, urcrnrlon=11, llcrnrlat=52, urcrnrlat=59, resolution="h", parallels=np.arange(40, 70, 2), meridians=np.arange(-20, 20, 2))
 

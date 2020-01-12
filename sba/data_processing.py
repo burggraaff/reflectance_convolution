@@ -1,5 +1,7 @@
 import numpy as np
+import operator as op
 
+comparators = {">": op.gt, ">=": op.ge, "==": op.eq, "<": op.lt, "<=": op.le}
 
 def get_keys_with_label(data, *labels):
     """
@@ -23,3 +25,24 @@ def split_spectrum(data_table, label):
     except AttributeError:
         spectra = np.array([data_table[key].data for key in keys_relevant]).T
     return wavelengths, spectra
+
+def clip_to_zero(data, threshold=-1e-4):
+    Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
+    for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
+        ind = np.where((data[R_rs_k] < 0) & (data[R_rs_k] > threshold))
+        data[R_rs_k][ind] = 0
+        data[Lw_k][ind] = 0
+
+
+def remove_rows_based_on_threshold(data, quantity, comparator, threshold, quiet=False):
+    operator = comparators[comparator]
+    keys = get_keys_with_label(data, quantity)
+    remove_indices = [i for i, row in enumerate(data) if any(operator(row[key], threshold) for key in keys)]
+    data.remove_rows(remove_indices)
+    if not quiet:
+        print(f"Removed {len(remove_indices)} rows with {quantity} {comparator} {threshold}")
+
+
+def remove_negative_R_rs(data, clip=-1e-4, **kwargs):
+    clip_to_zero(data, threshold=clip)
+    remove_rows_based_on_threshold(data, "R_rs", "<", 0, **kwargs)

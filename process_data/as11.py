@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import get_keys_with_label
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -37,9 +37,7 @@ for key in Lw_keys:
 for key in R_rs_keys:
     data[key].unit = 1 / u.steradian
 
-remove_indices = [i for i, row in enumerate(data) if any(row[key] < 0 for key in R_rs_keys)]
-data.remove_rows(remove_indices)
-print(f"Removed {len(remove_indices)} rows with R_rs < 0")
+remove_negative_R_rs(data)
 
 map_data(data, data_label="AS11", projection="gnom", lat_0=21, lon_0=68, llcrnrlon=65, urcrnrlon=71, llcrnrlat=18, urcrnrlat=24, resolution="h", parallels=np.arange(16, 30, 2), meridians=np.arange(66, 72, 2))
 
