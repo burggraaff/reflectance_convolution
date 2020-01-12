@@ -42,7 +42,7 @@ for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
 for wavelength in np.arange(712, 722, 2, dtype=int):
     data.remove_columns(get_keys_with_label(data, f"_{wavelength}"))
 
-map_data(data, data_label="GasEx", projection='gnom', lat_0=36.9, lon_0=-75.8, llcrnrlon=-80, urcrnrlon=-70, llcrnrlat=32, urcrnrlat=42, resolution="h", parallels=np.arange(30, 45, 2), meridians=np.arange(-80, -70, 2))
+map_data(data, data_label="GasEx", projection='gnom', lat_0=-52, lon_0=-38, llcrnrlon=-60, urcrnrlon=-30, llcrnrlat=-60, urcrnrlat=-35, resolution="h", parallels=np.arange(-60, -20, 5), meridians=np.arange(-60, -10, 5))
 
 plot_spectra(data, data_label="GasEx", alpha=0.2)
 
