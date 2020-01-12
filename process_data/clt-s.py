@@ -51,7 +51,11 @@ def convert_timestamp(timestamp):
 data = []
 for j, row in enumerate(master_table):
     # Read each data file and combine them into one big table
-    data_files = [f"data/CLT/HyperSAS/{row['Station']}_SAS-H_L3a_{quantity}.txt" for quantity in ["Es", "Lsky", "Lt"]]
+    try:
+        data_files = [f"data/CLT/HyperSAS/{row['Station']}_SAS-H_L3a_{quantity}.txt" for quantity in ["Es", "Lsky", "Lt"]]
+    except FileNotFoundError:
+        # If a file is missing, go on to the next
+        continue
     Es, Lsky, Lt = [read_data_file(filename) for filename in data_files]
     data_table = table.join(Es, Lsky)
     data_table = table.join(data_table, Lt)
@@ -61,6 +65,10 @@ for j, row in enumerate(master_table):
     time_table = np.array([convert_timestamp(timestamp) for timestamp in data_table["time"]])
     remove_indices = np.where((time_table < time_start) | (time_table > time_start+3))[0]
     data_table.remove_rows(remove_indices)
+
+    # If no data are available, go to the next file
+    if len(data_table) == 0:
+        continue
 
     # Calculate median values and replace table with only these
     means = [np.median(data_table[key]) for key in data_table.keys()[3:]]
