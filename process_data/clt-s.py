@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import split_spectrum, remove_rows_based_on_threshold, get_keys_with_label
+from sba.data_processing import split_spectrum, remove_rows_based_on_threshold, get_keys_with_label, remove_negative_R_rs
 from datetime import datetime
 
 folder = Path("data/CLT/HyperSAS/")
@@ -120,6 +120,9 @@ data.remove_columns(Lt_keys)
 
 # Remove rows with missing R_rs values (< -1)
 remove_rows_based_on_threshold(data, "R_rs", "<", -1)
+
+# Remove rows with negative R_rs values
+remove_negative_R_rs(data)
 
 plot_spectra(data, data_label="CLT-S", alpha=0.05)
 
