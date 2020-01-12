@@ -76,6 +76,11 @@ for j, row in enumerate(master_table):
     data_table.add_row(mean_data)
     data_table.remove_rows(np.arange(len(data_table)-1))
 
+    # Finally, load lat/lon
+    *_, lon, lat = find_auxiliary_information_seabass(data_files[0])
+    data_table.add_column(table.Column(name="Longitude", data=[lon]))
+    data_table.add_column(table.Column(name="Latitude", data=[lat]))
+
     data.append(data_table)
 
     print(j, row["Station"])
