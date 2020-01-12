@@ -119,3 +119,5 @@ data.remove_columns(Ls_keys)
 data.remove_columns(Lt_keys)
 
 plot_spectra(data, data_label="CLT-S", alpha=0.05)
+
+write_data(data, label="CLT-S")
