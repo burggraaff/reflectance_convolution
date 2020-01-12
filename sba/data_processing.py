@@ -26,6 +26,7 @@ def split_spectrum(data_table, label):
         spectra = np.array([data_table[key].data for key in keys_relevant]).T
     return wavelengths, spectra
 
+
 def clip_to_zero(data, threshold=-1e-4):
     Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
     for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
