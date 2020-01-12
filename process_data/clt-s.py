@@ -34,7 +34,17 @@ def read_data_file(filename):
     return data_table
 
 def convert_timestamp(timestamp):
-    dt = datetime.strptime(timestamp, "%H:%M:%S")
+    try:
+        dt = datetime.strptime(timestamp, "%H:%M:%S")
+    except ValueError as e:
+        if timestamp[-2:] == "60":
+            if timestamp[3:5] == "59":
+                timestamp_new = f"{int(timestamp[:2]) + 1}:00:00"
+            else:
+                timestamp_new = timestamp[:2] + f":{int(timestamp[3:5]) + 1}:00"
+            dt = datetime.strptime(timestamp_new, "%H:%M:%S")
+        else:
+            raise e
     time = 60*dt.hour + dt.minute + dt.second/60
     return time
 
