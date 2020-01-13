@@ -8,6 +8,10 @@ from .data_processing import split_spectrum
 from pathlib import Path
 import numpy as np
 
+RrsR = r"$\bar{R}_{rs}^R$"
+RrsL = r"$\bar{R}_{rs}^L$"
+
+
 def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band_labels=None, colours=None):
     save_folder = Path(f"results/{data_label}")
     save_folder.mkdir(exist_ok=True)
@@ -50,6 +54,7 @@ def double_boxplot(data, label="", unit="", sensor_label="", data_label="", band
     plt.show()
     plt.close()
 
+
 def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_labels=None, colours=None):
     save_folder = Path(f"results/{data_label}")
     save_folder.mkdir(exist_ok=True)
@@ -79,6 +84,7 @@ def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_l
     plt.show()
     plt.close()
 
+
 def boxplot_relative(differences, band_labels=None, sensor_label="", **kwargs):
     if band_labels is None:
         band_labels = [""] * len(differences)
@@ -89,6 +95,7 @@ def boxplot_relative(differences, band_labels=None, sensor_label="", **kwargs):
 
     make_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
     double_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
+
 
 def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exponent=6, **kwargs):
     if band_labels is None:
@@ -103,6 +110,7 @@ def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exp
 
     make_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
     double_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
+
 
 def plot_spectra(data, data_label="", alpha=0.1):
     # Plot all Es, Lw, R_rs spectra
@@ -126,6 +134,7 @@ def plot_spectra(data, data_label="", alpha=0.1):
     plt.savefig(f"data/plots/spectra_{data_label}.pdf")
     plt.show()
     plt.close()
+
 
 def map_data(data, data_label="", projection="moll", figsize=(10, 6), parallels=np.arange(-90, 95, 15), meridians=np.arange(-180, 180, 30), **kwargs):
     # Plot map of observations
