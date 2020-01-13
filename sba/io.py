@@ -1,8 +1,13 @@
+"""
+Module with functions for file input/output
+"""
+
 from astropy.io.ascii import read
 from numpy import loadtxt, genfromtxt
 from pathlib import Path
 import sys
 from .data_processing import split_spectrum
+
 
 def load_data():
     filename = Path(sys.argv[1])
@@ -15,6 +20,7 @@ def load_data():
     wavelengths, R_rs = split_spectrum(data, "R_rs")
 
     return label, wavelengths, Ed, Lw, R_rs
+
 
 def write_data(data, label, **kwargs):
     label_lowercase = label.lower()

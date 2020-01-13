@@ -1,9 +1,14 @@
+"""
+Module with functions for loading and using spectral response functions (SRFs)
+"""
+
 import xarray as xr
 import numpy as np
 from matplotlib import pyplot as plt
 from . import bandaveraging as ba, plotting as p
 from pathlib import Path
 import sys
+
 
 class Sensor(object):
     def __init__(self, name, band_labels, colours, response_wavelengths, responses):
@@ -56,6 +61,7 @@ class Sensor(object):
     def boxplot_absolute(self, *args, **kwargs):
         p.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
+
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
     responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_labels]
@@ -66,6 +72,7 @@ def load_OLI():
     OLI = Sensor("OLI", band_labels, colours, response_wavelengths, responses)
 
     return OLI
+
 
 def load_ETM_plus():
     bands = [1,2,3,4]
@@ -79,6 +86,7 @@ def load_ETM_plus():
 
     return ETM_plus
 
+
 def load_VIIRS():
     band_labels = [f"M{j}" for j in np.arange(1,7)]
     wavelengths_viirs, *responses_raw = np.loadtxt("spectral_response/VIIRSN_IDPSv3_RSRs.txt", skiprows=5, unpack=True, usecols=np.arange(7))
@@ -90,6 +98,7 @@ def load_VIIRS():
     VIIRS = Sensor("VIIRS", band_labels, colours, response_wavelengths, responses)
 
     return VIIRS
+
 
 def load_SeaWiFS():
     band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765]]
@@ -103,6 +112,7 @@ def load_SeaWiFS():
 
     return SeaWiFS
 
+
 def load_Sentinel2A():
     band_labels = [f"B{nr}" for nr in range(1,8)]
     wavelengths_msi, *responses = np.loadtxt("spectral_response/MSI/MSI_S2A.txt", skiprows=1, unpack=True)
@@ -114,6 +124,7 @@ def load_Sentinel2A():
 
     return Sentinel2A
 
+
 def load_Sentinel2B():
     band_labels = [f"B{nr}" for nr in range(1,8)]
     wavelengths_msi, *responses = np.loadtxt("spectral_response/MSI/MSI_S2A.txt", skiprows=1, unpack=True)
@@ -124,6 +135,7 @@ def load_Sentinel2B():
     Sentinel2B = Sensor("Sentinel-2B", band_labels, colours, response_wavelengths, responses)
 
     return Sentinel2B
+
 
 def load_MODISA():
     band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748]]
@@ -139,6 +151,7 @@ def load_MODISA():
 
     return MODISA
 
+
 def load_MODIST():
     band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748]]
     wavelengths_modis, *responses = np.loadtxt("spectral_response/HMODIST_RSRs.txt", skiprows=8, unpack=True, usecols=np.arange(12))
@@ -153,6 +166,7 @@ def load_MODIST():
 
     return MODISA
 
+
 def load_CZCS():
     band_labels = [f"{wvl} nm" for wvl in [443, 520, 550, 670]]
     wavelengths_czcs, *responses = np.loadtxt("spectral_response/CZCS_RSRs.txt", skiprows=56, unpack=True)
@@ -165,6 +179,7 @@ def load_CZCS():
 
     return CZCS
 
+
 def load_OLCIA():
     band_labels = [f"Oa{nr:02d}" for nr in range(1,17)]
     sr_olci = xr.open_dataset("spectral_response/OLCI/S3A_OL_SRF_20160713_mean_rsr.nc4")
@@ -176,6 +191,7 @@ def load_OLCIA():
 
     return OLCIA
 
+
 def load_OLCIB():
     band_labels = [f"Oa{nr:02d}" for nr in range(1,17)]
     sr_olci = xr.open_dataset("spectral_response/OLCI/S3B_OL_SRF_0_20180109_mean_rsr.nc4")
@@ -186,6 +202,7 @@ def load_OLCIB():
     OLCIB = Sensor("OLCI S3B", band_labels, colours, response_wavelengths, responses)
 
     return OLCIB
+
 
 def load_SPECTACLE():
     files = list(Path("spectral_response/SPECTACLE/").glob("*.npy"))
@@ -209,6 +226,7 @@ def load_SPECTACLE():
 
     return SPECTACLE
 
+
 functions = ([load_ETM_plus, load_OLI, load_CZCS, load_SeaWiFS, load_MODISA, load_MODIST, load_VIIRS, load_Sentinel2A, load_Sentinel2B, load_OLCIA, load_OLCIB, load_SPECTACLE])
 
 from_name = {"etm+": load_ETM_plus, "etm plus": load_ETM_plus, "etm": load_ETM_plus, "landsat7": load_ETM_plus,
@@ -223,6 +241,7 @@ from_name = {"etm+": load_ETM_plus, "etm plus": load_ETM_plus, "etm": load_ETM_p
              "olcia": load_OLCIA, "olci": load_OLCIA, "sentinel3a": load_OLCIA, "sentinel3": load_OLCIA,
              "olcib": load_OLCIB, "sentinel3b": load_OLCIB,
              "spectacle": load_SPECTACLE}
+
 
 def load_from_name():
     sensor_names = sys.argv[2:]

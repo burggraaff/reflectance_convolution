@@ -5,7 +5,9 @@ Module with functions for band-averaging
 import numpy as np
 from scipy.integrate import simps
 
+
 integrate = np.trapz
+
 
 def interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response, extrapolation_value=np.nan):
     data_interpolated = np.interp(band_wavelengths, data_wavelengths, data_response, left=extrapolation_value, right=extrapolation_value)

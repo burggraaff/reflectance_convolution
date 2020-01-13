@@ -1,7 +1,14 @@
+"""
+Module with functions for processing (ir)radiance and reflectance data, e.g.
+to clean spectra
+"""
+
 import numpy as np
 import operator as op
 
+
 comparators = {">": op.gt, ">=": op.ge, "==": op.eq, "<": op.lt, "<=": op.le}
+
 
 def get_keys_with_label(data, *labels):
     """

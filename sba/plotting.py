@@ -1,12 +1,14 @@
 """
 Module with functions for plotting
 """
+
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
 from pathlib import Path
 import numpy as np
+
 
 RrsR = r"$\bar{R}_{rs}^R$"
 RrsL = r"$\bar{R}_{rs}^L$"
