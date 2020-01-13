@@ -26,7 +26,7 @@ class Sensor(object):
 
     def plot(self, ax=None, saveto=None):
         if ax is None:
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(6,2), tight_layout=True)
             if saveto is None:
                 saveto = f"results/{self.name}_bands.pdf"
 
@@ -36,12 +36,13 @@ class Sensor(object):
 
         for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
             ax.plot(wavelengths, response, label=label, c=colour)
+
+        ax.set_xticks(np.arange(300, 1500, 100))
         ax.set_xlim(300, 1300)
         ax.set_ylim(0, 1.01)
         if independent:
             ax.set_xlabel("Wavelength [nm]")
             ax.set_ylabel("Relative response")
-            ax.legend(loc="best")
             ax.set_title(self.name)
         ax.set_yticks([0,0.25,0.5,0.75,1])
         ax.grid(ls="--", color="0.5")
