@@ -4,7 +4,7 @@ Module with functions for plotting
 
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from mpl_toolkits.axes_grid1 import make_axes_locatable, ImageGrid
 from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
 from pathlib import Path
@@ -160,7 +160,7 @@ def map_data(data, data_label="", projection="moll", figsize=(10, 6), parallels=
     plt.close()
 
 
-def synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type="", absrel="", label=""):
+def synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type="", absrel="", label="", quantity=""):
     if absrel == "rel":
         unit = "%"
     elif absrel == "abs":
@@ -176,11 +176,49 @@ def synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type=""
     im = plt.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
-    plt.title(f"Difference for {sensor_type} responses")
+    plt.title(f"Difference for {sensor_type}s: {quantity}")
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference ({RrsL} - {RrsR}, {unit})")
     plt.tight_layout()
+    plt.savefig(f"results/{label}/{label}_{sensor_type}_{quantity}_{absrel}.pdf")
+    plt.show()
+
+
+def synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results, sensor_type="", absrel="", label="", quantities=None):
+    if absrel == "rel":
+        unit = "%"
+    elif absrel == "abs":
+        unit = "$10^{-6}$ sr$^{-1}$"
+    else:
+        unit = ""
+
+    if quantities is None:
+        quantities = [""] * len(results)
+
+    center = len(results)//2
+
+    low, high = np.nanmin(results), np.nanmax(results)
+    vmin = np.floor(np.min([low, -high]))
+    vmax = np.ceil(np.max([-low, high]))
+
+    fig = plt.figure(figsize=(8, 3.5))
+    grid = ImageGrid(fig, 111, nrows_ncols=(1,3), axes_pad=0.15, share_all=True, aspect=False, cbar_location="right", cbar_mode="single", cbar_size="7%", cbar_pad=0.15)
+
+    for ax, result, quantity in zip(grid, results, quantities):
+        im = ax.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
+        ax.set_title(quantity)
+        ax.grid(ls="--")
+        ax.set_xticks(np.arange(300, 1500, 100))
+        ax.set_xlim(wavelengths_central[0], 2*wavelengths_central[-1]-wavelengths_central[-2])
+
+    grid[0].set_ylabel("FWHM [nm]")
+    grid[center].set_xlabel("Central wavelength [nm]")
+    for ax in grid[1:]:
+        ax.tick_params(axis="y", left=False, labelleft=False)
+    cax = ax.cax.colorbar(im)
+    cax.set_label_text(f"Difference ({RrsL} - {RrsR}, {unit})")
+
     plt.savefig(f"results/{label}/{label}_{sensor_type}_{absrel}.pdf")
     plt.show()
