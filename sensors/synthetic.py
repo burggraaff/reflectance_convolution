@@ -45,5 +45,5 @@ for result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/{sensor_type}/contours_{absrel}.pdf")
+    plt.savefig(f"results/{label}/{label}_{sensor_type}_{absrel}.pdf")
     plt.show()
