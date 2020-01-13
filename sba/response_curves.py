@@ -260,12 +260,16 @@ from_name = {"etm+": load_ETM_plus, "etm plus": load_ETM_plus, "etm": load_ETM_p
              "spectacle": load_SPECTACLE}
 
 
-def load_from_name():
-    sensor_names = sys.argv[2:]
+def load_selected_sensors(*sensor_names):
     sensor_names = [name.lower() for name in sensor_names]
     functions = [from_name[name] for name in sensor_names]
     sensors = [function() for function in functions]
     return sensors
+
+
+def load_from_name():
+    sensor_names = sys.argv[2:]
+    return load_selected_sensors(*sensor_names)
 
 
 def load_all_sensors():
