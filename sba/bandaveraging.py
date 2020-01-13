@@ -33,6 +33,7 @@ def bandaverage_multi(band_wavelengths, band_response, data_wavelengths, data_re
 def calculate_differences(reflectance_space, radiance_space):
     difference_absolute = reflectance_space - radiance_space
     difference_relative = 100 * difference_absolute / radiance_space
+    difference_relative[difference_absolute == 0] = 0
 
     return difference_absolute, difference_relative
 
