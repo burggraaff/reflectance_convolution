@@ -239,7 +239,7 @@ def load_SPECTACLE():
     responses = responses / responses.max(axis=1)[:,np.newaxis]
     response_wavelengths = [wavelengths_spectacle for band in band_labels]
 
-    SPECTACLE = Sensor("", band_labels, colours, response_wavelengths, responses)
+    SPECTACLE = Sensor("SPECTACLE", band_labels, colours, response_wavelengths, responses)
 
     return SPECTACLE
 
