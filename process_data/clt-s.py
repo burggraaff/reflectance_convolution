@@ -124,6 +124,8 @@ remove_rows_based_on_threshold(data, "R_rs", "<", -1)
 # Remove rows with negative R_rs values
 remove_negative_R_rs(data)
 
+map_data(data, data_label="CLT-S", projection='gnom', lat_0=36.9, lon_0=-75.8, llcrnrlon=-80, urcrnrlon=-70, llcrnrlat=32, urcrnrlat=42, resolution="h", parallels=np.arange(30, 45, 2), meridians=np.arange(-80, -70, 2))
+
 plot_spectra(data, data_label="CLT-S", alpha=0.05)
 
 write_data(data, label="CLT-S")
