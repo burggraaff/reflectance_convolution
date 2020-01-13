@@ -134,12 +134,12 @@ def load_VIIRS():
 
 
 def load_SeaWiFS():
-    band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765]]
-    wavelengths_seawifs, *responses_raw = np.loadtxt("spectral_response/SeaWiFS_RSRs.txt", skiprows=9, unpack=True, usecols=np.arange(8))
+    band_labels = [f"{wvl} nm" for wvl in [412, 443, 490, 510, 555, 670, 765, 865]]
+    wavelengths_seawifs, *responses_raw = np.loadtxt("spectral_response/SeaWiFS_RSRs.txt", skiprows=9, unpack=True)
     response_wavelengths = [wavelengths_seawifs for band in band_labels]
     responses_raw = np.array(responses_raw)
     responses = responses_raw / responses_raw.max(axis=1)[:, np.newaxis]
-    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:lime green", "xkcd:forest green", "xkcd:dark red", "k"]
+    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:lime green", "xkcd:forest green", "xkcd:dark red", "xkcd:dark brown", "k"]
 
     SeaWiFS = Sensor("SeaWiFS", band_labels, colours, response_wavelengths, responses)
 
