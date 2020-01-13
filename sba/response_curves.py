@@ -246,15 +246,15 @@ def load_SPECTACLE():
 
 functions = ([load_ETM_plus, load_OLI, load_CZCS, load_SeaWiFS, load_MODISA, load_MODIST, load_VIIRS, load_Sentinel2A, load_Sentinel2B, load_OLCIA, load_OLCIB, load_SPECTACLE])
 
-from_name = {"etm+": load_ETM_plus, "etm plus": load_ETM_plus, "etm": load_ETM_plus, "landsat7": load_ETM_plus,
-             "oli": load_OLI, "landsat8": load_OLI,
+from_name = {"etm+": load_ETM_plus, "etm plus": load_ETM_plus, "etm": load_ETM_plus, "landsat7": load_ETM_plus, "l7": load_ETM_plus,
+             "oli": load_OLI, "landsat8": load_OLI, "l8": load_OLI,
              "czcs": load_CZCS,
              "seawifs": load_SeaWiFS,
              "modisa": load_MODISA, "modis": load_MODISA,
              "modist": load_MODIST,
              "viirs": load_VIIRS,
-             "sentinel2a": load_Sentinel2A, "sentinel2": load_Sentinel2A, "msi": load_Sentinel2A,
-             "sentinel2b": load_Sentinel2B,
+             "sentinel2a": load_Sentinel2A, "sentinel2": load_Sentinel2A, "msi": load_Sentinel2A, "msia": load_Sentinel2A,
+             "sentinel2b": load_Sentinel2B, "msib": load_Sentinel2B,
              "olcia": load_OLCIA, "olci": load_OLCIA, "sentinel3a": load_OLCIA, "sentinel3": load_OLCIA,
              "olcib": load_OLCIB, "sentinel3b": load_OLCIB,
              "spectacle": load_SPECTACLE}
