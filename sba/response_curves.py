@@ -166,34 +166,25 @@ def load_Sentinel2B():
     return load_Sentinel2("B")
 
 
-def load_MODISA():
-    band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748]]
-    wavelengths_modis, *responses = np.loadtxt("spectral_response/HMODISA_RSRs.txt", skiprows=8, unpack=True, usecols=np.arange(12))
+def load_MODIS(AT="A"):
+    band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748, 859, 869, 1240]]
+    wavelengths_modis, *responses = np.loadtxt(f"spectral_response/HMODIS{AT}_RSRs.txt", skiprows=8, unpack=True, usecols=np.arange(15))
     responses = np.array([responses])[0]
-    ind = np.where(wavelengths_modis <= 900)[0]
-    wavelengths_modis = wavelengths_modis[ind]
     response_wavelengths = [wavelengths_modis for band in band_labels]
-    responses = responses[:, ind]
-    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:blue", "xkcd:cyan", "xkcd:bright green", "xkcd:green", "xkcd:forest green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
+    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:blue", "xkcd:cyan", "xkcd:bright green", "xkcd:green", "xkcd:forest green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "xkcd:dark brown", "k", "k", "k"]
 
-    MODISA = Sensor("MODIS Aqua", band_labels, colours, response_wavelengths, responses)
+    name = "MODIS Aqua" if AT == "A" else "MODIS Terra"
+    MODIS = Sensor(name, band_labels, colours, response_wavelengths, responses)
 
-    return MODISA
+    return MODIS
+
+
+def load_MODISA():
+    return load_MODIS("A")
 
 
 def load_MODIST():
-    band_labels = [f"{wvl} nm" for wvl in [412, 443, 469, 488, 531, 551, 555, 645, 667, 678, 748]]
-    wavelengths_modis, *responses = np.loadtxt("spectral_response/HMODIST_RSRs.txt", skiprows=8, unpack=True, usecols=np.arange(12))
-    responses = np.array([responses])[0]
-    ind = np.where(wavelengths_modis <= 900)[0]
-    wavelengths_modis = wavelengths_modis[ind]
-    response_wavelengths = [wavelengths_modis for band in band_labels]
-    responses = responses[:, ind]
-    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:blue", "xkcd:cyan", "xkcd:bright green", "xkcd:green", "xkcd:forest green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
-
-    MODISA = Sensor("MODIS Terra", band_labels, colours, response_wavelengths, responses)
-
-    return MODISA
+    return load_MODIS("T")
 
 
 def load_CZCS():
