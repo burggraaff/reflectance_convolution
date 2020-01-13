@@ -62,7 +62,7 @@ class Sensor(object):
         p.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
 
-def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
+def generate_boxcar(center, fwhm, boxcar_wavelength_step=0.1):
     half_width = fwhm / 2.
     wavelengths_in_boxcar = np.arange(center-half_width, center+half_width+boxcar_wavelength_step, boxcar_wavelength_step)
     response = np.ones_like(wavelengths_in_boxcar)
@@ -70,11 +70,28 @@ def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
     return boxcar_sensor
 
 
-def generate_gaussian(center, fwhm, wavelengths):
+def generate_gaussian(center, fwhm, wavelengths=np.arange(320, 800, 0.1)):
     half_width = fwhm / 2.
     response = np.exp(-(wavelengths-center)**2 / (2 * fwhm**2))
     gaussian_sensor = Sensor("Gaussian", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths], [response])
     return gaussian_sensor
+
+
+def read_synthetic_sensor_type():
+    sensor_type = sys.argv[2]
+    if sensor_type == "gauss":
+        sensor_type = "gaussian"
+    assert sensor_type in ["boxcar", "gaussian"], f"Unknown sensor type {sensor_type}"
+    return sensor_type
+
+
+def load_synthetic_sensor(sensor_type, center, fwhm, **kwargs):
+    if sensor_type == "boxcar":
+        func = generate_boxcar
+    elif sensor_type in ["gauss", "gaussian"]:
+        func = generate_gaussian
+    sensor = func(center, fwhm, **kwargs)
+    return sensor
 
 
 def load_OLI():

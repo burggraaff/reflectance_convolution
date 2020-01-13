@@ -7,9 +7,10 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import calculate_differences
 from sba.io import load_data
-from sba.response_curves import generate_boxcar
+from sba.response_curves import read_synthetic_sensor_type, load_synthetic_sensor
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
+sensor_type = read_synthetic_sensor_type()
 
 wavelengths_central = np.arange(330, 800, 5)
 FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 82, 2)])
@@ -20,7 +21,7 @@ result_relative = result_absolute.copy()
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
     for j,fwhm in enumerate(FWHMs):
-        boxcar = generate_boxcar(center, fwhm)
+        boxcar = load_synthetic_sensor(sensor_type, center, fwhm)
         reflectance_space = boxcar.band_average(wavelengths_data, R_rs)
         radiance_space = boxcar.band_average(wavelengths_data, Lw) / boxcar.band_average(wavelengths_data, Ed)
 
