@@ -1,5 +1,5 @@
 """
-Generate boxcar and gaussian spectral response functions
+Apply synthetic (boxcar and gaussian) spectral response functions
 """
 
 import numpy as np
@@ -39,37 +39,37 @@ for result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel
     im = plt.imshow(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], aspect="auto", cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
-    plt.title("Difference for boxcar responses")
+    plt.title(f"Difference for {sensor_type} responses")
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar/map_{absrel}.pdf")
+    plt.savefig(f"results/{sensor_type}/map_{absrel}.pdf")
     plt.show()
 
     # contourf plot
     im = plt.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
-    plt.title("Difference for boxcar responses")
+    plt.title(f"Difference for {sensor_type} responses")
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar/contours_{absrel}.pdf")
+    plt.savefig(f"results/{sensor_type}/contours_{absrel}.pdf")
     plt.show()
 
     # contourf plot of absolute differences
     im = plt.contourf(np.abs(result), vmin=0, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(0, vmax, 25))
     plt.xlabel("Central wavelength [nm]")
     plt.ylabel("FWHM [nm]")
-    plt.title("Absolute difference for boxcar responses")
+    plt.title(f"Absolute difference for {sensor_type} responses")
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     cax.set_ylabel(f"Abs. difference (Rad. space - Refl. space, {unit})")
     plt.tight_layout()
-    plt.savefig(f"results/boxcar/contours_absolute_{absrel}.pdf")
+    plt.savefig(f"results/{sensor_type}/contours_absolute_{absrel}.pdf")
     plt.show()
