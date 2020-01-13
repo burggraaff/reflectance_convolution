@@ -230,3 +230,8 @@ def load_from_name():
     functions = [from_name[name] for name in sensor_names]
     sensors = [function() for function in functions]
     return sensors
+
+
+def load_all_sensors():
+    sensors = [function() for function in functions]
+    return sensors

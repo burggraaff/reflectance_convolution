@@ -4,14 +4,14 @@ Generate boxcar and gaussian spectral response functions
 
 from sba.bandaveraging import calculate_differences
 from sba.io import load_data
-import sba.response_curves as rc
+from sba.response_curves import load_all_sensors
 from sba import plotting as p
 from matplotlib import pyplot as plt
 import numpy as np
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
-sensors = [func() for func in rc.functions]
+sensors = load_all_sensors()
 
 # plot all response curves
 fig, axs = plt.subplots(nrows=len(sensors), sharex=True, sharey=True, tight_layout=True, figsize=(3, 15), gridspec_kw={"hspace": 0, "wspace": 0})
