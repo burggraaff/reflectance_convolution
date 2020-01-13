@@ -146,28 +146,24 @@ def load_SeaWiFS():
     return SeaWiFS
 
 
-def load_Sentinel2A():
-    band_labels = [f"B{nr}" for nr in range(1,8)]
-    wavelengths_msi, *responses = np.loadtxt("spectral_response/MSI/MSI_S2A.txt", skiprows=1, unpack=True)
+def load_Sentinel2(AB="A"):
+    band_labels = [f"B{nr}" for nr in range(1,9)] + ["B8a", "B9"]
+    wavelengths_msi, *responses = np.loadtxt(f"spectral_response/MSI/MSI_S2{AB}.txt", skiprows=1, unpack=True)
     response_wavelengths = [wavelengths_msi for band in band_labels]
     responses = np.array([responses])[0]
-    colours = ["xkcd:blue", "xkcd:cyan", "xkcd:green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
+    colours = ["xkcd:blue", "xkcd:cyan", "xkcd:green", "xkcd:red", "xkcd:dark red", "xkcd:dark red", "xkcd:dark red", "xkcd:dark brown", "xkcd:dark brown", "k"]
 
-    Sentinel2A = Sensor("Sentinel-2A", band_labels, colours, response_wavelengths, responses)
+    Sentinel2 = Sensor(f"Sentinel-2{AB}", band_labels, colours, response_wavelengths, responses)
 
-    return Sentinel2A
+    return Sentinel2
+
+
+def load_Sentinel2A():
+    return load_Sentinel2("A")
 
 
 def load_Sentinel2B():
-    band_labels = [f"B{nr}" for nr in range(1,8)]
-    wavelengths_msi, *responses = np.loadtxt("spectral_response/MSI/MSI_S2A.txt", skiprows=1, unpack=True)
-    response_wavelengths = [wavelengths_msi for band in band_labels]
-    responses = np.array([responses])[0]
-    colours = ["xkcd:blue", "xkcd:cyan", "xkcd:green", "xkcd:red", "xkcd:dark red", "xkcd:dark brown", "k"]
-
-    Sentinel2B = Sensor("Sentinel-2B", band_labels, colours, response_wavelengths, responses)
-
-    return Sentinel2B
+    return load_Sentinel2("B")
 
 
 def load_MODISA():
