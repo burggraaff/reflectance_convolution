@@ -27,10 +27,6 @@ def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
     for j,fwhm in enumerate(FWHMs):
-        half_width = fwhm / 2.
-        if center-half_width < wavelengths_data[0] or center+half_width > wavelengths_data[-1]:
-            # Skip if the boxcar response does not fall entirely within the data wavelength range
-            continue
         boxcar = generate_boxcar(center, fwhm)
         reflectance_space = boxcar.band_average(wavelengths_data, R_rs)
         radiance_space = boxcar.band_average(wavelengths_data, Lw) / boxcar.band_average(wavelengths_data, Ed)

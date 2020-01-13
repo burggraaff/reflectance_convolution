@@ -28,10 +28,6 @@ def generate_gaussian(center, fwhm):
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
     for j,fwhm in enumerate(FWHMs):
-        if center-1.5*fwhm < wavelengths_band[0] or center+1.5*fwhm > wavelengths_band[-1]:
-            # Skip combination if the gaussian response does not fall
-            # within the data wavelength range up to 3 stds out
-            continue
         gaussian = generate_gaussian(center, fwhm)
         reflectance_space = gaussian.band_average(wavelengths_data, R_rs)
         radiance_space = gaussian.band_average(wavelengths_data, Lw) / gaussian.band_average(wavelengths_data, Ed)
