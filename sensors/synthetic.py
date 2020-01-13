@@ -4,10 +4,10 @@ Apply synthetic (boxcar and gaussian) spectral response functions
 
 import numpy as np
 from matplotlib import pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import calculate_differences
 from sba.io import load_data
 from sba.response_curves import read_synthetic_sensor_type, load_synthetic_sensor
+from sba.plotting import synthetic_sensor_contourf
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
@@ -30,20 +30,5 @@ for i,center in enumerate(wavelengths_central):
         result_absolute[j,i] = np.median(difference_absolute)
         result_relative[j,i] = np.median(difference_relative)
 
-for result, absrel, unit in zip([result_absolute, result_relative], ["abs", "rel"], ["sr$^{-1}$", "%"]):
-    low, high = np.nanmin(result), np.nanmax(result)
-    vmin = np.min([low, -high])
-    vmax = np.max([-low, high])
-
-    # contourf plot
-    im = plt.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
-    plt.xlabel("Central wavelength [nm]")
-    plt.ylabel("FWHM [nm]")
-    plt.title(f"Difference for {sensor_type} responses")
-    divider = make_axes_locatable(plt.gca())
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    cax.set_ylabel(f"Difference (Rad. space - Refl. space, {unit})")
-    plt.tight_layout()
-    plt.savefig(f"results/{label}/{label}_{sensor_type}_{absrel}.pdf")
-    plt.show()
+for result, absrel in zip([result_absolute, result_relative], ["abs", "rel"]):
+    synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type=sensor_type, absrel=absrel, label=label)

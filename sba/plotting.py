@@ -4,6 +4,7 @@ Module with functions for plotting
 
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
 from pathlib import Path
@@ -157,3 +158,29 @@ def map_data(data, data_label="", projection="moll", figsize=(10, 6), parallels=
     plt.savefig(f"data/plots/map_{data_label}.pdf")
     plt.show()
     plt.close()
+
+
+def synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type="", absrel="", label=""):
+    if absrel == "rel":
+        unit = "%"
+    elif absrel == "abs":
+        unit = "sr$^{-1}$"
+    else:
+        unit = ""
+
+    low, high = np.nanmin(result), np.nanmax(result)
+    vmin = np.min([low, -high])
+    vmax = np.max([-low, high])
+
+    # contourf plot
+    im = plt.contourf(result, vmin=vmin, vmax=vmax, origin="lower", extent=[wavelengths_central[0], wavelengths_central[-1], FWHMs[0], FWHMs[-1]], levels=np.linspace(vmin, vmax, 25), cmap=plt.cm.seismic)
+    plt.xlabel("Central wavelength [nm]")
+    plt.ylabel("FWHM [nm]")
+    plt.title(f"Difference for {sensor_type} responses")
+    divider = make_axes_locatable(plt.gca())
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    cax.set_ylabel(f"Difference ({RrsL} - {RrsR}, {unit})")
+    plt.tight_layout()
+    plt.savefig(f"results/{label}/{label}_{sensor_type}_{absrel}.pdf")
+    plt.show()
