@@ -62,6 +62,21 @@ class Sensor(object):
         p.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
 
 
+def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
+    half_width = fwhm / 2.
+    wavelengths_in_boxcar = np.arange(center-half_width, center+half_width+boxcar_wavelength_step, boxcar_wavelength_step)
+    response = np.ones_like(wavelengths_in_boxcar)
+    boxcar_sensor = Sensor("Boxcar", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_in_boxcar], [response])
+    return boxcar_sensor
+
+
+def generate_gaussian(center, fwhm, wavelengths):
+    half_width = fwhm / 2.
+    response = np.exp(-(wavelengths-center)**2 / (2 * fwhm**2))
+    gaussian_sensor = Sensor("Gaussian", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths], [response])
+    return gaussian_sensor
+
+
 def load_OLI():
     band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
     responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_labels]

@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import calculate_differences
 from sba.io import load_data
-from sba.response_curves import Sensor
+from sba.response_curves import generate_boxcar
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
@@ -16,13 +16,6 @@ FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 82, 2)])
 
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
-
-def generate_boxcar(center, fwhm, boxcar_wavelength_step = 0.1):
-    half_width = fwhm / 2.
-    wavelengths_in_boxcar = np.arange(center-half_width, center+half_width+boxcar_wavelength_step, boxcar_wavelength_step)
-    response = np.ones_like(wavelengths_in_boxcar)
-    boxcar_sensor = Sensor("Boxcar", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_in_boxcar], [response])
-    return boxcar_sensor
 
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")

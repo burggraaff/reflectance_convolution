@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sba.bandaveraging import calculate_differences
 from sba.io import load_data
-from sba.response_curves import Sensor
+from sba.response_curves import generate_gaussian
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
@@ -19,16 +19,10 @@ FWHMs = np.concatenate([np.arange(1, 10, 1), np.arange(10, 36, 2), np.arange(36,
 result_absolute = np.tile(np.nan, [len(FWHMs), len(wavelengths_central)])
 result_relative = result_absolute.copy()
 
-def generate_gaussian(center, fwhm):
-    half_width = fwhm / 2.
-    response = np.exp(-(wavelengths_band-center)**2 / (2 * fwhm**2))
-    gaussian_sensor = Sensor("Gaussian", [f"{center:.1f} +- {half_width:.1f} nm"], [""], [wavelengths_band], [response])
-    return gaussian_sensor
-
 for i,center in enumerate(wavelengths_central):
     print(f"Central wavelength: {center} nm")
     for j,fwhm in enumerate(FWHMs):
-        gaussian = generate_gaussian(center, fwhm)
+        gaussian = generate_gaussian(center, fwhm, wavelengths_band)
         reflectance_space = gaussian.band_average(wavelengths_data, R_rs)
         radiance_space = gaussian.band_average(wavelengths_data, Lw) / gaussian.band_average(wavelengths_data, Ed)
 
