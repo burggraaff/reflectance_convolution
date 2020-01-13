@@ -28,7 +28,7 @@ class Sensor(object):
         if ax is None:
             fig, ax = plt.subplots(figsize=(6,2), tight_layout=True)
             if saveto is None:
-                saveto = f"results/{self.name}_bands.pdf"
+                saveto = f"spectral_response/SRF_{self.name}.pdf"
 
             independent = True
         else:
