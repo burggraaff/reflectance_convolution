@@ -36,7 +36,7 @@ class Sensor(object):
 
         for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
             ax.plot(wavelengths, response, label=label, c=colour)
-        ax.set_xlim(380, 925)
+        ax.set_xlim(300, 1300)
         ax.set_ylim(0, 1.01)
         if independent:
             ax.set_xlabel("Wavelength [nm]")
@@ -120,12 +120,12 @@ def load_ETM_plus():
 
 
 def load_VIIRS():
-    band_labels = [f"M{j}" for j in np.arange(1,7)]
-    wavelengths_viirs, *responses_raw = np.loadtxt("spectral_response/VIIRSN_IDPSv3_RSRs.txt", skiprows=5, unpack=True, usecols=np.arange(7))
+    band_labels = [f"M{j}" for j in np.arange(1,9)]
+    wavelengths_viirs, *responses_raw = np.loadtxt("spectral_response/VIIRSN_IDPSv3_RSRs.txt", skiprows=5, unpack=True, usecols=np.arange(9))
     response_wavelengths = [wavelengths_viirs for band in band_labels]
     responses_raw = np.array(responses_raw)
     responses = responses_raw / responses_raw.max(axis=1)[:, np.newaxis]
-    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:forest green", "xkcd:dark red", "k"]
+    colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:forest green", "xkcd:dark red", "xkcd:dark brown", "k", "k"]
 
     VIIRS = Sensor("VIIRS", band_labels, colours, response_wavelengths, responses)
 
