@@ -21,7 +21,7 @@ for tab, label, colour in zip(data, labels, colours):
 data = table.vstack(data)
 
 # Plot world map
-fig = plt.figure(figsize=(8, 4), tight_layout=True)
+fig = plt.figure(figsize=(10, 4), tight_layout=True)
 
 m = Basemap(projection='moll', lon_0=0, resolution="i")
 m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
@@ -36,7 +36,7 @@ m.scatter(data["Longitude"], data["Latitude"], latlon=True, c=data["Colour"], ed
 for label, colour in zip(labels, colours):
     m.scatter([0], [0], latlon=True, c=colour, edgecolors="", s=50, zorder=0, label=label)
 
-plt.legend(bbox_to_anchor=(1.1, 1.05))
+plt.legend(bbox_to_anchor=(1.1, 1.1), ncol=1)
 
 plt.title(f"Locations of all spectra ($N = {len(data)}$)")
 
