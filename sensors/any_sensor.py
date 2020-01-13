@@ -11,7 +11,6 @@ sensors = load_from_name()
 
 for sensor in sensors:
     print(sensor)
-    sensor.plot()
 
     reflectance_space = sensor.band_average(wavelengths_data, R_rs)
     radiance_space = sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)

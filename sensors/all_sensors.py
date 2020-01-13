@@ -6,27 +6,11 @@ from sba.bandaveraging import calculate_differences
 from sba.io import load_data
 from sba.response_curves import load_all_sensors
 from sba import plotting as p
-from matplotlib import pyplot as plt
 import numpy as np
 
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 
 sensors = load_all_sensors()
-
-# plot all response curves
-fig, axs = plt.subplots(nrows=len(sensors), sharex=True, sharey=True, tight_layout=True, figsize=(3, 15), gridspec_kw={"hspace": 0, "wspace": 0})
-for sensor, ax in zip(sensors, axs):
-    sensor.plot(ax)
-    ax.set_ylabel(sensor.name)
-    ax.tick_params(axis="y", left=False, labelleft=False)
-
-for ax in axs[:-1]:
-    ax.tick_params(bottom=False, labelbottom=False)
-axs[-1].set_xlabel("Wavelength [nm]")
-axs[0].set_title("Relative spectral responses")
-plt.savefig("results/all_bands.pdf")
-plt.show()
-plt.close()
 
 reflectance_space = np.vstack([sensor.band_average(wavelengths_data, R_rs) for sensor in sensors])
 radiance_space = np.vstack([sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)  for sensor in sensors])
