@@ -191,6 +191,7 @@ def load_MERIS():
     band_labels = [f"b{j}" for j in range(1,16)]
     wavelengths_meris, *responses = np.loadtxt("spectral_response/MERIS_RSRs.txt", skiprows=5, unpack=True)
     responses = np.array(responses)
+    responses[responses < 0] = 0
     response_wavelengths = [wavelengths_meris for band in band_labels]
     colours = ["xkcd:dark purple", "xkcd:dark blue", "xkcd:cyan", "xkcd:bright green", "xkcd:green", "xkcd:red", "xkcd:dark red", "xkcd:dark red", "xkcd:dark brown", "xkcd:dark brown", "xkcd:dark brown", "k", "k", "k", "k"]
 
