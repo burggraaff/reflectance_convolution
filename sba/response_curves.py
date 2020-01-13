@@ -200,28 +200,25 @@ def load_CZCS():
     return CZCS
 
 
+def load_OLCI(AB="A"):
+    filename = "S3A_OL_SRF_20160713_mean_rsr.nc4" if AB == "A" else "S3B_OL_SRF_0_20180109_mean_rsr.nc4"
+    band_labels = [f"Oa{nr:02d}" for nr in range(1,22)]
+    sr_olci = xr.open_dataset(f"spectral_response/OLCI/{filename}")
+    response_wavelengths = sr_olci.mean_spectral_response_function_wavelength.data
+    responses = sr_olci.mean_spectral_response_function.data
+    colours = ["xkcd:dark violet", "xkcd:violet", "xkcd:purple", "xkcd:light blue", "xkcd:lime green", "xkcd:bright green", "xkcd:bright red", "xkcd:dark red", "xkcd:reddish brown", "xkcd:brown", "xkcd:dark brown", "k", "k", "k", "k", "k", "k", "k", "k", "k", "k"]
+
+    OLCI = Sensor(f"OLCI S3{AB}", band_labels, colours, response_wavelengths, responses)
+
+    return OLCI
+
+
 def load_OLCIA():
-    band_labels = [f"Oa{nr:02d}" for nr in range(1,17)]
-    sr_olci = xr.open_dataset("spectral_response/OLCI/S3A_OL_SRF_20160713_mean_rsr.nc4")
-    response_wavelengths = sr_olci.mean_spectral_response_function_wavelength.data[:16]
-    responses = sr_olci.mean_spectral_response_function.data[:16]
-    colours = ["xkcd:dark violet", "xkcd:violet", "xkcd:purple", "xkcd:light blue", "xkcd:lime green", "xkcd:bright green", "xkcd:bright red", "xkcd:dark red", "xkcd:reddish brown", "xkcd:brown", "xkcd:dark brown", "k", "k", "k", "k", "k"]
-
-    OLCIA = Sensor("OLCI S3A", band_labels, colours, response_wavelengths, responses)
-
-    return OLCIA
+    return load_OLCI("A")
 
 
 def load_OLCIB():
-    band_labels = [f"Oa{nr:02d}" for nr in range(1,17)]
-    sr_olci = xr.open_dataset("spectral_response/OLCI/S3B_OL_SRF_0_20180109_mean_rsr.nc4")
-    response_wavelengths = sr_olci.mean_spectral_response_function_wavelength.data[:16]
-    responses = sr_olci.mean_spectral_response_function.data[:16]
-    colours = ["xkcd:dark violet", "xkcd:violet", "xkcd:purple", "xkcd:light blue", "xkcd:lime green", "xkcd:bright green", "xkcd:bright red", "xkcd:dark red", "xkcd:reddish brown", "xkcd:brown", "xkcd:dark brown", "k", "k", "k", "k", "k"]
-
-    OLCIB = Sensor("OLCI S3B", band_labels, colours, response_wavelengths, responses)
-
-    return OLCIB
+    return load_OLCI("B")
 
 
 def load_SPECTACLE():
