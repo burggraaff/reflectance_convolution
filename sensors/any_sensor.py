@@ -18,5 +18,5 @@ for sensor in sensors:
 
     difference_absolute, difference_relative = calculate_differences(reflectance_space, radiance_space)
 
-    sensor.boxplot_relative(difference_relative, data_label=label)
     sensor.boxplot_absolute(difference_absolute, data_label=label)
+    sensor.boxplot_relative(difference_relative, data_label=label)
