@@ -3,7 +3,9 @@ Module with functions for band-averaging
 """
 
 import numpy as np
+from scipy.integrate import simps
 
+integrate = np.trapz
 
 def interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response, extrapolation_value=np.nan):
     data_interpolated = np.interp(band_wavelengths, data_wavelengths, data_response, left=extrapolation_value, right=extrapolation_value)
@@ -13,8 +15,8 @@ def interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response,
 def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response):
     response_interpolated = interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response)
     response_multiplied = response_interpolated * band_response
-    response_sum = np.trapz(response_multiplied, x=band_wavelengths)
-    weight_sum = np.trapz(band_response, x=band_wavelengths)
+    response_sum = integrate(response_multiplied, x=band_wavelengths)
+    weight_sum = integrate(band_response, x=band_wavelengths)
     response_average = response_sum / weight_sum
     return response_average
 
@@ -22,8 +24,8 @@ def bandaverage(band_wavelengths, band_response, data_wavelengths, data_response
 def bandaverage_multi(band_wavelengths, band_response, data_wavelengths, data_response_multi):
     response_interpolated = np.array([interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response) for data_response in data_response_multi])
     response_multiplied = response_interpolated * band_response
-    response_sum = np.trapz(response_multiplied, x=band_wavelengths, axis=1)
-    weight_sum = np.trapz(band_response, x=band_wavelengths)
+    response_sum = integrate(response_multiplied, x=band_wavelengths, axis=1)
+    weight_sum = integrate(band_response, x=band_wavelengths)
     response_average = response_sum / weight_sum
     return response_average
 
