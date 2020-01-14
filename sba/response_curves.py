@@ -73,7 +73,7 @@ def generate_boxcar(center, fwhm, boxcar_wavelength_step=0.1):
 
 def generate_gaussian(center, fwhm, wavelengths=np.arange(320, 800, 0.1)):
     sigma = fwhm/2.355
-    response = np.exp(-(wavelengths-center)**2 / (2 * fwhm**2))
+    response = np.exp(-(wavelengths-center)**2 / (2 * sigma**2))
     gaussian_sensor = Sensor("Gaussian", [f"{center:.1f} +- {sigma:.1f} nm"], [""], [wavelengths], [response])
     return gaussian_sensor
 
