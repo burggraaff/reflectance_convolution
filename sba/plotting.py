@@ -9,6 +9,7 @@ from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
 from pathlib import Path
 import numpy as np
+import warnings
 
 
 RrsR = r"$\bar{R}_{rs}^R$"
@@ -68,7 +69,9 @@ def make_boxplot(data, label="", unit="", sensor_label="", data_label="", band_l
         colours = ["k"] * len(data)
 
     plt.figure(figsize=(5, 1+0.3*data.shape[0]), tight_layout=True)
-    bplot = plt.boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        bplot = plt.boxplot(data.T, vert=False, showfliers=False, whis=[5,95], patch_artist=True, labels=band_labels)
     for patch, colour in zip(bplot["boxes"], colours):
         patch.set_facecolor(colour)
     plt.xlabel(f"Difference [{unit}]")
