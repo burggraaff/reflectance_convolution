@@ -92,10 +92,6 @@ def boxplot_relative(differences, band_labels=None, sensor_label="", **kwargs):
     if band_labels is None:
         band_labels = [""] * len(differences)
 
-    medians, lower_error, upper_error = calculate_median_and_errors(differences)
-    for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
-        print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) %")
-
     make_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
     double_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
 
@@ -106,10 +102,6 @@ def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exp
 
     differences_scaled = differences * 10**scaling_exponent
     unit = "$10^{-" + f"{scaling_exponent}" + "}$ sr$^{-1}$"
-
-    medians, lower_error, upper_error = calculate_median_and_errors(differences_scaled)
-    for band, med, low, up in zip(band_labels, medians, lower_error, upper_error):
-        print(f"{sensor_label} {band} band: {med:+.2f} (+{up:.2f}, -{low:.2f}) x 10^-6 sr^-1")
 
     make_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
     double_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
