@@ -9,10 +9,8 @@ import sys
 from .data_processing import split_spectrum
 
 
-def load_data():
-    filename = Path(sys.argv[1])
+def load_data_file(filename):
     data = read(filename)
-
     label = filename.stem[:-10]
 
     wavelengths, Ed = split_spectrum(data, "Ed")
@@ -20,6 +18,11 @@ def load_data():
     wavelengths, R_rs = split_spectrum(data, "R_rs")
 
     return label, wavelengths, Ed, Lw, R_rs
+
+
+def load_data():
+    filename = Path(sys.argv[1])
+    return load_data_file(filename)
 
 
 def write_data(data, label, **kwargs):
