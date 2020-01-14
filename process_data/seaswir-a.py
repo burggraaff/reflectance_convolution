@@ -10,7 +10,7 @@ wavelengths = np.arange(350, 1301, 1)
 Ld = read("data/SeaSWIR/SeaSWIR_ASD_Ldspec.tab", data_start=974, header_start=973)
 Ldkeys = get_keys_with_label(Ld, "Ld")
 for Ldkey, wvl in zip(Ldkeys, wavelengths):
-    # multiply by pi to convert L to E (integrate over hemisphere)
+    # multiply by pi to convert L to E (Mobley99)
     # divide by 1e5 for normalisation to W/m^2/nm (empirical)
     Ed = Ld[Ldkey] * np.pi / 1e5
     Ed.name = f"Ed_{wvl}"
