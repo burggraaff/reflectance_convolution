@@ -93,7 +93,6 @@ def boxplot_relative(differences, band_labels=None, sensor_label="", **kwargs):
         band_labels = [""] * len(differences)
 
     make_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
-    double_boxplot(differences, label="rel", unit="%", sensor_label=sensor_label, band_labels=band_labels, **kwargs)
 
 
 def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exponent=6, **kwargs):
@@ -104,7 +103,6 @@ def boxplot_absolute(differences, band_labels=None, sensor_label="", scaling_exp
     unit = "$10^{-" + f"{scaling_exponent}" + "}$ sr$^{-1}$"
 
     make_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
-    double_boxplot(differences_scaled, label="abs", unit=unit, sensor_label=sensor_label, band_labels=band_labels, **kwargs)
 
 
 def plot_spectra(data, data_label="", alpha=0.1):
