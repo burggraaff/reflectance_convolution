@@ -12,9 +12,9 @@ sensors = load_all_sensors()
 data_files = Path("data").glob("*processed.tab")
 
 for file in data_files:
-    for sensor in sensors:
-        label, wavelengths_data, Ed, Lw, R_rs = load_data_file(file)
+    label, wavelengths_data, Ed, Lw, R_rs = load_data_file(file)
 
+    for sensor in sensors:
         reflectance_space = sensor.band_average(wavelengths_data, R_rs)
         radiance_space = sensor.band_average(wavelengths_data, Lw) / sensor.band_average(wavelengths_data, Ed)
 
