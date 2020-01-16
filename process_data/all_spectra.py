@@ -35,7 +35,7 @@ plt.close()
 
 fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
 
-for data, label in zip(data_all, labels):
+for data in data_all:
     wavelengths, Ed = split_spectrum(data, "Ed")
     wavelengths, Lw = split_spectrum(data, "Lw")
     wavelengths, R_rs = split_spectrum(data, "R_rs")
@@ -62,7 +62,7 @@ plt.close()
 # Zoom
 fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, tight_layout=True, gridspec_kw={"wspace":0, "hspace":0}, figsize=(5,7))
 
-for data, label in zip(data_all, labels):
+for data in data_all:
     wavelengths, Ed = split_spectrum(data, "Ed")
     wavelengths, Lw = split_spectrum(data, "Lw")
     wavelengths, R_rs = split_spectrum(data, "R_rs")
