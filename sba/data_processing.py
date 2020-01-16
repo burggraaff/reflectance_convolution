@@ -10,14 +10,14 @@ import operator as op
 comparators = {">": op.gt, ">=": op.ge, "==": op.eq, "<": op.lt, "<=": op.le}
 
 
-def get_keys_with_label(data, *labels):
+def get_keys_with_label(data, *labels, exclude="None"):
     """
     Get the keys (column names) in an AstroPy table that contain a phrase
     `label`. Any number of labels can be given. The output will contain the
     list for each. If only one label is given, the output is a single list;
     otherwise, it is a list of lists.
     """
-    keys = [[key for key in data.keys() if label in key] for label in labels]
+    keys = [[key for key in data.keys() if (label in key and exclude not in key)] for label in labels]
     if len(labels) == 1:  # If only one label is given, return one list
         return keys[0]
     else:  #
