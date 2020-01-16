@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import split_spectrum, remove_rows_based_on_threshold, get_keys_with_label, remove_negative_R_rs
+from sba.data_processing import remove_rows_based_on_threshold, get_keys_with_label, remove_negative_R_rs, convert_to_unit
 from datetime import datetime
 
 folder = Path("data/CLT/HyperSAS/")
@@ -91,16 +91,12 @@ Es_keys, Lsky_keys, Lt_keys = get_keys_with_label(data, "Es", "Lsky", "Lt")
 for Es_k, Lsky_k, Lt_k in zip(Es_keys, Lsky_keys, Lt_keys):
     wavelength = int(Es_k[2:])
 
-    data[Es_k].unit = u.microwatt / (u.centimeter**2 * u.nanometer)
-    data[Es_k] = data[Es_k].to(u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(data, Es_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(data, Lsky_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+    convert_to_unit(data, Lt_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+
     data.rename_column(Es_k, f"Ed_{wavelength}")
-
-    data[Lsky_k].unit = u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian)
-    data[Lsky_k] = data[Lsky_k].to(u.watt / (u.meter**2 * u.nanometer * u.steradian))
     data.rename_column(Lsky_k, f"Ls_{wavelength}")
-
-    data[Lt_k].unit = u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian)
-    data[Lt_k] = data[Lt_k].to(u.watt / (u.meter**2 * u.nanometer * u.steradian))
     data.rename_column(Lt_k, f"Lt_{wavelength}")
 
 Ed_keys, Ls_keys, Lt_keys = get_keys_with_label(data, "Ed", "Ls", "Lt")

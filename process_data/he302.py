@@ -3,17 +3,19 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
+from sba.data_processing import convert_to_unit
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Rrs = read("data/HE302/HE302_rrs.tab", data_start=186, header_start=185)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:
-    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", f"Ed_{wvl}")
-    Ed[f"Ed_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer)
+    Ed_k, R_rs_k = f"Ed_{wvl}", f"R_rs_{wvl}"
+    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", Ed_k)
+    convert_to_unit(Ed, Ed_k, u.watt / (u.meter**2 * u.nanometer))
 
-    Rrs.rename_column(f"Rrs_{wvl} [1/sr]", f"R_rs_{wvl}")
-    Rrs[f"R_rs_{wvl}"].unit = 1 / u.steradian
+    Rrs.rename_column(f"Rrs_{wvl} [1/sr]", R_rs_k)
+    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
 
 data = table.join(Ed, Rrs, keys=["Event"])
 

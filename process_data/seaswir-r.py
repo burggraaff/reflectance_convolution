@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import remove_negative_R_rs
+from sba.data_processing import remove_negative_R_rs, convert_to_unit
 
 Ed = read("data/SeaSWIR/SeaSWIR_TRIOS_Ed.tab", data_start=238, header_start=237)
 
@@ -25,13 +25,15 @@ for wvl in wavelengths:
         wvl_raw = f"{wvl:.0f}"
     else:
         wvl_raw = f"{wvl:.1f}"
-    Ed.rename_column(f"Ed [mW/m**2/nm] ({wvl_raw} nm)", f"Ed_{wvl:.1f}")
-    Ed[f"Ed_{wvl:.1f}"].unit = u.milliwatt / (u.meter**2 * u.nanometer)
-    Ed[f"Ed_{wvl:.1f}"] = Ed[f"Ed_{wvl:.1f}"].to(u.watt / (u.meter**2 * u.nanometer))
 
-    Rrs[f"R_rs_{wvl:.1f}"].unit = 1 / u.steradian
+    Ed_k, R_rs_k = f"Ed_{wvl:.1f}", f"R_rs_{wvl:.1f}"
+    Ed.rename_column(f"Ed [mW/m**2/nm] ({wvl_raw} nm)", Ed_k)
+
     # Convert R_w to R_rs
-    Rrs[f"R_rs_{wvl:.1f}"] = Rrs[f"R_rs_{wvl:.1f}"] / np.pi
+    Rrs[R_rs_k] = Rrs[R_rs_k] / np.pi
+
+    convert_to_unit(Ed, Ed_k, u.milliwatt / (u.meter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
 
 data = table.join(Ed, Rrs, keys=["ID"])
 

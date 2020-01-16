@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import split_spectrum, get_keys_with_label, remove_negative_R_rs
+from sba.data_processing import split_spectrum, get_keys_with_label, remove_negative_R_rs, convert_to_unit
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
@@ -11,18 +11,20 @@ Ls = read("data/SOP4/SO-P4_sky_rad_40deg.tab", data_start=142, header_start=141)
 
 wavelengths = np.arange(320, 955, 5)
 for wvl in wavelengths:
-    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", f"Ed_{wvl}")
-    Ed[f"Ed_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer)
+    Ed_key, Lu_key, Ls_key = f"Ed_{wvl}", f"Lu_{wvl}", f"Ls_{wvl}"
+
+    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", Ed_key)
+    convert_to_unit(Ed, Ed_key, u.watt / (u.meter**2 * u.nanometer))
 
     try:  # mu gets properly loaded on Linux
-        Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", f"Lu_{wvl}")
+        Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", Lu_key)
     except KeyError: # but not on Windows
-        Lu.rename_column(f"Lu_{wvl} [ÂµW/cm**2/nm/sr]", f"Lu_{wvl}")
-    Lu[f"Lu_{wvl}"].unit = u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian)
-    Lu[f"Lu_{wvl}"] = Lu[f"Lu_{wvl}"].to(u.watt / (u.meter**2 * u.nanometer * u.steradian))
+        Lu.rename_column(f"Lu_{wvl} [ÂµW/cm**2/nm/sr]", Lu_key)
 
-    Ls.rename_column(f"Ls_{wvl} [W/m**2/nm/sr]", f"Ls_{wvl}")
-    Ls[f"Ls_{wvl}"].unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
+    convert_to_unit(Lu, Lu_key, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+
+    Ls.rename_column(f"Ls_{wvl} [W/m**2/nm/sr]", Ls_key)
+    convert_to_unit(Lu, Lu_key, u.watt / (u.meter**2 * u.nanometer * u.steradian))
 
 data = table.join(Ed, Lu, keys=["Date/Time"])
 data = table.join(data, Ls, keys=["Date/Time"])

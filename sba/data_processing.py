@@ -34,6 +34,12 @@ def split_spectrum(data_table, label):
     return wavelengths, spectra
 
 
+def convert_to_unit(data, key, unit_old="", unit_new=None):
+    data[key].unit = unit_old
+    if unit_new is not None:
+        data[key] = data[key].to(unit_new)
+
+
 def clip_to_zero(data, threshold=-1e-4):
     Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
     for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
