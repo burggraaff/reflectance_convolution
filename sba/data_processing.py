@@ -34,10 +34,16 @@ def split_spectrum(data_table, label):
     return wavelengths, spectra
 
 
-def convert_to_unit(data, key, unit_old="", unit_new=None):
+def convert_to_unit_single(data, key, unit_old="", unit_new=None):
     data[key].unit = unit_old
     if unit_new is not None:
         data[key] = data[key].to(unit_new)
+
+
+def convert_to_unit(data, label, unit_old="", unit_new=None):
+    keys = get_keys_with_label(data, label)
+    for key in keys:
+        convert_to_unit_single(data, key, unit_old=unit_old, unit_new=unit_new)
 
 
 def rename_columns(data, label_old, label_new, strip=False, **kwargs):

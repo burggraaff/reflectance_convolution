@@ -16,12 +16,12 @@ rename_columns(data, "Ed", "Ed", strip=True)
 rename_columns(data, "Lu", "Lu", strip=True)
 rename_columns(data, "Ls", "Ls", strip=True)
 
+convert_to_unit(data, "Ed", u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "Lu", u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+convert_to_unit(data, "Ls", u.watt / (u.meter**2 * u.nanometer * u.steradian))
+
 Ed_keys, Lu_keys, Ls_keys = get_keys_with_label(data, "Ed", "Lu", "Ls")
 for Ed_k, Lu_k, Ls_k in zip(Ed_keys, Lu_keys, Ls_keys):
-    convert_to_unit(data, Ed_k, u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, Lu_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
-    convert_to_unit(data, Ls_k, u.watt / (u.meter**2 * u.nanometer * u.steradian))
-
     Lw_k = Lu_k.replace("Lu", "Lw")
     Lw = data[Lu_k] - 0.028 * data[Ls_k]
     Lw.name = Lw_k
@@ -38,6 +38,8 @@ Ed_keys, Lw_keys, R_rs_keys = get_keys_with_label(data, "Ed", "Lw", "R_rs")
 for Ed_k, Lw_k, R_rs_k in zip(Ed_keys, Lw_keys, R_rs_keys):
     data[R_rs_k] = data[R_rs_k] - normalisation
     data[Lw_k] = data[R_rs_k] * data[Ed_k]
+
+convert_to_unit(data, "Lw", u.watt / (u.meter**2 * u.nanometer * u.steradian))
 
 # Remove rows where the maximum Ed is unphysically small (< threshold)
 threshold = 0.01

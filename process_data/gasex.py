@@ -25,13 +25,12 @@ for file in files:
 
 data = table.vstack(tabs)
 
+convert_to_unit(data, "Ed", u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
+
 Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     wavelength = int(Ed_k[3:])
-
-    convert_to_unit(data, Ed_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
-
     Lw = data[f"Ed_{wavelength}"] * data[f"R_rs_{wavelength}"]
     Lw.name = f"Lw_{wavelength}"
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)

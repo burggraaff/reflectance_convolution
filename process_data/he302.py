@@ -13,11 +13,11 @@ data = table.join(Ed, Rrs, keys=["Event"])
 rename_columns(data, "Ed", "Ed", strip=True)
 rename_columns(data, "Rrs", "R_rs", strip=True)
 
+convert_to_unit(data, "Ed", u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
+
 Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
-    convert_to_unit(data, Ed_k, u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
-
     Lw = data[Ed_k] * data[R_rs_k]
     Lw.name = Ed_k.replace("Ed", "Lw")
     Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)

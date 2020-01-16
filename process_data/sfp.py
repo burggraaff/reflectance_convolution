@@ -28,14 +28,12 @@ for file in files:
 
 data = table.vstack(tabs)
 
-Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
+convert_to_unit(data, "Ed", u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
 
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     Lw_k = Ed_k.replace("Ed", "Lw")
-
-    convert_to_unit(data, Ed_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
-
     Lw = data[Ed_k] * data[R_rs_k]
     Lw.name = Lw_k
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)

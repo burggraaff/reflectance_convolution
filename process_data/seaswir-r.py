@@ -24,13 +24,13 @@ data = table.join(Ed, Rrs, keys=["ID"])
 
 rename_columns(data, "Ed [mW/m**2/nm] (", "Ed_", strip=True)
 
+convert_to_unit(data, "Ed", u.milliwatt / (u.meter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
+
 Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
 for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
     # Convert R_w to R_rs
     data[R_rs_k] = data[R_rs_k] / np.pi
-
-    convert_to_unit(data, Ed_k, u.milliwatt / (u.meter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
 
     Lw = data[R_rs_k] * data[Ed_k]
     Lw.name = Ed_k.replace("Ed", "Lw")

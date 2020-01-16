@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import get_keys_with_label, remove_negative_R_rs, convert_to_unit
+from sba.data_processing import remove_negative_R_rs, convert_to_unit
 
 folder = Path("data/AS11/")
 files = list(folder.glob("AS*HTSRB.csv"))
@@ -24,12 +24,9 @@ data = table.vstack(tabs)
 
 print(f"Original N = {len(data)}")
 
-Ed_keys, Lw_keys, R_rs_keys = get_keys_with_label(data, "Ed", "Lw", "R_rs")
-
-for Ed_k, Lw_k, R_rs_k in zip(Ed_keys, Lw_keys, R_rs_keys):
-    convert_to_unit(data, Ed_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
-    convert_to_unit(data, Lw_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
+convert_to_unit(data, "Ed", u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "Lw", u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
 
 remove_negative_R_rs(data)
 

@@ -12,11 +12,11 @@ data = table.join(Lw, Rrs, keys=["Date/Time"])
 rename_columns(data, "Lw", "Lw", strip=True)
 rename_columns(data, "Rrs", "R_rs", strip=True)
 
+convert_to_unit(data, "Lw", u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
+
 Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
 for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
-    convert_to_unit(data, Lw_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
-    convert_to_unit(data, R_rs_k, 1 / u.steradian)
-
     Ed = data[Lw_k] / data[R_rs_k]
     Ed.name = Lw_k.replace("Lw", "Ed")
     Ed.unit = u.watt / (u.meter**2 * u.nanometer)

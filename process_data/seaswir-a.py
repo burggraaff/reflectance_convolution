@@ -14,7 +14,6 @@ for Ldkey, wvl in zip(Ldkeys, wavelengths):
     # divide by 1e5 for normalisation to W/m^2/nm (empirical)
     Ed = Ld[Ldkey] * np.pi / 1e5
     Ed.name = f"Ed_{wvl}"
-    Ed.unit = u.watt / (u.m**2 * u.nm)
     Ld.add_column(Ed)
     Ld.remove_column(Ldkey)
 Ed = Ld
@@ -26,9 +25,11 @@ R_rs_keys = get_keys_with_label(Rrs, "R_rs")
 for R_rs_k in R_rs_keys:
     # Convert R_w to R_rs
     Rrs[R_rs_k] = Rrs[R_rs_k] / np.pi
-    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
 
 data = table.join(Ed, Rrs, keys=["Station"])
+
+convert_to_unit(data, "Ed", u.watt / (u.meter**2 * u.nanometer))
+convert_to_unit(data, "R_rs", 1 / u.steradian)
 
 for wvl in wavelengths:
     Lw = data[f"R_rs_{wvl}"] * data[f"Ed_{wvl}"]
