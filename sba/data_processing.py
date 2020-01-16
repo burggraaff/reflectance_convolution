@@ -10,7 +10,7 @@ import operator as op
 comparators = {">": op.gt, ">=": op.ge, "==": op.eq, "<": op.lt, "<=": op.le}
 
 
-def get_keys_with_label(data, *labels, exclude="None"):
+def get_keys_with_label(data, *labels, exclude="sd"):
     """
     Get the keys (column names) in an AstroPy table that contain a phrase
     `label`. Any number of labels can be given. The output will contain the

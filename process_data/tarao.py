@@ -23,7 +23,7 @@ data.remove_columns(get_keys_with_label(data, "LU"))
 data.rename_column("lat", "Latitude")
 data.rename_column("lon", "Longitude")
 
-Es_keys, R_rs_keys = get_keys_with_label(data, "ES", "Rrs", exclude="sd")
+Es_keys, R_rs_keys = get_keys_with_label(data, "ES", "Rrs")
 
 for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
     wavelength = float(Es_k[2:])
