@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label, convert_to_unit, rename_columns
+from sba.data_processing import convert_to_unit, rename_columns, add_Lw_from_Ed_Rrs
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Rrs = read("data/HE302/HE302_rrs.tab", data_start=186, header_start=185)
@@ -16,12 +16,7 @@ rename_columns(data, "Rrs", "R_rs", strip=True)
 convert_to_unit(data, "Ed", u.watt / (u.meter**2 * u.nanometer))
 convert_to_unit(data, "R_rs", 1 / u.steradian)
 
-Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
-for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
-    Lw = data[Ed_k] * data[R_rs_k]
-    Lw.name = Ed_k.replace("Ed", "Lw")
-    Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
-    data.add_column(Lw)
+data = add_Lw_from_Ed_Rrs(data)
 
 remove_indices = [i for i, row in enumerate(data) if row["R_rs_800"] >= 0.003]
 data.remove_rows(remove_indices)

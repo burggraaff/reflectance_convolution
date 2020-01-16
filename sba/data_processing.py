@@ -5,6 +5,7 @@ to clean spectra
 
 import numpy as np
 import operator as op
+from astropy import table
 
 
 comparators = {">": op.gt, ">=": op.ge, "==": op.eq, "<": op.lt, "<=": op.le}
@@ -54,6 +55,23 @@ def rename_columns(data, label_old, label_new, strip=False, **kwargs):
             key_new = key_new.split(" ")[0]
         data.rename_column(key, key_new)
 
+
+def add_Lw_from_Ed_Rrs(data, Ed_label="Ed", R_rs_label="R_rs"):
+    wavelengths, Ed = split_spectrum(data, Ed_label)
+    wavelengths, R_rs = split_spectrum(data, R_rs_label)
+
+    Lw = Ed * R_rs
+
+    Ed_keys, R_rs_keys = get_keys_with_label(data, Ed_label, R_rs_label)
+    Lw_keys = [key.replace("Ed", "Lw") for key in Ed_keys]
+
+    Lw_unit = data[Ed_keys[0]].unit * data[R_rs_keys[0]].unit
+
+    Lw_table = table.Table(data=Lw, names=Lw_keys)
+    convert_to_unit(Lw_table, "Lw", Lw_unit)
+
+    data = table.hstack([data, Lw_table])
+    return data
 
 def clip_to_zero(data, threshold=-1e-4):
     Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")

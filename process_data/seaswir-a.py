@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label, remove_negative_R_rs, convert_to_unit, rename_columns
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs, convert_to_unit, rename_columns, add_Lw_from_Ed_Rrs
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -31,11 +31,7 @@ data = table.join(Ed, Rrs, keys=["Station"])
 convert_to_unit(data, "Ed", u.watt / (u.meter**2 * u.nanometer))
 convert_to_unit(data, "R_rs", 1 / u.steradian)
 
-for wvl in wavelengths:
-    Lw = data[f"R_rs_{wvl}"] * data[f"Ed_{wvl}"]
-    Lw.name = f"Lw_{wvl}"
-    Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
-    data.add_column(Lw)
+data = add_Lw_from_Ed_Rrs(data)
 
 for key in data.keys():
     if key[-2:] == "_1":

@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data, find_auxiliary_information_seabass
-from sba.data_processing import get_keys_with_label, remove_negative_R_rs, remove_rows_based_on_threshold, convert_to_unit
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs, remove_rows_based_on_threshold, convert_to_unit, add_Lw_from_Ed_Rrs
 
 folder = Path("data/CARIACO/")
 files = sorted(folder.glob("*.txt"))
@@ -31,15 +31,10 @@ data = table.vstack(tabs)
 convert_to_unit(data, "Ed", u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
 convert_to_unit(data, "R_rs", 1 / u.steradian)
 
-Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
-for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
-    wavelength = int(Ed_k[3:])
-    Lw = data[f"Ed_{wavelength}"] * data[f"R_rs_{wavelength}"]
-    Lw.name = f"Lw_{wavelength}"
-    Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
-    data.add_column(Lw)
+data = add_Lw_from_Ed_Rrs(data)
 
 # Remove rows with NaN values
+R_rs_keys = get_keys_with_label(data, "R_rs")
 remove_indices = [i for i, row_mask in enumerate(data.mask) if any(row_mask[key] for key in R_rs_keys)]
 data.remove_rows(remove_indices)
 print(f"Removed {len(remove_indices)} rows with NaN values")
