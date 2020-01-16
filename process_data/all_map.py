@@ -12,7 +12,7 @@ all_data_files = sorted(folder.glob("*processed.tab"))
 
 data = [read(file, include_names=["Latitude", "Longitude"]) for file in all_data_files]
 labels = [file.stem[:-10] for file in all_data_files]
-colours = ["xkcd:royal blue", "xkcd:orange", "xkcd:lime green", "xkcd:magenta", "xkcd:olive green", "xkcd:navy", "xkcd:yellow", "xkcd:maroon", "xkcd:bright pink", "xkcd:hunter green", "xkcd:vomit", "xkcd:chocolate", "xkcd:rust brown", "xkcd:crimson", "xkcd:bright red", "xkcd:black", "xkcd:neon green", "xkcd:goldenrod", "xkcd:navy", "xkcd:light orange", "xkcd:pale yellow"]
+colours = ["xkcd:royal blue", "xkcd:pale yellow", "xkcd:lime green", "xkcd:orange", "xkcd:navy", "xkcd:bright pink", "xkcd:vomit", "xkcd:light orange", "xkcd:hunter green", "xkcd:light brown", "xkcd:rust brown", "xkcd:magenta", "xkcd:magenta", "xkcd:neon green", "xkcd:olive green", "xkcd:purple", "xkcd:red", "xkcd:black"]
 
 for tab, label, colour in zip(data, labels, colours):
     tab.add_column(table.Column(name="Label", data=[label for row in tab]))
@@ -21,7 +21,7 @@ for tab, label, colour in zip(data, labels, colours):
 data = table.vstack(data)
 
 # Plot world map
-fig = plt.figure(figsize=(10, 4), tight_layout=True)
+fig = plt.figure(figsize=(7, 4.1), tight_layout=True)
 
 m = Basemap(projection='moll', lon_0=0, resolution="i")
 m.fillcontinents(color="#FFDDCC", lake_color='#DDEEFF')
@@ -36,7 +36,7 @@ m.scatter(data["Longitude"], data["Latitude"], latlon=True, c=data["Colour"], ed
 for label, colour in zip(labels, colours):
     m.scatter([0], [0], latlon=True, c=colour, edgecolors="", s=50, zorder=0, label=label)
 
-plt.legend(bbox_to_anchor=(1.1, 1.1), ncol=1)
+plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=6, fontsize="small")
 
 plt.title(f"Locations of all spectra ($N = {len(data)}$)")
 
