@@ -85,3 +85,48 @@ axs[0].set_title(f"All spectra ({N_total})")
 plt.savefig(f"data/plots/spectra_all_data_zoom.pdf")
 plt.show()
 plt.close()
+
+# Combined plots
+fig = plt.figure(figsize=(7,3), tight_layout=True)
+gs = fig.add_gridspec(2, 3)
+
+ax_Ed = fig.add_subplot(gs[0,0])
+ax_Lw = fig.add_subplot(gs[0,1])
+ax_R_rs = fig.add_subplot(gs[0,2])
+ax_N = fig.add_subplot(gs[1,2])
+ax_zoom = fig.add_subplot(gs[1,:2])
+
+axs = [ax_Ed, ax_Lw, ax_R_rs, ax_N, ax_zoom]
+ylabels = ["$E_d$", "$L_w$", "$R_{rs}$", "$N$", "$R_{rs}$"]
+
+for data in data_all:
+    wavelengths, Ed = split_spectrum(data, "Ed")
+    wavelengths, Lw = split_spectrum(data, "Lw")
+    wavelengths, R_rs = split_spectrum(data, "R_rs")
+
+    for ax, spectra in zip([ax_Ed, ax_Lw, ax_R_rs, ax_zoom], [Ed, Lw, R_rs, R_rs]):
+        ax.plot(wavelengths, spectra.T, c="k", alpha=0.01)
+
+ax_N.step(wavelength_range, wavelengths_bincount, where="mid", c="k")
+#plt.xlim(wavelength_range[0], wavelength_range[-1]+5)
+
+for ax, ylabel in zip(axs, ylabels):
+    ax.grid(ls="--")
+    ax.set_xlim(320, 1300)
+    ax.set_ylim(ymin=0)
+    ax.set_xlabel("Wavelength [nm]")
+    ax.set_ylabel(ylabel)
+
+ax_Ed.set_yticks([0,1,2,3])
+ax_Lw.set_yticks([0,0.02,0.04,0.06,0.08])
+ax_R_rs.set_yticks([0,0.02,0.04,0.06,0.08])
+ax_N.set_yticks([0,500,1000,1500])
+ax_zoom.set_yticks([0,0.002,0.004,0.006,0.008])
+
+ax_zoom.set_xlim(320, 1000)
+ax_zoom.set_ylim(0, 0.008)
+ax_N.set_xlim(300, 1340)
+
+plt.savefig("data/plots/spectra_all_data_combined.pdf")
+plt.show()
+plt.close()
