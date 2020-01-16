@@ -3,46 +3,41 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import split_spectrum, get_keys_with_label, remove_negative_R_rs, convert_to_unit
+from sba.data_processing import split_spectrum, get_keys_with_label, remove_negative_R_rs, convert_to_unit, rename_columns
 
 Ed = read("data/SOP4/SO-P4_irrad.tab", data_start=142, header_start=141)
 Lu = read("data/SOP4/SO-P4_rad_up_40deg.tab", data_start=142, header_start=141)
 Ls = read("data/SOP4/SO-P4_sky_rad_40deg.tab", data_start=142, header_start=141)
 
-wavelengths = np.arange(320, 955, 5)
-for wvl in wavelengths:
-    Ed_key, Lu_key, Ls_key = f"Ed_{wvl}", f"Lu_{wvl}", f"Ls_{wvl}"
-
-    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", Ed_key)
-    convert_to_unit(Ed, Ed_key, u.watt / (u.meter**2 * u.nanometer))
-
-    try:  # mu gets properly loaded on Linux
-        Lu.rename_column(f"Lu_{wvl} [µW/cm**2/nm/sr]", Lu_key)
-    except KeyError: # but not on Windows
-        Lu.rename_column(f"Lu_{wvl} [ÂµW/cm**2/nm/sr]", Lu_key)
-
-    convert_to_unit(Lu, Lu_key, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
-
-    Ls.rename_column(f"Ls_{wvl} [W/m**2/nm/sr]", Ls_key)
-    convert_to_unit(Lu, Lu_key, u.watt / (u.meter**2 * u.nanometer * u.steradian))
-
 data = table.join(Ed, Lu, keys=["Date/Time"])
 data = table.join(data, Ls, keys=["Date/Time"])
 
-for wvl in wavelengths:
-    Lw = data[f"Lu_{wvl}"] - 0.028 * data[f"Ls_{wvl}"]
-    Lw.name = f"Lw_{wvl}"
+rename_columns(data, "Ed", "Ed", strip=True)
+rename_columns(data, "Lu", "Lu", strip=True)
+rename_columns(data, "Ls", "Ls", strip=True)
+
+Ed_keys, Lu_keys, Ls_keys = get_keys_with_label(data, "Ed", "Lu", "Ls")
+for Ed_k, Lu_k, Ls_k in zip(Ed_keys, Lu_keys, Ls_keys):
+    convert_to_unit(data, Ed_k, u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(data, Lu_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+    convert_to_unit(data, Ls_k, u.watt / (u.meter**2 * u.nanometer * u.steradian))
+
+    Lw_k = Lu_k.replace("Lu", "Lw")
+    Lw = data[Lu_k] - 0.028 * data[Ls_k]
+    Lw.name = Lw_k
     data.add_column(Lw)
-    R_rs = data[f"Lw_{wvl}"] / data[f"Ed_{wvl}"]
-    R_rs.name = f"R_rs_{wvl}"
+
+    R_rs = data[Lw_k] / data[Ed_k]
+    R_rs.name = Lw_k.replace("Lw", "R_rs")
     R_rs.unit = 1 / u.steradian
     data.add_column(R_rs)
 
 # Normalise by R_rs(750 nm), re-calculate Lw
 normalisation = data["R_rs_750"].copy()
-for wvl in wavelengths:
-    data[f"R_rs_{wvl}"] = data[f"R_rs_{wvl}"] - normalisation
-    data[f"Lw_{wvl}"] = data[f"R_rs_{wvl}"] * data[f"Ed_{wvl}"]
+Ed_keys, Lw_keys, R_rs_keys = get_keys_with_label(data, "Ed", "Lw", "R_rs")
+for Ed_k, Lw_k, R_rs_k in zip(Ed_keys, Lw_keys, R_rs_keys):
+    data[R_rs_k] = data[R_rs_k] - normalisation
+    data[Lw_k] = data[R_rs_k] * data[Ed_k]
 
 # Remove rows where the maximum Ed is unphysically small (< threshold)
 threshold = 0.01

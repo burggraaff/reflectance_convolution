@@ -4,7 +4,7 @@ from astropy import units as u
 from pathlib import Path
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label, convert_to_unit
+from sba.data_processing import get_keys_with_label, convert_to_unit, rename_columns
 
 folder = Path("data/TaraM/")
 files = list(folder.glob("Tara_HyperPro*.txt"))
@@ -24,19 +24,21 @@ data.remove_columns(get_keys_with_label(data, "LU"))
 data.rename_column("lat", "Latitude")
 data.rename_column("lon", "Longitude")
 
-Es_keys, R_rs_keys = get_keys_with_label(data, "ES", "Rrs")
+rename_columns(data, "ES", "Ed_", exclude="None")
+rename_columns(data, "Rrs", "R_rs_", exclude="None")
 
-for Es_k, R_rs_k in zip(Es_keys, R_rs_keys):
-    wavelength = float(Es_k[2:])
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
+for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
+    wavelength = float(Ed_k[3:])
+    Ed_sd = Ed_k + "_sd"
+    R_rs_sd = R_rs_k + "_sd"
 
-    convert_to_unit(data, Es_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(data, Ed_k, u.microwatt / (u.centimeter**2 * u.nanometer), u.watt / (u.meter**2 * u.nanometer))
     convert_to_unit(data, R_rs_k, 1 / u.steradian)
 
-    data.rename_column(Es_k, f"Ed_{wavelength:.1f}")
-    data.rename_column(R_rs_k, f"R_rs_{wavelength:.1f}")
-
-    Lw = data[f"Ed_{wavelength:.1f}"] * data[f"R_rs_{wavelength:.1f}"]
-    Lw.name = f"Lw_{wavelength:.1f}"
+    Lw = data[Ed_k] * data[R_rs_k]
+    Lw_key = f"Lw_{wavelength:.1f}"
+    Lw.name = Lw_key
     Lw.unit = u.watt / (u.m**2 * u.nm * u.steradian)
     data.add_column(Lw)
 

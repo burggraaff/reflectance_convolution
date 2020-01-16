@@ -3,25 +3,23 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import convert_to_unit
+from sba.data_processing import get_keys_with_label, convert_to_unit, rename_columns
 
 Ed = read("data/HE302/HE302_irrad.tab", data_start=186, header_start=185)
 Rrs = read("data/HE302/HE302_rrs.tab", data_start=186, header_start=185)
 
-wavelengths = np.arange(320, 955, 5)
-for wvl in wavelengths:
-    Ed_k, R_rs_k = f"Ed_{wvl}", f"R_rs_{wvl}"
-    Ed.rename_column(f"Ed_{wvl} [W/m**2/nm]", Ed_k)
-    convert_to_unit(Ed, Ed_k, u.watt / (u.meter**2 * u.nanometer))
-
-    Rrs.rename_column(f"Rrs_{wvl} [1/sr]", R_rs_k)
-    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
-
 data = table.join(Ed, Rrs, keys=["Event"])
 
-for wvl in wavelengths:
-    Lw = data[f"Ed_{wvl}"] * data[f"R_rs_{wvl}"]
-    Lw.name = f"Lw_{wvl}"
+rename_columns(data, "Ed", "Ed", strip=True)
+rename_columns(data, "Rrs", "R_rs", strip=True)
+
+Ed_keys, R_rs_keys = get_keys_with_label(data, "Ed", "R_rs")
+for Ed_k, R_rs_k in zip(Ed_keys, R_rs_keys):
+    convert_to_unit(data, Ed_k, u.watt / (u.meter**2 * u.nanometer))
+    convert_to_unit(data, R_rs_k, 1 / u.steradian)
+
+    Lw = data[Ed_k] * data[R_rs_k]
+    Lw.name = Ed_k.replace("Ed", "Lw")
     Lw.unit = u.watt / (u.meter**2 * u.nanometer * u.steradian)
     data.add_column(Lw)
 

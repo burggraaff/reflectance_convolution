@@ -40,6 +40,15 @@ def convert_to_unit(data, key, unit_old="", unit_new=None):
         data[key] = data[key].to(unit_new)
 
 
+def rename_columns(data, label_old, label_new, strip=False, **kwargs):
+    keys_old = get_keys_with_label(data, label_old, **kwargs)
+    for key in keys_old:
+        key_new = key.replace(label_old, label_new)
+        if strip:  # Strip units from key
+            key_new = key_new.split(" ")[0]
+        data.rename_column(key, key_new)
+
+
 def clip_to_zero(data, threshold=-1e-4):
     Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
     for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):

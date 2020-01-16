@@ -3,33 +3,28 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import split_spectrum, get_keys_with_label, convert_to_unit
+from sba.data_processing import split_spectrum, get_keys_with_label, convert_to_unit, rename_columns
 
 Lw = read("data/MSM21_3/MSM21_3_Lw-5nm.tab", data_start=132, header_start=131)
 Rrs = read("data/MSM21_3/MSM21_3_Rrs-5nm.tab", data_start=133, header_start=132)
 
-wavelengths = np.arange(360, 805, 5)
-for wvl in wavelengths:
-    Lw_k, R_rs_k = f"Lw_{wvl}", f"R_rs_{wvl}"
-    try:  # mu gets properly loaded on Linux
-        Lw.rename_column(f"Lw_{wvl} [µW/cm**2/nm/sr]", Lw_k)
-    except KeyError: # but not on Windows
-        Lw.rename_column(f"Lw_{wvl} [ÂµW/cm**2/nm/sr]", Lw_k)
-    Rrs.rename_column(f"Rrs_{wvl} [1/sr]", f"R_rs_{wvl}")
-
-    convert_to_unit(Lw, Lw_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
-    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
-
 data = table.join(Lw, Rrs, keys=["Date/Time"])
+rename_columns(data, "Lw", "Lw", strip=True)
+rename_columns(data, "Rrs", "R_rs", strip=True)
+
+Lw_keys, R_rs_keys = get_keys_with_label(data, "Lw", "R_rs")
+for Lw_k, R_rs_k in zip(Lw_keys, R_rs_keys):
+    convert_to_unit(data, Lw_k, u.microwatt / (u.centimeter**2 * u.nanometer * u.steradian), u.watt / (u.meter**2 * u.nanometer * u.steradian))
+    convert_to_unit(data, R_rs_k, 1 / u.steradian)
+
+    Ed = data[Lw_k] / data[R_rs_k]
+    Ed.name = Lw_k.replace("Lw", "Ed")
+    Ed.unit = u.watt / (u.meter**2 * u.nanometer)
+    data.add_column(Ed)
+
 data.rename_column("Event_1", "Event")
 data.rename_column("Latitude_1", "Latitude")
 data.rename_column("Longitude_1", "Longitude")
-
-for wvl in wavelengths:
-    Ed = data[f"Lw_{wvl}"] / data[f"R_rs_{wvl}"]
-    Ed.name = f"Ed_{wvl}"
-    Ed.unit = u.watt / (u.meter**2 * u.nanometer)
-    data.add_column(Ed)
 
 # Remove rows with NaN values
 R_rs_keys = get_keys_with_label(data, "R_rs")

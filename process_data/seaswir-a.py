@@ -3,7 +3,7 @@ from astropy import table
 from astropy import units as u
 from sba.plotting import plot_spectra, map_data
 from sba.io import read, write_data
-from sba.data_processing import get_keys_with_label, remove_negative_R_rs
+from sba.data_processing import get_keys_with_label, remove_negative_R_rs, convert_to_unit, rename_columns
 
 wavelengths = np.arange(350, 1301, 1)
 
@@ -21,11 +21,12 @@ Ed = Ld
 # Units of Ld are not provided
 
 Rrs = read("data/SeaSWIR/SeaSWIR_ASD_Rw.tab", data_start=974, header_start=973)
-Rrskeys = get_keys_with_label(Rrs, "Refl")
-for key, wvl in zip(Rrskeys, wavelengths):
-    Rrs.rename_column(key, f"R_rs_{wvl}")
+rename_columns(Rrs, "Refl (", "R_rs_", strip=True)
+R_rs_keys = get_keys_with_label(Rrs, "R_rs")
+for R_rs_k in R_rs_keys:
     # Convert R_w to R_rs
-    Rrs[f"R_rs_{wvl}"] = Rrs[f"R_rs_{wvl}"] / np.pi
+    Rrs[R_rs_k] = Rrs[R_rs_k] / np.pi
+    convert_to_unit(Rrs, R_rs_k, 1 / u.steradian)
 
 data = table.join(Ed, Rrs, keys=["Station"])
 
