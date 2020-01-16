@@ -10,19 +10,38 @@ from pathlib import Path
 import sys
 
 
+class Band(object):
+    def __init__(self, label, wavelengths, response, colour="k"):
+        self.label = label
+        self.colour = colour
+
+        assert len(wavelengths) == len(response)
+        self.wavelengths = wavelengths
+        self.response = response
+
+    def __repr__(self):
+        return self.label
+
+    def convolve(self, *args, **kwargs):
+        result = ba.bandaverage_multi(self.wavelengths, self.response, *args, **kwargs)
+        return result
+
+
 class Sensor(object):
     def __init__(self, name, band_labels, colours, response_wavelengths, responses):
         self.name = name
 
         assert len(band_labels) == len(colours) == len(response_wavelengths) == len(responses)
-        self.band_labels = band_labels
-        self.sensor_band_labels = [self.name + " " + label for label in self.band_labels]
-        self.colours = colours
-        self.responses = responses
-        self.wavelengths = response_wavelengths
+        self.bands = [Band(label, wavelengths, response, colour) for label, wavelengths, response, colour in zip(band_labels, response_wavelengths, responses, colours)]
 
     def __repr__(self):
-        return self.name + " (bands: " + ", ".join(self.band_labels) + ")"
+        return f"{self.name} ({len(self.bands)} bands)"
+
+    def get_band_labels(self):
+        return [band.label for band in self.bands]
+
+    def get_band_colours(self):
+        return [band.colour for band in self.bands]
 
     def plot(self, ax=None, saveto=None):
         if ax is None:
@@ -34,8 +53,8 @@ class Sensor(object):
         else:
             independent = False
 
-        for wavelengths, response, label, colour in zip(self.wavelengths, self.responses, self.band_labels, self.colours):
-            ax.plot(wavelengths, response, label=label, c=colour)
+        for band in self.bands:
+            ax.plot(band.wavelengths, band.response, label=band.label, c=band.colour)
 
         ax.set_xticks(np.arange(300, 1500, 100))
         ax.set_xlim(300, 1300)
@@ -53,14 +72,14 @@ class Sensor(object):
             plt.close()
 
     def band_average(self, *args, **kwargs):
-        result = np.array([ba.bandaverage_multi(wvl, response, *args, **kwargs) for wvl, response in zip(self.wavelengths, self.responses)])
+        result = np.array([band.convolve(*args, **kwargs) for band in self.bands])
         return result
 
     def boxplot_relative(self, *args, **kwargs):
-        p.boxplot_relative(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+        p.boxplot_relative(*args, band_labels=self.get_band_labels(), sensor_label=self.name, colours=self.get_band_colours(), **kwargs)
 
     def boxplot_absolute(self, *args, **kwargs):
-        p.boxplot_absolute(*args, band_labels=self.band_labels, sensor_label=self.name, colours=self.colours, **kwargs)
+        p.boxplot_absolute(*args, band_labels=self.get_band_labels(), sensor_label=self.name, colours=self.get_band_colours(), **kwargs)
 
 
 def generate_boxcar(center, fwhm, boxcar_wavelength_step=0.1):
