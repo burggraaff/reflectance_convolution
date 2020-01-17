@@ -196,7 +196,7 @@ def synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results, sens
     vmin = np.floor(np.min([low, -high]))
     vmax = np.ceil(np.max([-low, high]))
 
-    fig = plt.figure(figsize=(8, 3.5))
+    fig = plt.figure(figsize=(7, 2))
     grid = ImageGrid(fig, 111, nrows_ncols=(1,3), axes_pad=0.15, share_all=True, aspect=False, cbar_location="right", cbar_mode="single", cbar_size="7%", cbar_pad=0.15)
 
     for ax, result, quantity in zip(grid, results, quantities):
@@ -205,6 +205,7 @@ def synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results, sens
         ax.grid(ls="--")
         ax.set_xticks(np.arange(300, 1500, 100))
         ax.set_xlim(wavelengths_central[0], 2*wavelengths_central[-1]-wavelengths_central[-2])
+        ax.set_ylim(ymin=0)
 
     grid[0].set_ylabel("FWHM [nm]")
     grid[center].set_xlabel("Central wavelength [nm]")
