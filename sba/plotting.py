@@ -211,7 +211,7 @@ def synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results, sens
     for ax in grid[1:]:
         ax.tick_params(axis="y", left=False, labelleft=False)
     cax = ax.cax.colorbar(im)
-    cax.set_label_text(f"Difference ({RrsL} - {RrsR}, {unit})")
+    cax.set_label_text("$\Delta R_{rs}$" + f" ({unit})")
 
     plt.savefig(f"results/{label}/{label}_{sensor_type}_{absrel}.pdf")
     plt.show()
