@@ -12,7 +12,7 @@ from sba.plotting import synthetic_sensor_contourf, synthetic_sensor_contourf_co
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
 
-wavelengths_central = np.arange(330, 805, 5)
+wavelengths_central = np.arange(330, 805, 3)
 FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 64, 2)])
 
 # Arrays for storing results - per FWHM, per central wavelength, absolute/relative
@@ -44,3 +44,21 @@ for results_combined, absrel in zip(results_absrel, ["abs", "rel"]):
         synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type=sensor_type, absrel=absrel, label=label, quantity=quantity)
 
     synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results_combined, sensor_type=sensor_type, absrel=absrel, label=label, quantities=quantities)
+
+inds = np.searchsorted(FWHMs, [5, 10, 15, 20, 30, 40, 50])
+line_labels = [f"{FWHM:>2} nm" for FWHM in FWHMs[inds]]
+results_inds = results_absrel[1,:,inds]
+results_inds = np.moveaxis(results_inds, 0, 1)
+
+plt.figure(figsize=(7,3), tight_layout=True)
+for p5, med, p95, line_label in zip(*results_inds, line_labels):
+    plt.plot(wavelengths_central, med.T, label=line_label)
+    plt.fill_between(wavelengths_central, p5, p95, alpha=0.35)
+plt.xlim(330, 800)
+plt.xlabel("Central wavelength [nm]")
+plt.ylabel("$\Delta R_{rs}$ [%]")
+plt.title(f"Convolution error in {label} data with synthetic {sensor_type} bands")
+plt.grid(ls="--")
+plt.legend(title="FWHM", ncol=1, loc="center right", bbox_to_anchor=(1.2, 0.5))
+plt.savefig(f"results/{label}/{label}_{sensor_type}_line.pdf")
+plt.show()
