@@ -12,8 +12,8 @@ from sba.plotting import synthetic_sensor_contourf, synthetic_sensor_contourf_co
 label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
 
-wavelengths_central = np.arange(330, 800, 5)
-FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 82, 2)])
+wavelengths_central = np.arange(330, 805, 5)
+FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 64, 2)])
 
 # Arrays for storing results - per FWHM, per central wavelength, absolute/relative
 medians = np.tile(np.nan, [2, len(FWHMs), len(wavelengths_central)])  # Median
