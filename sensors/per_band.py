@@ -4,6 +4,7 @@ from sba.response_curves import load_all_sensors
 from pathlib import Path
 from matplotlib import pyplot as plt
 import warnings
+import numpy as np
 
 sensors = load_all_sensors()
 
@@ -15,10 +16,12 @@ def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=
     fig, axs = plt.subplots(nrows=2, figsize=(7,3), tight_layout=True, sharex=True, gridspec_kw={"hspace": 0, "wspace": 0})
     for diff, ax in zip([diff_abs, diff_rel], axs):
         diffs_including_all = [[x for y in diff for x in y], *diff]
+        as_arrays = [np.array(d) for d in diffs_including_all]
+        without_nan = [d[~np.isnan(d)] for d in as_arrays]
         labels_all = ["all", *labels]
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            bplot = ax.boxplot(diffs_including_all, showfliers=False, whis=[5,95], patch_artist=True, labels=labels_all)
+            bplot = ax.boxplot(without_nan, showfliers=False, whis=[5,95], patch_artist=True, labels=labels_all)
         for patch in bplot["boxes"]:
             patch.set_facecolor(band.colour)
 
