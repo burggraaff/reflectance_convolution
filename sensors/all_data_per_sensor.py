@@ -44,7 +44,9 @@ for sensor, diffs in zip(sensors, differences):
 
         ax.grid(ls="--")
         ax.axhline(0, c="k", ls="--")
-        ax.tick_params(axis="x", rotation=90)
+
+        if len("".join(sensor.get_band_labels())) >= 40:
+            ax.tick_params(axis="x", rotation=90)
 
     axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
     axs[1].set_ylabel("$\Delta R_{rs}$ [%]")
