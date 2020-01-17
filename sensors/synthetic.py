@@ -40,9 +40,6 @@ results_absrel[0] *= 1e6  # Convert to 10^-6 sr^-1
 quantities = ["P5", "Median", "P95"]
 
 for results_combined, absrel in zip(results_absrel, ["abs", "rel"]):
-    for result, quantity in zip(results_combined, quantities):
-        synthetic_sensor_contourf(wavelengths_central, FWHMs, result, sensor_type=sensor_type, absrel=absrel, label=label, quantity=quantity)
-
     synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results_combined, sensor_type=sensor_type, absrel=absrel, label=label, quantities=quantities)
 
 inds = np.searchsorted(FWHMs, [5, 10, 15, 20, 30, 40, 50])
