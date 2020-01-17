@@ -26,7 +26,7 @@ def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=
         ax.axhline(0, c="k", ls="--")
         ax.tick_params(axis="x", rotation=90)
 
-    axs[0].set_ylabel("[$10^{-6}$ sr$^-1$]")
+    axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
     axs[1].set_ylabel("$\Delta R_{rs}$ [%]")
 
     axs[0].set_title(f"{sensor_name}, {band}")
