@@ -18,21 +18,6 @@ def KT16(wavelengths, Ed, Lw, R_rs):
     return chl_R, chl_L
 
 
-def GM09_algorithm(B, G):
-    return 0.8 * (B/G)**(-4.3)
-
-
-def GM09(wavelengths, Ed, Lw, R_rs):
-    sensor = load_SPECTACLE()
-    reflectance_space = sensor.band_average(wavelengths, R_rs)
-    radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
-
-    chl_R = GM09_algorithm(reflectance_space[5], reflectance_space[4])
-    chl_L = GM09_algorithm(radiance_space[5], radiance_space[4])
-
-    return chl_R, chl_L
-
-
 def Ha17_algorithm(B3, B4):
     return 0.80 * np.exp(0.35 * B3/B4)
 
@@ -154,3 +139,34 @@ def OC3C(wavelengths, Ed, Lw, R_rs):
 
 satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17]
 satellite_algorithm_labels = ["MODIS OC6", "MODIS OC3", "SeaWiFS OC4", "MERIS OC4", "VIIRS OC3", "CZCS OC3", "S2A (Ha+17)"]
+
+
+def GM09_algorithm(B, G):
+    return 0.8 * (B/G)**(-4.3)
+
+
+def GM09(wavelengths, Ed, Lw, R_rs):
+    sensor = load_SPECTACLE()
+    reflectance_space = sensor.band_average(wavelengths, R_rs)
+    radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
+
+    chl_R = GM09_algorithm(reflectance_space[5], reflectance_space[4])
+    chl_L = GM09_algorithm(radiance_space[5], radiance_space[4])
+
+    return chl_R, chl_L
+
+
+def HydroColor_algorithm(red):
+    turbidity = 22.57 * red / (0.044 - red)
+    return turbidity
+
+
+def HydroColor(wavelengths, Ed, Lw, R_rs):
+    sensor = load_SPECTACLE()
+    reflectance_space = sensor.band_average(wavelengths, R_rs)
+    radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
+
+    turb_R = HydroColor_algorithm(reflectance_space[3])
+    turb_L = HydroColor_algorithm(radiance_space[3])
+
+    return turb_R, turb_L
