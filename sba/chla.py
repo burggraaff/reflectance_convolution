@@ -61,7 +61,7 @@ def OC4(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    a = np.array([0.3272, -2.9940, 2.7218, -1.2259, -0.5683])
+    a = np.array([0.32814, -3.20725, 3.22969, -1.36769, -0.81739])
     blue_R = np.max(reflectance_space[1:4], axis=0)
     blue_L = np.max(radiance_space[1:4], axis=0)
     green_R = reflectance_space[4]
@@ -77,7 +77,7 @@ def OC4E(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    a = np.array([0.3255, -2.7677, 2.4409, -1.1288, -0.4990])
+    a = np.array([0.42487, -3.20974, 2.89721, -0.75258, -0.98259])
     blue_R = np.max(reflectance_space[1:4], axis=0)
     blue_L = np.max(radiance_space[1:4], axis=0)
     green_R = reflectance_space[4]
@@ -109,7 +109,7 @@ def OC3M(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    a = np.array([0.2424, -2.7423, 1.8017, 0.0015, -1.2280])
+    a = np.array([0.26294, -2.64669, 1.28364, 1.08209, -1.76828])
     blue_R = np.max(reflectance_space[1:4:2], axis=0)
     blue_L = np.max(radiance_space[1:4:2], axis=0)
     green_R = reflectance_space[5]
@@ -125,7 +125,7 @@ def OC3V(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    a = np.array([0.2228, -2.4683, 1.5867, -0.4275, -0.7768])
+    a = np.array([0.23548, -2.63001, 1.65498, 0.16117, -1.37247])
     blue_R = np.max(reflectance_space[1:3], axis=0)
     blue_L = np.max(radiance_space[1:3], axis=0)
     green_R = reflectance_space[3]
@@ -141,7 +141,7 @@ def OC3C(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    a = np.array([0.3330, -4.3770, 7.6267, -7.1457, 1.6673])
+    a = np.array([0.31841, -4.56386, 8.63979, -8.41411, 1.91532])
     blue_R = np.max(reflectance_space[:2], axis=0)
     blue_L = np.max(radiance_space[:2], axis=0)
     green_R = reflectance_space[2]
