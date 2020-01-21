@@ -4,7 +4,7 @@ from .response_curves import load_SeaWiFS, load_MERIS, load_MODISA, load_VIIRS, 
 
 
 def KT16_algorithm(B4, B5, B6):
-    return 169* (B5 - (B4 + B6)/2) + 19.5
+    return 169 * (B5 - (B4 + B6)/2) + 19.5
 
 
 def KT16(wavelengths, Ed, Lw, R_rs):
@@ -12,8 +12,8 @@ def KT16(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    chl_R = Ha17_algorithm(*reflectance_space[3:6])
-    chl_L = Ha17_algorithm(*radiance_space[3:6])
+    chl_R = KT16_algorithm(*reflectance_space[3:6])
+    chl_L = KT16_algorithm(*radiance_space[3:6])
 
     return chl_R, chl_L
 
