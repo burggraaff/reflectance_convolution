@@ -127,6 +127,8 @@ ax_zoom.set_xlim(320, 1000)
 ax_zoom.set_ylim(0, 0.008)
 ax_N.set_xlim(300, 1340)
 
+ax_Lw.set_title(f"All spectra ($N = {N_total}$)")
+
 plt.savefig("data/plots/spectra_all_data_combined.png", dpi=300)
 plt.show()
 plt.close()
