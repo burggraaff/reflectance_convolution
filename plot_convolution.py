@@ -18,7 +18,7 @@ axs[0,1].annotate(r"$\div$", xy=(0.5, 0.73), xycoords="figure fraction", size="x
 
 axs[0,2].plot(wavelengths, E, c='k')
 axs[0,2].set_title("$E_d$")
-axs[0,2].annotate(r"$=$", xy=(0.76, 0.73), xycoords="figure fraction", size="xx-large", ha="center", va="center")
+axs[0,2].annotate(r"$=$", xy=(0.745, 0.73), xycoords="figure fraction", size="xx-large", ha="center", va="center")
 
 axs[0,3].plot(wavelengths, R, c='k')
 axs[0,3].set_title("$R_{rs}$")
@@ -38,7 +38,7 @@ axs[1,2].plot(wavelengths, E * S, c='k')
 axs[1,2].fill_between(wavelengths, 0, E * S, facecolor="0.7")
 axs[1,2].set_title(r"$E_d \times S_B$")
 axs[1,2].annotate(r"$ \approx 0.3$", xy=(0.63, 0.3), xycoords="axes fraction")
-axs[1,2].annotate(r"$\neq$", xy=(0.76, 0.24), xycoords="figure fraction", size="xx-large", ha="center", va="center")
+axs[1,2].annotate(r"$\neq$", xy=(0.745, 0.24), xycoords="figure fraction", size="xx-large", ha="center", va="center")
 
 axs[1,3].plot(wavelengths, R * S, c='k')
 axs[1,3].fill_between(wavelengths, 0, R * S, facecolor="0.7")
