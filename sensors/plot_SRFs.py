@@ -14,7 +14,7 @@ for sensor in sensors_all:
 
 # Make a combined plot of selected sensors
 sensors_selected = load_selected_sensors("etm+", "oli", "spectacle", "seawifs", "viirs", "modis", "msi", "meris", "olci")
-fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, tight_layout=True, figsize=(7,3), gridspec_kw={"hspace": 0, "wspace": 0})
+fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey="row", tight_layout=True, figsize=(7,3.34), gridspec_kw={"hspace": 0.05, "wspace": 0.05})
 for sensor, ax in zip(sensors_selected, axs.T.ravel()):
     sensor.plot(ax)
     ax.tick_params(axis="y", left=False, labelleft=False)
@@ -32,6 +32,9 @@ for ax in axs[:,0].ravel():
 axs[0,0].set_yticks([0.25, 0.5, 0.75, 1])
 axs[1,0].set_yticks([0.25, 0.5, 0.75, 1])
 axs[2,0].set_yticks([0, 0.25, 0.5, 0.75, 1])
+
+for ax in axs.ravel():
+    ax.set_ylim(ymin=0)
 
 axs[0,0].set_xlim(320, 1320)
 
