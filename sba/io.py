@@ -10,6 +10,7 @@ from .data_processing import split_spectrum
 
 
 def load_data_file(filename):
+    filename = Path(filename)
     data = read(filename)
     label = filename.stem[:-10]
 
