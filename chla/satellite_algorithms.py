@@ -14,7 +14,7 @@ for difference, absrel in zip([difference_absolute, difference_relative], ["abs"
     bp = plt.boxplot(difference, whis=[5,95], showfliers=False, labels=satellite_algorithm_labels, patch_artist=True)
     for patch in bp["boxes"]:
         patch.set_facecolor("xkcd:dark green")
-    plt.ylabel(f"Difference in Chl-a [{unit}]")
+    plt.ylabel(f"$\Delta$ Chl-a [{unit}]")
     plt.grid(ls="--")
     plt.axhline(0, ls="--", c="k")
     plt.tick_params(axis="x", rotation=20)

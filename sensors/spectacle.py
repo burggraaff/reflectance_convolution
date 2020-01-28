@@ -45,7 +45,7 @@ for ax, diff in zip(axs, differences):
     ax.axhline(0, c="k", ls="--")
 
     axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
-    axs[1].set_ylabel("$\Delta R_{rs}$ [%]")
+    axs[1].set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
 
     axs[0].set_title("SPECTACLE low-cost sensors, all data")
 

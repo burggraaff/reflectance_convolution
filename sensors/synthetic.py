@@ -53,7 +53,7 @@ for p5, med, p95, line_label in zip(*results_inds, line_labels):
     plt.fill_between(wavelengths_central, p5, p95, alpha=0.35)
 plt.xlim(330, 800)
 plt.xlabel("Central wavelength [nm]")
-plt.ylabel("$\Delta R_{rs}$ [%]")
+plt.ylabel(r"$\Delta \bar R_{rs}$ [%]")
 plt.title(f"Convolution error in {label} data with synthetic {sensor_type} bands")
 plt.grid(ls="--")
 plt.legend(title="FWHM", ncol=1, loc="center right", bbox_to_anchor=(1.2, 0.5))
