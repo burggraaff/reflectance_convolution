@@ -4,7 +4,7 @@ from .response_curves import load_SeaWiFS, load_MERIS, load_MODISA, load_VIIRS, 
 
 
 def KT16_algorithm(B4, B5, B6):
-    return 169 * (B5 - (B4 + B6)/2) + 19.5
+    return 2231 * (B5 - (B4 + B6)/2) + 12.7
 
 
 def KT16(wavelengths, Ed, Lw, R_rs):
