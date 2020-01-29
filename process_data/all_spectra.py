@@ -14,12 +14,13 @@ N_total = sum(N_all)
 
 labels = [file.stem[:-10] for file in all_data_files]
 
-wavelength_range = np.arange(300, 1350, 5)
+wavelength_bin_size = 1
+wavelength_range = np.arange(300, 1350, wavelength_bin_size)
 wavelengths_all = [split_spectrum(data, "Ed")[0] for data in data_all]
 wavelength_extremes = [[wavelength_range[0], wavelength_range[-1]] for wavelength_range in wavelengths_all]
 wavelengths_bincount = np.zeros_like(wavelength_range)
 for N, extremes in zip(N_all, wavelength_extremes):
-    wavelengths_bincount[np.where((wavelength_range >= extremes[0]-2.5) & (wavelength_range <= extremes[-1]+2.5))] += N
+    wavelengths_bincount[np.where((wavelength_range >= extremes[0]-wavelength_bin_size/2) & (wavelength_range <= extremes[-1]+wavelength_bin_size/2))] += N
 
 plt.figure(figsize=(4,2.5), tight_layout=True)
 plt.step(wavelength_range, wavelengths_bincount, where="mid", c="k")
