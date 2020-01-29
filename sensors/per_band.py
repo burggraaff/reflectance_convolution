@@ -13,7 +13,7 @@ data_files = Path("data").glob("*processed.tab")
 labels, wavelengths, Eds, Lws, R_rss = zip(*[load_data_file(file) for file in data_files])
 
 def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=""):
-    fig, axs = plt.subplots(nrows=2, figsize=(7,3), tight_layout=True, sharex=True, gridspec_kw={"hspace": 0, "wspace": 0})
+    fig, axs = plt.subplots(nrows=2, figsize=(7,2), sharex=True, gridspec_kw={"hspace": 0.05, "wspace": 0})
     for diff, ax in zip([diff_abs, diff_rel], axs):
         diffs_including_all = [[x for y in diff for x in y], *diff]
         as_arrays = [np.array(d) for d in diffs_including_all]
@@ -30,13 +30,14 @@ def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=
         ax.tick_params(axis="x", rotation=90)
 
     axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
+    axs[0].tick_params(bottom=False, labelbottom=False)
     axs[1].set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
 
-    axs[0].set_title(f"{sensor_name}, {band}")
+    axs[0].set_title(f"Convolution error in the {sensor_name} {band} band")
 
     fig.align_labels()
 
-    plt.savefig(saveto)
+    plt.savefig(saveto, bbox_inches="tight")
     plt.show()
     plt.close()
 
