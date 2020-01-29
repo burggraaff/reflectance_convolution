@@ -62,6 +62,6 @@ shift = max([t.get_window_extent(renderer).width for t in legend.get_texts()])
 for t in legend.get_texts():
     t.set_ha("right")
     t.set_position((shift,0))
-plt.setp(legend.get_lines(), linewidth=3)
+plt.setp(legend.get_lines(), linewidth=2)
 plt.savefig(f"results/{label}/{label}_{sensor_type}_line.pdf", bbox_inches="tight")
 plt.show()
