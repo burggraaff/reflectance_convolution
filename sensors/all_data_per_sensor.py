@@ -31,7 +31,7 @@ def get_differences(band):
 differences = [[get_differences(band) for band in sensor.bands] for sensor in sensors]
 
 for sensor, diffs in zip(sensors, differences):
-    fig, axs = plt.subplots(nrows=2, figsize=(7,3), sharex=True, gridspec_kw={"hspace": 0.05, "wspace": 0})
+    fig, axs = plt.subplots(nrows=2, figsize=(7,2), sharex=True, gridspec_kw={"hspace": 0.05, "wspace": 0})
     diffs_array = np.array(diffs)
     diffs_array = np.moveaxis(diffs_array, 1, 0)
     for ax, diff in zip(axs, diffs_array):
