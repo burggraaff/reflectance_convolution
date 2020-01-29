@@ -38,7 +38,7 @@ for label, colour in zip(labels, colours):
 
 plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.27), ncol=6, fontsize="small")
 
-plt.title(f"Locations of all spectra ($N = {len(data)}$)")
+plt.title(f"Origins of all spectra ($N = {len(data)}$)")
 
 plt.savefig("data/plots/map_all_data.pdf", dpi=600)
 plt.show()
