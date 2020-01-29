@@ -22,6 +22,6 @@ for file in data_files:
         plt.grid(ls="--")
         plt.axhline(0, ls="--", c="k")
         plt.tick_params(axis="x", rotation=15)
-        plt.title(f"Convolution error in Chl-a estimates: {label}")
+        plt.title(f"Convolution error in Chl-a estimates, {label} data")
         plt.savefig(f"results/{label}/{label}_chla_{absrel}.pdf")
         plt.show()

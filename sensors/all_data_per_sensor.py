@@ -54,7 +54,7 @@ for sensor, diffs in zip(sensors, differences):
     axs[0].tick_params(bottom=False, labelbottom=False)
     axs[1].set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
 
-    axs[0].set_title(f"All data ; {sensor.name}")
+    axs[0].set_title(f"Convolution error in {sensor.name} bands, all data")
 
     fig.align_labels()
 

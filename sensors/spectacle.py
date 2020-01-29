@@ -33,7 +33,7 @@ differences = np.moveaxis(differences, 1, 0)
 
 labels =["R", "G\nDJI Phantom Pro 4", "B", "R", "G\nApple iPhone SE", "B", "R", "G\nSamsung Galaxy S8", "B"]
 
-fig, axs = plt.subplots(nrows=2, figsize=(7,3), tight_layout=True, sharex=True, gridspec_kw={"hspace": 0, "wspace": 0})
+fig, axs = plt.subplots(nrows=2, figsize=(7,3), sharex=True, gridspec_kw={"hspace": 0, "wspace": 0})
 for ax, diff in zip(axs, differences):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -47,7 +47,7 @@ for ax, diff in zip(axs, differences):
     axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
     axs[1].set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
 
-    axs[0].set_title("SPECTACLE low-cost sensors, all data")
+    axs[0].set_title("Convolution error in low-cost sensors, all data")
 
 fig.align_labels()
 
