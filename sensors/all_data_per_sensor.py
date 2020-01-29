@@ -31,14 +31,14 @@ def get_differences(band):
 differences = [[get_differences(band) for band in sensor.bands] for sensor in sensors]
 
 for sensor, diffs in zip(sensors, differences):
-    fig, axs = plt.subplots(nrows=2, figsize=(7,3), tight_layout=True, sharex=True, gridspec_kw={"hspace": 0, "wspace": 0})
+    fig, axs = plt.subplots(nrows=2, figsize=(7,3), sharex=True, gridspec_kw={"hspace": 0.05, "wspace": 0})
     diffs_array = np.array(diffs)
     diffs_array = np.moveaxis(diffs_array, 1, 0)
     for ax, diff in zip(axs, diffs_array):
         without_nan = [d[~np.isnan(d)] for d in diff]
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            bplot = ax.boxplot(without_nan, showfliers=False, whis=[5,95], patch_artist=True, labels=sensor.get_band_labels())
+            bplot = ax.boxplot(without_nan, showfliers=False, whis=[5,95], widths=0.25, patch_artist=True, labels=sensor.get_band_labels())
         for patch, colour in zip(bplot["boxes"], sensor.get_band_colours()):
             patch.set_facecolor(colour)
 
@@ -48,13 +48,16 @@ for sensor, diffs in zip(sensors, differences):
         if len("".join(sensor.get_band_labels())) >= 40:
             ax.tick_params(axis="x", rotation=90)
 
+        ax.locator_params(axis="y", nbins=5)
+
     axs[0].set_ylabel("[$10^{-6}$ sr$^{-1}$]")
+    axs[0].tick_params(bottom=False, labelbottom=False)
     axs[1].set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
 
     axs[0].set_title(f"All data ; {sensor.name}")
 
     fig.align_labels()
 
-    plt.savefig(f"results/all/{sensor.name}.pdf")
+    plt.savefig(f"results/all/{sensor.name}.pdf", bbox_inches="tight")
     plt.show()
     plt.close()
