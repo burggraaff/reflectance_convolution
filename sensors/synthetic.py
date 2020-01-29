@@ -43,11 +43,11 @@ for results_combined, absrel in zip(results_absrel, ["abs", "rel"]):
     synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results_combined, sensor_type=sensor_type, absrel=absrel, label=label, quantities=quantities)
 
 inds = np.searchsorted(FWHMs, [5, 10, 15, 20, 30, 40, 50])
-line_labels = [f"{FWHM:>2} nm" for FWHM in FWHMs[inds]]
+line_labels = [f"{FWHM} nm" for FWHM in FWHMs[inds]]
 results_inds = results_absrel[1,:,inds]
 results_inds = np.moveaxis(results_inds, 0, 1)
 
-plt.figure(figsize=(7,3), tight_layout=True)
+fig = plt.figure(figsize=(7,3))
 for p5, med, p95, line_label in zip(*results_inds, line_labels):
     plt.plot(wavelengths_central, med.T, label=line_label)
     plt.fill_between(wavelengths_central, p5, p95, alpha=0.35)
@@ -56,6 +56,11 @@ plt.xlabel("Central wavelength [nm]")
 plt.ylabel(r"$\Delta \bar R_{rs}$ [%]")
 plt.title(f"Convolution error in {label} data with synthetic {sensor_type} bands")
 plt.grid(ls="--")
-plt.legend(title="FWHM", ncol=1, loc="center right", bbox_to_anchor=(1.2, 0.5))
-plt.savefig(f"results/{label}/{label}_{sensor_type}_line.pdf")
+legend = plt.legend(title="FWHM", ncol=1, loc="center right", bbox_to_anchor=(1.2, 0.5))
+renderer = fig.canvas.get_renderer()
+shift = max([t.get_window_extent(renderer).width for t in legend.get_texts()])
+for t in legend.get_texts():
+    t.set_ha("right")
+    t.set_position((shift,0))
+plt.savefig(f"results/{label}/{label}_{sensor_type}_line.pdf", bbox_inches="tight")
 plt.show()
