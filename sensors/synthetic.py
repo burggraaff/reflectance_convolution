@@ -13,7 +13,7 @@ label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
 
 wavelengths_central = np.arange(330, 810, 1)
-FWHMs = np.concatenate([np.arange(1, 30, 1), np.arange(30, 64, 2)])
+FWHMs = np.arange(1, 66, 1)
 
 # Arrays for storing results - per FWHM, per central wavelength, absolute/relative
 medians = np.tile(np.nan, [2, len(FWHMs), len(wavelengths_central)])  # Median
