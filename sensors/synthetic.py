@@ -65,3 +65,50 @@ for t in legend.get_texts():
 plt.setp(legend.get_lines(), linewidth=2)
 plt.savefig(f"results/{label}/{label}_{sensor_type}_line.pdf", bbox_inches="tight")
 plt.show()
+
+derivative_Ed = np.gradient(Ed, wavelengths_data, axis=1)
+derivative_Lw = np.gradient(Lw, wavelengths_data, axis=1)
+derivative_R_rs = np.gradient(R_rs, wavelengths_data, axis=1)
+
+derivative_2_Ed = np.gradient(derivative_Ed, wavelengths_data, axis=1)
+derivative_2_Lw = np.gradient(derivative_Lw, wavelengths_data, axis=1)
+derivative_2_R_rs = np.gradient(derivative_R_rs, wavelengths_data, axis=1)
+
+Ed_mean = np.mean(Ed, axis=0)
+derivative_Ed_mean = np.mean(derivative_Ed, axis=0)
+derivative_2_Ed_mean = np.mean(derivative_2_Ed, axis=0)
+
+Lw_mean = np.mean(Lw, axis=0)
+derivative_Lw_mean = np.mean(derivative_Lw, axis=0)
+derivative_2_Lw_mean = np.mean(derivative_2_Lw, axis=0)
+
+R_rs_mean = np.mean(R_rs, axis=0)
+derivative_R_rs_mean = np.mean(derivative_R_rs, axis=0)
+derivative_2_R_rs_mean = np.mean(derivative_2_R_rs, axis=0)
+
+ind1 = np.in1d(wavelengths_data, wavelengths_central)
+ind2 = np.in1d(wavelengths_central, wavelengths_data)
+
+x_options = [Ed_mean, Lw_mean, R_rs_mean, derivative_Ed_mean, derivative_Lw_mean, derivative_R_rs_mean, derivative_2_Ed_mean, derivative_2_Lw_mean, derivative_2_R_rs_mean]
+x_labels = ["Ed", "Lw", "R_rs", "d Ed", "d Lw", "d R_rs", "d2 Ed", "d2 Lw", "d2 R_rs"]
+y = results_stacked[1, 1, 5, ind2]
+
+for x, label in zip(x_options, x_labels):
+    plt.scatter(x[ind1], y)
+    plt.xlim(np.nanmin(x), np.nanmax(x))
+    plt.ylim(np.nanmin(y), np.nanmax(y))
+    plt.xlabel(label)
+    plt.show()
+    plt.close()
+
+fig, axs = plt.subplots(nrows=4, sharex=True)
+axs[0].plot(wavelengths_data, derivative_2_Ed_mean)
+axs[1].plot(wavelengths_data, derivative_2_Lw_mean)
+axs[2].plot(wavelengths_data, derivative_2_R_rs_mean)
+axs[3].plot(wavelengths_central, results_inds[1,2].T)
+
+for ax in axs:
+    ax.grid(ls="--")
+    ax.set_xlim(330, 800)
+
+plt.show()
