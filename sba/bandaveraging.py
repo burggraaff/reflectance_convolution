@@ -7,7 +7,10 @@ from scipy.integrate import simps
 import warnings
 
 
-integrate = np.trapz
+def integrate(*args, **kwargs):
+    result = np.trapz(*args, **kwargs)
+
+    return result
 
 
 def interpolate_spectral_data(band_wavelengths, data_wavelengths, data_response, extrapolation_value=np.nan):
