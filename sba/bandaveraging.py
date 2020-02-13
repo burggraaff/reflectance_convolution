@@ -8,7 +8,10 @@ import warnings
 
 
 def integrate(*args, **kwargs):
-    result = np.trapz(*args, **kwargs)
+    try:
+        result = simps(*args, **kwargs)
+    except IndexError:
+        result = 0.
 
     return result
 
