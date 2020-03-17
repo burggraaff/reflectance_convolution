@@ -138,7 +138,7 @@ def OC3C(wavelengths, Ed, Lw, R_rs):
 
 
 satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17]
-satellite_algorithm_labels = ["MODIS OC6", "MODIS OC3", "SeaWiFS OC4", "MERIS OC4", "VIIRS OC3", "CZCS OC3", "S2A (Ha+17)"]
+satellite_algorithm_labels = ["MODIS OC6", "MODIS OC3", "SeaWiFS OC4", "MERIS OC4", "VIIRS OC3", "CZCS OC3", "S2A/MSI (Ha+17)"]
 
 
 def GM09_algorithm(B, G):
