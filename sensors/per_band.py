@@ -57,4 +57,6 @@ for sensor in sensors:
         # Convert to 10^-6 sr
         difference_absolute = [1e6 * diff for diff in difference_absolute]
 
-        boxplot(band, difference_absolute, difference_relative, labels, saveto=f"results/per_band/{sensor.name}_{band}.pdf", sensor_name=sensor.name)
+        short_name = band.label.replace('\n', ' ')
+
+        boxplot(band, difference_absolute, difference_relative, labels, saveto=f"results/per_band/{sensor.name}_{short_name}.pdf", sensor_name=sensor.name)
