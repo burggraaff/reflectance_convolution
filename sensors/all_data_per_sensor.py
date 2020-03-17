@@ -45,7 +45,7 @@ for sensor, diffs in zip(sensors, differences):
         ax.grid(ls="--")
         ax.axhline(0, c="k", ls="--")
 
-        if len("".join(sensor.get_band_labels())) >= 40:
+        if len("".join(sensor.get_band_labels())) >= 40 and sensor.name != "OLI":
             ax.tick_params(axis="x", rotation=90)
 
         ax.locator_params(axis="y", nbins=5)

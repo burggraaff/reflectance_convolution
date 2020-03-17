@@ -115,8 +115,9 @@ def load_synthetic_sensor(sensor_type, center, fwhm, **kwargs):
 
 
 def load_OLI():
-    band_labels = ["CA", "Blue", "Green", "Red", "NIR"]
-    responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_labels]
+    band_data_labels = ["CA", "Blue", "Green", "Red", "NIR"]
+    band_labels = ["Band 1\nCoastal aerosol", "Band 2\nBlue", "Band 3\nGreen", "Band 4\nRed", "Band 5\nNIR"]
+    responses = [np.loadtxt(f"spectral_response/OLI/{band}.txt", skiprows=1, unpack=True, usecols=[0,1]) for band in band_data_labels]
     response_wavelengths = [r[0] for r in responses]
     responses = [r[1] for r in responses]
     colours = ["xkcd:dark blue", "xkcd:blue", "xkcd:green", "xkcd:red", "xkcd:dark brown"]

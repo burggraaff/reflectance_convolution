@@ -43,8 +43,8 @@ for ax in axs.ravel():
 axs[0,0].set_xlim(320, 1320)
 
 axs[0,0].set_title("ETM+, OLI,\nSPECTACLE")
-axs[0,1].set_title("SeaWiFS, VIIRS,\nMODIS Aqua")
-axs[0,2].set_title("Sentinel-2A, MERIS,\nSentinel-3A")
+axs[0,1].set_title("SeaWiFS, Suomi NPP/\nVIIRS, Aqua/MODIS")
+axs[0,2].set_title("S2A/MSI, MERIS,\nS3A/OLCI")
 plt.savefig("spectral_response/SRF_all.pdf", bbox_inches="tight")
 plt.show()
 plt.close()
