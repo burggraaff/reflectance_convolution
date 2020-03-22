@@ -1,6 +1,6 @@
 import numpy as np
 
-from .response_curves import load_SeaWiFS, load_MERIS, load_MODISA, load_VIIRS, load_CZCS, load_Sentinel2A, load_SPECTACLE
+from .response_curves import load_SeaWiFS, load_MERIS, load_MODISA, load_VIIRS, load_CZCS, load_Sentinel2A, load_SPECTACLE, load_OLI
 
 
 def KT16_algorithm(B4, B5, B6):
@@ -170,3 +170,19 @@ def HydroColor(wavelengths, Ed, Lw, R_rs):
     turb_L = HydroColor_algorithm(radiance_space[3])
 
     return turb_R, turb_L
+
+
+def Lymburner2016_algorithm(green, red):
+    index = (green + red)/2.
+    TSM = 3957 * index**(1.6436)
+    return TSM
+
+def Lymburner2016(wavelengths, Ed, Lw, R_rs):
+    sensor = load_OLI()
+    reflectance_space = sensor.band_average(wavelengths, R_rs)
+    radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
+
+    tsm_R = Lymburner2016_algorithm(reflectance_space[3])
+    tsm_L = Lymburner2016_algorithm(radiance_space[3])
+
+    return tsm_R, tsm_L
