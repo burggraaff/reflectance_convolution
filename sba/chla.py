@@ -137,8 +137,8 @@ def OC3C(wavelengths, Ed, Lw, R_rs):
     return chl_R, chl_L
 
 
-satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17]
-satellite_algorithm_labels = ["MODIS OC6", "MODIS OC3", "SeaWiFS OC4", "MERIS OC4", "VIIRS OC3", "CZCS OC3", "S2A/MSI (Ha+17)"]
+satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17, ]
+satellite_algorithm_labels = ["OC6\nMODIS", "OC3\nMODIS", "OC4\nSeaWiFS", "OC4\nMERIS", "OC3\nVIIRS", "OC3\nCZCS", "Ha+17\nS2A/MSI"]
 
 
 def GM09_algorithm(B, G):
@@ -172,17 +172,17 @@ def HydroColor(wavelengths, Ed, Lw, R_rs):
     return turb_R, turb_L
 
 
-def Lymburner2016_algorithm(green, red):
+def Lymburner16_algorithm(green, red):
     index = (green + red)/2.
     TSM = 3957 * index**(1.6436)
     return TSM
 
-def Lymburner2016(wavelengths, Ed, Lw, R_rs):
+def Lymburner16(wavelengths, Ed, Lw, R_rs):
     sensor = load_OLI()
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    tsm_R = Lymburner2016_algorithm(reflectance_space[3])
-    tsm_L = Lymburner2016_algorithm(radiance_space[3])
+    tsm_R = Lymburner16_algorithm(reflectance_space[3])
+    tsm_L = Lymburner16_algorithm(radiance_space[3])
 
     return tsm_R, tsm_L

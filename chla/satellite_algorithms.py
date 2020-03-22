@@ -17,7 +17,6 @@ for difference, absrel in zip([difference_absolute, difference_relative], ["abs"
     plt.ylabel(f"$\Delta$ Chl-a [{unit}]")
     plt.grid(ls="--")
     plt.axhline(0, ls="--", c="k")
-    plt.tick_params(axis="x", rotation=12)
     plt.locator_params(axis="y", nbins=5)
     plt.title(f"Convolution error in Chl-a estimates, {label} data")
     plt.savefig(f"results/{label}/{label}_chla_{absrel}.pdf", bbox_inches="tight")
