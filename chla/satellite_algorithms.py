@@ -10,14 +10,15 @@ difference_absolute, difference_relative = zip(*[calculate_differences(*func(wav
 for difference, absrel in zip([difference_absolute, difference_relative], ["abs", "rel"]):
     unit = "mg m$^{-3}$" if absrel == "abs" else "%"
 
-    plt.figure(figsize=(5,3), tight_layout=True)
+    plt.figure(figsize=(7,1))
     bp = plt.boxplot(difference, whis=[5,95], showfliers=False, labels=satellite_algorithm_labels, patch_artist=True)
     for patch in bp["boxes"]:
         patch.set_facecolor("xkcd:dark green")
     plt.ylabel(f"$\Delta$ Chl-a [{unit}]")
     plt.grid(ls="--")
     plt.axhline(0, ls="--", c="k")
-    plt.tick_params(axis="x", rotation=20)
+    plt.tick_params(axis="x", rotation=12)
+    plt.locator_params(axis="y", nbins=5)
     plt.title(f"Convolution error in Chl-a estimates, {label} data")
-    plt.savefig(f"results/{label}/{label}_chla_{absrel}.pdf")
+    plt.savefig(f"results/{label}/{label}_chla_{absrel}.pdf", bbox_inches="tight")
     plt.show()
