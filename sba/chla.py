@@ -137,10 +137,6 @@ def OC3C(wavelengths, Ed, Lw, R_rs):
     return chl_R, chl_L
 
 
-satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17, ]
-satellite_algorithm_labels = ["OC6\nMODIS", "OC3\nMODIS", "OC4\nSeaWiFS", "OC4\nMERIS", "OC3\nVIIRS", "OC3\nCZCS", "Ha+17\nS2A/MSI"]
-
-
 def GM09_algorithm(B, G):
     return 0.8 * (B/G)**(-4.3)
 
@@ -182,7 +178,11 @@ def Lymburner16(wavelengths, Ed, Lw, R_rs):
     reflectance_space = sensor.band_average(wavelengths, R_rs)
     radiance_space = sensor.band_average(wavelengths, Lw) / sensor.band_average(wavelengths, Ed)
 
-    tsm_R = Lymburner16_algorithm(reflectance_space[3])
-    tsm_L = Lymburner16_algorithm(radiance_space[3])
+    tsm_R = Lymburner16_algorithm(reflectance_space[2], reflectance_space[3])
+    tsm_L = Lymburner16_algorithm(radiance_space[2], radiance_space[3])
 
     return tsm_R, tsm_L
+
+
+satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17, Lymburner16]
+satellite_algorithm_labels = ["OC6\nMODIS", "OC3\nMODIS", "OC4\nSeaWiFS", "OC4\nMERIS", "OC3\nVIIRS", "OC3\nCZCS", "Ha+17\nS2A/MSI", "LL+16\nOLI"]
