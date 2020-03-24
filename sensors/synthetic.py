@@ -13,7 +13,7 @@ label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
 
 wavelengths_central = np.arange(330, 810, 1)
-FWHMs = np.arange(1, 66, 1)
+FWHMs = np.arange(6, 66, 1)
 
 # Arrays for storing results - per FWHM, per central wavelength, absolute/relative
 medians = np.tile(np.nan, [2, len(FWHMs), len(wavelengths_central)])  # Median
@@ -42,7 +42,7 @@ quantities = ["P5", "Median", "P95"]
 for results_combined, absrel in zip(results_absrel, ["abs", "rel"]):
     synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results_combined, sensor_type=sensor_type, absrel=absrel, label=label, quantities=quantities)
 
-inds = np.searchsorted(FWHMs, [5, 10, 15, 20, 30, 40, 50])
+inds = np.searchsorted(FWHMs, [6, 10, 15, 20, 30, 40, 50])
 line_labels = [f"{FWHM} nm" for FWHM in FWHMs[inds]]
 results_inds = results_absrel[1,:,inds]
 results_inds = np.moveaxis(results_inds, 0, 1)
