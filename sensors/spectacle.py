@@ -33,7 +33,7 @@ differences = np.moveaxis(differences, 1, 0)
 
 labels =["R", "G\nDJI Phantom Pro 4", "B", "R", "G\nApple iPhone SE", "B", "R", "G\nSamsung Galaxy S8", "B"]
 
-fig, axs = plt.subplots(nrows=2, figsize=(7,2.6), sharex=True, gridspec_kw={"hspace": 0.0384, "wspace": 0})
+fig, axs = plt.subplots(nrows=2, figsize=(7,2), sharex=True, gridspec_kw={"hspace": 0.0384, "wspace": 0})
 for ax, diff in zip(axs, differences):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
