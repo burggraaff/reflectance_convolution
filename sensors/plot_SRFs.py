@@ -4,13 +4,7 @@ Plot all spectral response functions (SRFs) separately, and unique ones together
 
 import numpy as np
 from matplotlib import pyplot as plt
-from sba.response_curves import load_all_sensors, load_selected_sensors
-
-# Make a separate plot for all sensors
-sensors_all = load_all_sensors()
-for sensor in sensors_all:
-    print(sensor)
-    sensor.plot()
+from sba.response_curves import load_selected_sensors
 
 # Make a combined plot of selected sensors
 sensors_selected = load_selected_sensors("etm+", "oli", "spectacle", "seawifs", "viirs", "modis", "msi", "meris", "olci")
