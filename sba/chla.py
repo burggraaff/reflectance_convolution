@@ -186,3 +186,4 @@ def Lymburner16(wavelengths, Ed, Lw, R_rs):
 
 satellite_algorithms = [OC6M, OC3M, OC4, OC4E, OC3V, OC3C, Ha17, Lymburner16]
 satellite_algorithm_labels = ["OC6\nMODIS", "OC3\nMODIS", "OC4\nSeaWiFS", "OC4\nMERIS", "OC3\nVIIRS", "OC3\nCZCS", "Ha+17\nS2A/MSI", "LL+16\nOLI"]
+satellite_algorithm_colours = ["xkcd:dark green", "xkcd:dark green", "xkcd:dark green", "xkcd:dark green", "xkcd:dark green", "xkcd:dark green", "xkcd:dark green", "xkcd:tan"]
