@@ -21,7 +21,7 @@ for ax in axs[-1].ravel():
     ax.set_xticks(np.arange(250, 1500, 250))
 
 for ax in axs[:,0].ravel():
-    ax.set_ylabel("RSR")
+    ax.set_ylabel("SRF")
     ax.tick_params(axis="y", left=True, labelleft=True)
 
 axs[0,0].set_yticks([1/3, 2/3, 1])
