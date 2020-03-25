@@ -68,7 +68,7 @@ plt.close()
 
 # Figure 6
 
-def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=""):
+def boxplot_double(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=""):
     fig, axs = plt.subplots(nrows=2, figsize=(7,2), sharex=True, gridspec_kw={"hspace": 0.05, "wspace": 0})
     for diff, ax in zip([diff_abs, diff_rel], axs):
         diffs_including_all = [[x for y in diff for x in y], *diff]
@@ -99,6 +99,33 @@ def boxplot(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=
     plt.show()
     plt.close()
 
+def boxplot_single(band, diff_abs, diff_rel, labels, saveto="boxplot.pdf", sensor_name=""):
+    fig, ax = plt.subplots(figsize=(7,1), gridspec_kw={"hspace": 0, "wspace": 0})
+    diff = diff_rel
+    diffs_including_all = [[x for y in diff for x in y], *diff]
+    as_arrays = [np.array(d) for d in diffs_including_all]
+    without_nan = [d[~np.isnan(d)] for d in as_arrays]
+    labels_all = ["all", *labels]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        bplot = ax.boxplot(without_nan, showfliers=False, whis=[5,95], patch_artist=True, labels=labels_all)
+    for patch in bplot["boxes"]:
+        patch.set_facecolor(band.colour)
+
+    ax.grid(ls="--")
+    ax.axhline(0, c="k", ls="--")
+    ax.tick_params(axis="x", rotation=90)
+
+    ax.set_ylabel(r"$\Delta \bar R_{rs}$ [%]")
+    ax.set_title(f"Convolution error in OLI Band 3 (Green)")
+
+    ax.set_ylim(-1.5, 0.4)
+    ax.set_yticks([-1, -0.5, 0])
+
+    plt.savefig(saveto, bbox_inches="tight")
+    plt.show()
+    plt.close()
+
 band = oli.bands[2]
 print(f"     {band}")
 
@@ -114,4 +141,4 @@ difference_absolute = [1e6 * diff for diff in difference_absolute]
 
 short_name = band.label.replace('\n', '_').replace(" ", "_")
 
-boxplot(band, difference_absolute, difference_relative, labels, saveto=f"results/per_band/OLI_Green.pdf", sensor_name="OLI")
+boxplot_single(band, difference_absolute, difference_relative, labels, saveto=f"results/per_band/OLI_Green.pdf", sensor_name="OLI")

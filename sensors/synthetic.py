@@ -47,7 +47,7 @@ line_labels = [f"{FWHM} nm" for FWHM in FWHMs[inds]]
 results_inds = results_absrel[1,:,inds]
 results_inds = np.moveaxis(results_inds, 0, 1)
 
-fig = plt.figure(figsize=(7,2.6))
+fig = plt.figure(figsize=(7,2))
 for p5, med, p95, line_label in zip(*results_inds, line_labels):
     plt.plot(wavelengths_central, med.T, label=line_label)
     plt.fill_between(wavelengths_central, p5, p95, alpha=0.35)
