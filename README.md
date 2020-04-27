@@ -1,0 +1,1 @@
+This code was used for my paper ["Biases from incorrect reflectance convolution"](https://doi.org/10.1364/OE.391470). There are scripts to process PANGAEA/SeaBASS data to a standardised format, perform spectral convolution in two ways (the incorrect method of reflectance space, and the correct method of radiance space), and analyse and plot the results.
