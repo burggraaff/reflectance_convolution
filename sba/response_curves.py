@@ -258,7 +258,7 @@ def load_SPECTACLE():
     devices = [file.stem for file in files]
     bands = [[f"{device} {c}" for c in "RGB"] for device in devices]
     band_labels = [band for sublist in bands for band in sublist]
-    colours = [*"rgb"] * len(devices)
+    colours = p.RGB_OkabeIto * len(devices)
 
     responses = []
     wavelengths_spectacle = np.arange(390, 701, 1)

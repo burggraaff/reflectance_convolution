@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable, ImageGrid
 import numpy as np
+from spectacle.plot import RGB_OkabeIto
 from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
 

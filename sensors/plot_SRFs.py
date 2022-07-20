@@ -1,9 +1,8 @@
 """
 Plot all spectral response functions (SRFs) separately, and unique ones together
 """
-
-import numpy as np
 from matplotlib import pyplot as plt
+import numpy as np
 from sba.response_curves import load_selected_sensors
 
 # Make a combined plot of selected sensors
