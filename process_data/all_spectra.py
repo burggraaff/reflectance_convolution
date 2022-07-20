@@ -106,10 +106,9 @@ for data in data_all:
     wavelengths, R_rs = split_spectrum(data, "R_rs")
 
     for ax, spectra in zip([ax_Ed, ax_Lw, ax_R_rs, ax_zoom], [Ed, Lw, R_rs, R_rs]):
-        ax.plot(wavelengths, spectra.T, c="k", alpha=0.01)
+        ax.plot(wavelengths, spectra.T, c="k", alpha=0.02, rasterized=True)
 
 ax_N.step(wavelength_range, wavelengths_bincount, where="mid", c="k")
-#plt.xlim(wavelength_range[0], wavelength_range[-1]+5)
 
 for ax, ylabel in zip(axs, ylabels):
     ax.grid(ls="--")
@@ -130,6 +129,6 @@ ax_N.set_xlim(300, 1340)
 
 ax_Lw.set_title(f"All spectra ($N = {N_total}$)")
 
-plt.savefig("data/plots/spectra_all_data_combined.png", dpi=300)
+plt.savefig("data/plots/spectra_all_data_combined.pdf", dpi=400, bbox_inches="tight")
 plt.show()
 plt.close()
