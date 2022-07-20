@@ -1,13 +1,12 @@
 """
 Module with functions for loading and using spectral response functions (SRFs)
 """
-
-import xarray as xr
-import numpy as np
-from matplotlib import pyplot as plt
-from . import bandaveraging as ba, plotting as p
-from pathlib import Path
 import sys
+from pathlib import Path
+from matplotlib import pyplot as plt
+import numpy as np
+import xarray as xr
+from . import bandaveraging as ba, plotting as p
 
 
 class Band(object):

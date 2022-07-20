@@ -1,15 +1,14 @@
 """
 Module with functions for plotting
 """
-
+from pathlib import Path
+import warnings
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable, ImageGrid
+import numpy as np
 from .bandaveraging import calculate_median_and_errors
 from .data_processing import split_spectrum
-from pathlib import Path
-import numpy as np
-import warnings
 
 
 RrsR = r"$\bar{R}_{rs}^R$"
