@@ -13,7 +13,8 @@ label, wavelengths_data, Ed, Lw, R_rs = load_data()
 sensor_type = read_synthetic_sensor_type()
 
 wavelengths_central = np.arange(330, 810, 1)
-FWHMs = np.arange(6, 66, 1)
+# FWHMs = np.arange(6, 66, 1)
+FWHMs = np.array([30,40,50])
 
 # Arrays for storing results - per FWHM, per central wavelength, absolute/relative
 medians = np.tile(np.nan, [2, len(FWHMs), len(wavelengths_central)])  # Median
@@ -38,6 +39,9 @@ results_stacked = np.stack([perc5s, medians, perc95s])
 results_absrel = np.moveaxis(results_stacked, 1, 0)
 results_absrel[0] *= 1e6  # Convert to 10^-6 sr^-1
 quantities = ["P5", "Median", "P95"]
+
+results_thesis = np.stack([wavelengths_central, medians[1,2]])
+np.save("thesis.npy", results_thesis)
 
 for results_combined, absrel in zip(results_absrel, ["abs", "rel"]):
     synthetic_sensor_contourf_combined(wavelengths_central, FWHMs, results_combined, sensor_type=sensor_type, absrel=absrel, label=label, quantities=quantities)
